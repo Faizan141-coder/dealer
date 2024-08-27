@@ -1,0 +1,198 @@
+{% load static %}
+<!doctype html>
+
+<html
+  lang="en"
+  class="light-style layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{% static 'invoice/assets' %}"
+  data-template="vertical-menu-template-no-customizer"
+  data-style="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Invoice App</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static "invoice/assets/img/favicon/favicon.ico" %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+      rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/fonts/fontawesome.css" %}" />
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/fonts/tabler-icons.css" %}" />
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/fonts/flag-icons.css" %}" />
+
+    <!-- Core CSS -->
+
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/css/rtl/core.css" %}" />
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/css/rtl/theme-default.css" %}" />
+
+    <link rel="stylesheet" href="{% static "invoice/assets/css/demo.css" %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/libs/node-waves/node-waves.css" %}" />
+
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" %}" />
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/libs/typeahead-js/typeahead.css" %}" />
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" %}" />
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" %}" />
+        <link rel="stylesheet" href="{% static 'invoice/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+    <link rel="stylesheet" href="{% static "invoice/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" %}" />
+
+      <link rel="stylesheet" href="{% static 'invoice/assets/vendor/libs/flatpickr/flatpickr.css' %}" />
+    <!-- Row Group CSS -->
+    <link rel="stylesheet" href="{% static 'invoice/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css' %}" />
+    <!-- Form Validation -->
+    <link rel="stylesheet" href="{% static 'invoice/assets/vendor/libs/@form-validation/form-validation.css' %}" />
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{% static "/assets/vendor/js/helpers.js" %}"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static "/assets/js/config.js" %}"></script>
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="/" class="app-brand-link">
+              <span class="app-brand-text demo menu-text fw-bold">Invoice Dash</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+              <i class="ti menu-toggle-icon d-none d-xl-block align-middle"></i>
+              <i class="ti ti-x d-block d-xl-none ti-md align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <!-- Dashboards -->
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-smart-home"></i>
+                <div data-i18n="Dashboards">Dashboards</div>
+              </a>
+            </li>
+
+
+            <!-- Apps & Pages -->
+            <li class="menu-header small">
+              <span class="menu-header-text" data-i18n="Apps & Pages">Invoicing</span>
+            </li>
+
+              <!-- Orders menu end -->
+            <li class="menu-item active open mt-4">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-forms"></i>
+                <div data-i18n="Invoice">Order Management</div>
+              </a>
+              <ul class="menu-sub">
+                  <li class="menu-item {% if section == 'order-list' %} active {% endif %}">
+{#                <li class="menu-item active">#}
+                  <a href="{% url 'invoice:order-list' %}" class="menu-link">
+                    <div data-i18n="List">Orders</div>
+                  </a>
+                </li>
+
+                 <li class="menu-item {% if section == 'report' %} active {% endif %}">
+                  <a href="{% url 'report:report_dashboard' %}" class="menu-link">
+                    <div data-i18n="List">Report</div>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+            <!-- Orders menu end -->
+
+          </ul>
+        </aside>
+        <!-- / Menu -->
+
+
+        {% block content %}
+
+
+
+        {% endblock %}
+
+
+
+      </div>
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+
+      <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+      <div class="drag-target"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+
+    <script src="{% static 'invoice/assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/libs/node-waves/node-waves.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/libs/hammer/hammer.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/libs/i18n/i18n.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/js/menu.js' %}"></script>
+
+    <!-- endbuild -->
+
+
+    <!-- Main JS -->
+
+    <!-- Page JS -->
+    <script src="{% static 'invoice/assets/js/app-invoice-list.js' %}"></script>
+    <script src="{% static 'invoice/assets/js/app-ecommerce-order-list.js' %}"></script>
+    <script src="{% static 'invoice/assets/js/app-ecommerce-order-details.js' %}"></script>
+
+       <!-- Vendors JS -->
+    <script src="{% static 'invoice/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+
+
+    <script src="{% static 'invoice/assets/vendor/libs/moment/moment.js' %}"></script>
+
+
+    <script src="{% static 'invoice/assets/vendor/libs/flatpickr/flatpickr.js' %}"></script>
+
+
+    <script src="{% static 'invoice/assets/vendor/libs/@form-validation/popular.js"' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/libs/@form-validation/bootstrap5.js' %}"></script>
+    <script src="{% static 'invoice/assets/vendor/libs/@form-validation/auto-focus.js' %}"></script>
+
+
+    <script src="{% static 'invoice/assets/js/main.js' %}"></script>
+
+    <!-- Page JS -->
+    <script src="{% static 'invoice/assets/js/tables-datatables-basic.js' %}"></script>
+
+
+
+  </body>
+</html>

@@ -1,0 +1,104 @@
+{% extends 'invoice/base.html' %}
+
+{% block content %}
+<div class="layout-page">
+    <!-- Navbar -->
+    {% include 'userauth/logout_layout.html' %}
+    <!-- / Navbar -->
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+        <!-- Content -->
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row invoice-preview">
+                <!-- Invoice -->
+                <div class="col-xl-9 col-md-8 col-12 mb-md-0 mb-6">
+                    <div class="card invoice-preview-card p-sm-12 p-6" id="invoiceContent">
+                        <div class="table-responsive border border-bottom-0 border-top-0 rounded">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-nowrap text-heading"></td>
+                                        <td class="text-nowrap"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-4 col-12 invoice-actions">
+                    <div class="card">
+                        <div class="card-body">
+                            <button class="btn btn-primary d-grid w-100 mb-4" data-bs-toggle="offcanvas" data-bs-target="#sendInvoiceOffcanvas">
+                                <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="ti ti-send ti-xs me-2"></i>Send Message</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="offcanvas offcanvas-end" id="sendInvoiceOffcanvas" aria-hidden="true">
+                <div class="offcanvas-header mb-6 border-bottom">
+                    <h5 class="offcanvas-title">Send Invoice</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body pt-0 flex-grow-1">
+                    <form id="sendInvoiceForm">
+                        <div class="mb-6">
+                            <label for="invoice-from" class="form-label">From</label>
+                            <input type="text" class="form-control" id="invoice-from"  placeholder="customer" />
+                        </div>
+                        <div class="mb-6">
+                            <label for="invoice-to" class="form-label">To</label>
+                            <input type="text" class="form-control" id="invoice-to" placeholder="client@email.com" />
+                        </div>
+                        <div class="mb-6">
+                            <label for="invoice-subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="invoice-subject" placeholder="Invoice regarding goods" />
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" name="message" id="message" cols="3" rows="8">
+
+                            </textarea>
+                        </div>
+                        <div id="sendStatus" class="mb-3" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Sending...</span>
+                            </div>
+                            <span class="ms-2">Sending...</span>
+                        </div>
+                        <div id="sendSuccess" class="alert alert-success mb-3" style="display: none;">
+                            Email sent successfully!
+                        </div>
+                        <div class="mb-6 d-flex flex-wrap">
+                            <button type="button" id="sendButton" class="btn btn-primary me-4" >Send</button>
+                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /Send Invoice Sidebar -->
+            <!-- /Offcanvas -->
+        </div>
+        <!-- / Content -->
+
+        <div class="content-backdrop fade"></div>
+    </div>
+    <!-- Content wrapper -->
+</div>
+<!-- / Layout page -->
+
+{% endblock %}

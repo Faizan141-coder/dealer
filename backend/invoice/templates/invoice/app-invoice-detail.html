@@ -1,0 +1,374 @@
+{% extends 'invoice/base.html' %}
+
+{% block content %}
+<div class="layout-page">
+    <!-- Navbar -->
+    {% include 'userauth/logout_layout.html' %}
+    <!-- / Navbar -->
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+        <!-- Content -->
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row invoice-preview">
+                <!-- Invoice -->
+                <div class="col-xl-9 col-md-8 col-12 mb-md-0 mb-6">
+                    <div class="card invoice-preview-card p-sm-12 p-6" id="invoiceContent">
+                        <div class="card-body invoice-preview-header rounded">
+                            <div class="d-flex justify-content-between flex-xl-row flex-md-column flex-sm-row flex-column">
+                                <div class="mb-xl-0 mb-6 text-heading">
+                                    <div class="d-flex svg-illustration mb-6 gap-2 align-items-center">
+                                        <div class="app-brand-logo demo">
+                                            LOGO Here
+                                        </div>
+                                        <span class="app-brand-text fw-bold fs-4 ms-50"> Logo </span>
+                                    </div>
+                                    <p class="mb-2">Office 123, 450 XYZ Street</p>
+                                    <p class="mb-2">ABC County, CA 91905, USA</p>
+                                    <p class="mb-0">+1 (123) 456 7891, +1 (111) 222 333</p>
+                                </div>
+                                <div>
+                                    <h5 class="mb-6">Invoice #{{ invoice.number }}</h5>
+                                    <div class="mb-1 text-heading">
+                                        <span>Date Issued:</span>
+                                        <span>{{ invoice.date_created }}</span>
+                                    </div>
+                                    <div class="text-heading">
+                                        <span>Date Due:</span>
+                                        <span>{{ invoice.dueDate }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body px-0">
+                            <div class="row">
+                                <div class="col-xl-6 col-md-12 col-sm-5 col-12 mb-xl-0 mb-md-6 mb-sm-0 mb-6">
+                                    <h6>Invoice To:</h6>
+                                    <p class="mb-1">{{ invoice.client.full_name }}</p>
+                                    <p class="mb-1">{{ invoice.client.email }}</p>
+                                    <p class="mb-0">{{ invoice.client.phone }}</p>
+                                </div>
+                                <div class="col-xl-6 col-md-12 col-sm-7 col-12">
+                                    <h6>Bill Address:</h6>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-medium">{{ invoice.client.profile.address }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive border border-bottom-0 border-top-0 rounded">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Quantity</th>
+                                        <th>Address</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in invoice.order.loads.all %}
+                                    <tr>
+                                        <td class="text-nowrap text-heading">{{ item.quantity }}</td>
+                                        <td class="text-nowrap">{{ item.address }}</td>
+                                        <td>{{ item.date }}</td>
+                                        <td>{{ item.time }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Invoice -->
+
+                <!-- Invoice Actions -->
+                <div class="col-xl-3 col-md-4 col-12 invoice-actions">
+                    <div class="card">
+                        <div class="card-body">
+                            <button class="btn btn-primary d-grid w-100 mb-4" data-bs-toggle="offcanvas" data-bs-target="#sendInvoiceOffcanvas">
+                                <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="ti ti-send ti-xs me-2"></i>Send Invoice</span>
+                            </button>
+{#                            <button class="btn btn-secondary d-grid w-100 mb-4" data-bs-toggle="offcanvas" data-bs-target="#sendSMSOffcanvas">#}
+{#                                <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="ti ti-send ti-xs me-2"></i>Send SMS</span>#}
+{#                            </button>#}
+                            <button class="btn btn-label-secondary d-grid w-100 mb-4" onclick="downloadInvoice()">Download</button>
+                            <div class="d-flex mb-4">
+                                <button class="btn btn-label-secondary d-grid w-100 me-4" onclick="printInvoice()">Print</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Invoice Actions -->
+            </div>
+
+            <!-- Offcanvas -->
+            <!-- Send Invoice Sidebar -->
+            <div class="offcanvas offcanvas-end" id="sendInvoiceOffcanvas" aria-hidden="true">
+                <div class="offcanvas-header mb-6 border-bottom">
+                    <h5 class="offcanvas-title">Send Invoice</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body pt-0 flex-grow-1">
+                    <form id="sendInvoiceForm">
+                        <div class="mb-6">
+                            <label for="invoice-from" class="form-label">From</label>
+                            <input type="text" class="form-control" id="invoice-from" value="app@invoice.com" placeholder="company@email.com" />
+                        </div>
+                        <div class="mb-6">
+                            <label for="invoice-to" class="form-label">To</label>
+                            <input type="text" class="form-control" id="invoice-to" value="{{ invoice.client.email }}" placeholder="client@email.com" />
+                        </div>
+                        <div class="mb-6">
+                            <label for="invoice-subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="invoice-subject" value="Invoice of loads order" placeholder="Invoice regarding goods" />
+                        </div>
+                        <div class="mb-6">
+                            <label for="invoice-message" class="form-label">Message</label>
+        <textarea class="form-control" name="sms-message" id="sms-message" cols="3" rows="8" style="text-align: left; padding-left: 10px;">
+Dear {{ invoice.client.full_name }},
+Thank you for your business, always a pleasure to work with you!
+We have generated a new invoice. Please find attached order invoice</textarea>
+                        </div>
+                        <div class="mb-6">
+                            <span class="badge bg-label-primary">
+                                <i class="ti ti-link ti-xs"></i>
+                                <span class="align-middle">Invoice Attached</span>
+                            </span>
+                        </div>
+                        <div id="sendStatus" class="mb-3" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Sending...</span>
+                            </div>
+                            <span class="ms-2">Sending...</span>
+                        </div>
+                        <div id="sendSuccess" class="alert alert-success mb-3" style="display: none;">
+                            Email sent successfully!
+                        </div>
+                        <div class="mb-6 d-flex flex-wrap">
+                            <button type="button" id="sendButton" class="btn btn-primary me-4" onclick="sendInvoice()">Send</button>
+                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /Send Invoice Sidebar -->
+
+            <!-- Send SMS Sidebar -->
+            <div class="offcanvas offcanvas-end" id="sendSMSOffcanvas" aria-hidden="true">
+                <div class="offcanvas-header mb-6 border-bottom">
+                    <h5 class="offcanvas-title">Send SMS</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body pt-0 flex-grow-1">
+                    <form id="sendSMSForm">
+                        <div class="mb-6">
+                            <label for="sms-to" class="form-label">To</label>
+                            <input type="text" class="form-control" id="sms-to" name="user-phone" value="{{ invoice.client.phone }}" readonly />
+                        </div>
+                        <div class="mb-6">
+                            <label for="sms-message" class="form-label">Message</label>
+                            <textarea class="form-control" name="sms-message" id="sms-message" cols="3" rows="8" style="text-align: left; padding-left: 10px;">
+                        Dear {{ invoice.client.full_name }}
+                        🔷Pickup:
+                        🔷Delivery Address:
+                        🔷Loading PIN:
+                        🔷Time of Delivery:
+                            </textarea>
+                        </div>
+                        <div id="smsStatus" class="mb-3" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Sending...</span>
+                            </div>
+                            <span class="ms-2">Sending...</span>
+                        </div>
+                        <div id="smsSuccess" class="alert alert-success mb-3" style="display: none;">
+                            SMS sent successfully!
+                        </div>
+                        <div class="mb-6 d-flex flex-wrap">
+                            <button type="button" id="sendSMSButton" class="btn btn-primary me-4" onclick="sendSMS()">Send SMS</button>
+                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /Send SMS Sidebar -->
+            <!-- /Offcanvas -->
+        </div>
+        <!-- / Content -->
+
+        <div class="content-backdrop fade"></div>
+    </div>
+    <!-- Content wrapper -->
+</div>
+<!-- / Layout page -->
+
+<script>
+function sendInvoice() {
+    const sendButton = document.getElementById('sendButton');
+    const sendStatus = document.getElementById('sendStatus');
+    const sendSuccess = document.getElementById('sendSuccess');
+
+    // Disable the send button and show the sending status
+    sendButton.disabled = true;
+    sendStatus.style.display = 'block';
+    sendSuccess.style.display = 'none';
+
+    const from = document.getElementById('invoice-from').value;
+    const to = document.getElementById('invoice-to').value;
+    const subject = document.getElementById('invoice-subject').value;
+    const message = document.getElementById('invoice-message').value;
+    const invoiceId = '{{ invoice.id }}';
+
+    fetch('/invoice/send-invoice/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            from: from,
+            to: to,
+            subject: subject,
+            message: message,
+            invoiceId: invoiceId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Hide sending status and show success message
+            sendStatus.style.display = 'none';
+            sendSuccess.style.display = 'block';
+
+            // Close the offcanvas after a short delay
+            setTimeout(() => {
+                var offcanvasElement = document.getElementById('sendInvoiceOffcanvas');
+                var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                offcanvas.hide();
+            }, 2000);
+        } else {
+            console.log("Error", data);
+            alert('Failed to send invoice: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while sending the invoice.');
+    })
+    .finally(() => {
+        // Re-enable the send button
+        sendButton.disabled = false;
+        sendStatus.style.display = 'none';
+    });
+}
+
+// Function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function printInvoice() {
+    const invoiceContent = document.getElementById('invoiceContent');
+    const printWindow = window.open('', '', 'height=400,width=800');
+    printWindow.document.write('<html><head><title>Print Invoice</title>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(invoiceContent.innerHTML);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function downloadInvoice() {
+    const invoiceContent = document.getElementById('invoiceContent');
+    html2canvas(invoiceContent, {
+        scrollY: -window.scrollY,
+        useCORS: true,
+        logging: true,
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'pt', 'a4');
+        const imgWidth = 595.28; // A4 width in pt
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('invoice.pdf');
+    });
+}
+
+
+function sendSMS() {
+    const sendButton = document.getElementById('sendSMSButton');
+    const smsStatus = document.getElementById('smsStatus');
+    const smsSuccess = document.getElementById('smsSuccess');
+
+    // Disable the send button and show the sending status
+    sendButton.disabled = true;
+    smsStatus.style.display = 'block';
+    smsSuccess.style.display = 'none';
+
+    const message = document.getElementById('sms-message').value;
+    const invoiceId = '{{ invoice.id }}';
+
+    fetch('/invoice/{{ invoice.id }}/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            message: message,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Hide sending status and show success message
+            smsStatus.style.display = 'none';
+            smsSuccess.style.display = 'block';
+
+            // Close the offcanvas after a short delay
+            setTimeout(() => {
+                var offcanvasElement = document.getElementById('sendSMSOffcanvas');
+                var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                offcanvas.hide();
+            }, 2000);
+        } else {
+            console.log("Error", data);
+            alert('Failed to send SMS: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while sending the SMS.');
+    })
+    .finally(() => {
+        // Re-enable the send button
+        sendButton.disabled = false;
+        smsStatus.style.display = 'none';
+    });
+}
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+
+{% endblock %}
