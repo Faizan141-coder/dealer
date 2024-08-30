@@ -16,7 +16,7 @@ export default function ForgotPassForm() {
     <div className="flex flex-col items-center justify-center h-full">
       <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle className="text-2xl">Forgot Password</CardTitle>
+          <CardTitle className="text-2xl">Reset Password</CardTitle>
           <CardDescription>
             Enter your email below to reset account password
           </CardDescription>
