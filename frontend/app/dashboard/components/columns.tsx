@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { InvoiceModal } from "@/components/modals/invoice-modal";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 export type PlaceOrderColumn = {
   id: string;
@@ -106,6 +107,9 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       const [loading, setLoading] = useState(false);
       const [supplierUsername, setSupplierUsername] = useState("");
       const token = Cookies.get("authToken");
+      const [invoiceData, setInvoiceData] = useState({});
+
+      const status = row.getValue("status") as string;
 
       const handleOpenModal = () => {
         setAddModalOpen(true);
@@ -139,13 +143,16 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
           }
 
           const data = await response.json();
-          console.log(data);
+          console.log(data.invoice);
+          setInvoiceData(data.invoice);
 
           if (response.status === 201) {
+            toast.success("Invoice generated successfully");
             console.log("Invoice generated successfully");
           }
         } catch (error: any) {
-          console.error("Invalid email or password");
+          toast.error("Failed to generate invoice");
+          console.error("supplier id not provided", error.message);
         } finally {
           setLoading(false);
         }
@@ -154,14 +161,17 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
         setAddModalOpen(false);
       };
 
+      console.log("Invoice Data:", invoiceData);
+
       return (
         <>
-          <Button onClick={handleOpenModal}>Invoice</Button>
+          <Button onClick={handleOpenModal} disabled={status === "Pending with Supplier"}>Invoice</Button>
           <InvoiceModal
             isOpen={addModalOpen}
             onClose={() => setAddModalOpen(false)}
             onConfirm={handleConfirm}
             loading={loading}
+            invoiceData={invoiceData}
             productId={row.original.id}
             supplierUsername={supplierUsername} // Pass the state
             setSupplierUsername={setSupplierUsername} // Pass the state setter
