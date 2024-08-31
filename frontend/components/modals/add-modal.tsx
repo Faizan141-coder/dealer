@@ -47,7 +47,7 @@ export const AddModal: React.FC<AddModalProps> = ({
   setDealerUsername,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [dealers, setDealers] = useState<{ value: string; label: string }[]>([]);
+  const [dealers, setDealers] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const token = Cookies.get("authToken");
 
@@ -72,12 +72,7 @@ export const AddModal: React.FC<AddModalProps> = ({
 
       if (response.status === 200) {
         const data = await response.json();
-       
-        const dealers = data.map((dealer: any) => ({
-          value: dealer.username,
-          label: dealer.username,
-        }))
-        setDealers(data);
+        setDealers(data.dealers); // Update state with fetched dealers
       } else {
         setError("Failed to fetch dealers.");
       }
@@ -180,7 +175,14 @@ export const AddModal: React.FC<AddModalProps> = ({
             </div>
             <div className="mt-5">
               <SingleCombobox
-                items={dealers} // Use the state variable for dealers
+                items={
+                  dealers.length > 0
+                    ? dealers.map((dealer) => ({
+                        value: dealer,
+                        label: dealer,
+                      }))
+                    : []
+                } 
                 itemText="Dealer"
                 nothingFoundText="No Dealers Found."
                 customWidth="w-[190px]"
@@ -201,7 +203,8 @@ export const AddModal: React.FC<AddModalProps> = ({
           <SendHorizontal color="#fff" className="h-4 w-4" />
         </Button>
       </div>
-      {error && <p className="text-red-500 mt-2">{error}</p>} {/* Display error message */}
+      {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
+      {/* Display error message */}
     </Modal>
   );
 };
