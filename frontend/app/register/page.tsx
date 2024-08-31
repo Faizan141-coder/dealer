@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");
@@ -30,6 +31,8 @@ export default function SignupForm() {
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
   const [role, setRole] = useState("client");
+
+  const router = useRouter()
 
   const handleRegister = async () => {
     setLoading(true);
@@ -113,6 +116,7 @@ export default function SignupForm() {
       if (response.status === 201) {
         toast.success("User registered successfully");
         const data = await response.json();
+        router.push('/')
       }
     } catch (error: any) {
       console.error("Invalid email or password");

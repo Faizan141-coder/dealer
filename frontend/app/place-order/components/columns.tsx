@@ -33,7 +33,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     accessorKey: "product_type",
     header: "Product Type",
     cell: ({ row }) => {
-      const type = row.getValue("product_type") || false;
+      const type = row.getValue("product_type") as string;
 
       return (
         <Badge
@@ -67,27 +67,42 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       );
     },
     cell: ({ row }) => {
-      const status = row.getValue("status") || false;
+      const status = row.getValue("status") as string; // Get the exact status from backend
 
       return (
         <Badge
           className={cn(
-            status === "pending"
+            status.toLowerCase().includes("pending")
+              ? "bg-yellow-500 text-white"
+              : status.toLowerCase().includes("cancelled")
               ? "bg-red-500 text-white"
-              : "bg-green-500 text-white"
+              : status.toLowerCase().includes("confirmed")
+              ? "bg-blue-500 text-white"
+              : status.toLowerCase().includes("delivered")
+              ? "bg-green-500 text-white"
+              : "bg-gray-500 text-white" // Default color if none of the keywords match
           )}
         >
-          {/* 
-          pending with dealer
-          confirmed by dealer
-          pending with supplier
-          confirmed by supplier
-          delivered
-          cancelled
-          */}
-          {status === "pending" ? "Pending" : "Delivered"}
+          {status} {/* Display the exact status text */}
         </Badge>
       );
     },
-  }
+  },
+  // add invoice button here
+  // {
+  //   accessorKey: "invoice",
+  //   header: "Invoice",
+  //   cell: ({ row }) => {
+  //     return (
+  //       <Button
+  //         variant="outline"
+  //         onClick={() => {
+  //           // Add the logic to open the invoice modal here
+  //         }}
+  //       >
+  //         Invoice
+  //       </Button>
+  //     );
+  //   },
+  // },
 ];

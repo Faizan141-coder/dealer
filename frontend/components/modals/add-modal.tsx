@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CalendarIcon, SendHorizontal } from "lucide-react";
-import { format } from "date-fns"; // Import format from date-fns
+import { format } from "date-fns";
 
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -10,23 +10,23 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
+import { SingleCombobox } from "../ui/combo";
+import Cookies from "js-cookie";
 
 interface AddModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (data: any) => void; // Accepting the data to be sent
+  onConfirm: (data: any) => void;
   loading: boolean;
   productName: string;
   productType: string;
   quantity: number;
   deliveryDate: Date;
-  // address: string;
   dealerUsername: string;
   setProductName: React.Dispatch<React.SetStateAction<string>>;
   setProductType: React.Dispatch<React.SetStateAction<string>>;
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
   setDeliveryDate: React.Dispatch<React.SetStateAction<Date>>;
-  // setAddress: React.Dispatch<React.SetStateAction<string>>;
   setDealerUsername: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -39,42 +39,74 @@ export const AddModal: React.FC<AddModalProps> = ({
   productType,
   quantity,
   deliveryDate,
-  // address,
   dealerUsername,
   setProductName,
   setProductType,
   setQuantity,
   setDeliveryDate,
-  // setAddress,
   setDealerUsername,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [dealers, setDealers] = useState<{ value: string; label: string }[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const token = Cookies.get("authToken");
+
+  console.log("Token:", token);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    if (isOpen) {
+      getDealers(); // Fetch dealers when modal is opened
+    }
+  }, [isOpen]);
+
+  const getDealers = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/get-all-dealers/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+       
+        const dealers = data.map((dealer: any) => ({
+          value: dealer.username,
+          label: dealer.username,
+        }))
+        setDealers(data);
+      } else {
+        setError("Failed to fetch dealers.");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching dealers.");
+    }
+  };
+
+  console.log("Dealers:", dealers);
 
   if (!isMounted) {
     return null;
   }
 
-  // Function to handle the confirmation and data submission
   const handleConfirm = () => {
     const formattedDate = deliveryDate
       ? format(deliveryDate, "yyyy-MM-dd")
-      : ""; // Format date as yyyy-MM-dd
+      : "";
 
     const requestData = {
       product_name: productName,
       product_type: productType,
       quantity: quantity,
-      delivery_date: formattedDate, // Use the formatted date
-      // delivery_address: address,
+      delivery_date: formattedDate,
       dealer_username: dealerUsername,
     };
 
     console.log("Request Data:", requestData);
-    onConfirm(requestData); // Pass the data to the onConfirm function
+    onConfirm(requestData);
   };
 
   return (
@@ -108,22 +140,12 @@ export const AddModal: React.FC<AddModalProps> = ({
             </select>
           </div>
           <div className="mt-5">
-            <Input
-              id="quantity"
-              value={quantity}
-              type="number"
-              className="focus:ring-black"
-              onChange={(e) => setQuantity(parseInt(e.target.value))}
-              placeholder="Add a quantity"
-            />
-          </div>
-          <div className="mt-5">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-[280px] justify-start text-left font-normal",
+                    "w-full justify-start text-left font-normal",
                     !deliveryDate && "text-muted-foreground"
                   )}
                 >
@@ -145,25 +167,27 @@ export const AddModal: React.FC<AddModalProps> = ({
               </PopoverContent>
             </Popover>
           </div>
-          {/* <div className="mt-5">
-            <Input
-              id="delivery_address"
-              value={address}
-              type="text"
-              className="focus:ring-black"
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Add address"
-            />
-          </div> */}
-          <div className="mt-5">
-            <select
-              className="w-full px-3 py-2 border bg-white rounded-lg placeholder:text-gray-200 focus:outline-black border-gray-200"
-              value={dealerUsername}
-              onChange={(e) => setDealerUsername(e.target.value)}
-            >
-              <option>Select Dealer</option>
-              <option value="dealer">Dealer</option>
-            </select>
+          <div className="flex space-x-2">
+            <div className="mt-5">
+              <Input
+                id="quantity"
+                value={quantity}
+                type="number"
+                className="focus:ring-black"
+                onChange={(e) => setQuantity(parseInt(e.target.value))}
+                placeholder="Add a quantity"
+              />
+            </div>
+            <div className="mt-5">
+              <SingleCombobox
+                items={dealers} // Use the state variable for dealers
+                itemText="Dealer"
+                nothingFoundText="No Dealers Found."
+                customWidth="w-[190px]"
+                defaultValue={dealerUsername}
+                setCurrentItem={setDealerUsername}
+              />
+            </div>
           </div>
         </div>
         <Button
@@ -171,12 +195,13 @@ export const AddModal: React.FC<AddModalProps> = ({
           className="bg-green-500 focus:ring-green-500 text-white"
           type="submit"
           size="sm"
-          onClick={handleConfirm} // Updated to handleConfirm to use formatted date
+          onClick={handleConfirm}
         >
           <span className="sr-only">Send</span>
           <SendHorizontal color="#fff" className="h-4 w-4" />
         </Button>
       </div>
+      {error && <p className="text-red-500 mt-2">{error}</p>} {/* Display error message */}
     </Modal>
   );
 };
