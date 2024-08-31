@@ -30,12 +30,12 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
   const token = Cookies.get("authToken");
   // console.log("Token: ", token);
 
-  console.log("Product Name: ", productName);
-  console.log("Product Type: ", productType);
-  console.log("Quantity: ", quantity);
-  console.log("Delivery Date: ", deliveryDate);
+  // console.log("Product Name: ", productName);
+  // console.log("Product Type: ", productType);
+  // console.log("Quantity: ", quantity);
+  // console.log("Delivery Date: ", deliveryDate);
   // console.log("Address: ", address);
-  console.log("Dealer Username: ", dealerUsername);
+  // console.log("Dealer Username: ", dealerUsername);
 
   const onConfirm = async () => {
     setLoading(true);

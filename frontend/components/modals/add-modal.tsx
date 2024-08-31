@@ -51,7 +51,7 @@ export const AddModal: React.FC<AddModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const token = Cookies.get("authToken");
 
-  console.log("Token:", token);
+  // console.log("Token:", token);
 
   useEffect(() => {
     setIsMounted(true);
@@ -81,7 +81,7 @@ export const AddModal: React.FC<AddModalProps> = ({
     }
   };
 
-  console.log("Dealers:", dealers);
+  // console.log("Dealers:", dealers);
 
   if (!isMounted) {
     return null;
