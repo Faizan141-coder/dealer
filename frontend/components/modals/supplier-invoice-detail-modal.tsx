@@ -7,7 +7,7 @@ import { Modal } from "../ui/modal";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
-interface InvoiceDetailModalProps {
+interface SupplierInvoiceDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (data: any) => void;
@@ -15,17 +15,15 @@ interface InvoiceDetailModalProps {
   invoiceData: any;
   product_reference_id: string;
   id: string;
-  supplier_username: string;
 }
 
-export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
+export const SupplierInvoiceDetailModal: React.FC<SupplierInvoiceDetailModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
   loading,
   invoiceData,
   product_reference_id,
-  supplier_username,
   id,
 }) => {
   const token = Cookies.get("authToken");
@@ -34,7 +32,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
   const handleConfirm = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/assign-order-to-supplier/`,
+        `http://127.0.0.1:8000/confirm-order/`,
         {
           method: "POST",
           headers: {
@@ -44,23 +42,24 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
           body: JSON.stringify({
             product_id: product_reference_id,
             invoice_id: id,
-            supplier_username: supplier_username,
           }),
         }
       );
 
       const data = await response.json();
-      //   console.log(data.invoice);
       router.refresh();
 
       if (response.status === 201) {
         console.log("Invoice generated successfully");
       }
+
+      console.log("Invoice Data1 :", invoiceData);
     } catch (error: any) {
       console.error("supplier id not provided", error.message);
-    } finally {
     }
   };
+
+  const currentInvoiceData = invoiceData
 
   return (
     <Modal
@@ -71,36 +70,36 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
     >
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label>Name</Label>
-          <Input value={invoiceData.product_name} disabled />
-        </div>
-        <div>
-          <Label>Type</Label>
-          <Input value={invoiceData.product_type} disabled />
-        </div>
-        <div>
-          <Label>Quantity</Label>
-          <Input value={invoiceData.product_quantity} disabled />
-        </div>
-        <div>
-          <Label>Assigned To</Label>
-          <Input value={invoiceData.assigned_to} disabled />
+          <Label>Access Code</Label>
+          <Input value={currentInvoiceData?.access_code ?? ''} disabled />
         </div>
         <div>
           <Label>Client Name</Label>
-          <Input value={invoiceData.client_name} disabled />
+          <Input value={currentInvoiceData?.client_name ?? ''} disabled />
+        </div>
+        <div>
+          <Label>Pickup Address</Label>
+          <Input value={currentInvoiceData?.pickup_address ?? ''} disabled />
+        </div>
+        <div>
+          <Label>Quantity</Label>
+          <Input value={currentInvoiceData?.product_quantity ?? ''} disabled />
+        </div>
+        <div>
+          <Label>Price</Label>
+          <Input value={currentInvoiceData?.price ?? ''} disabled />
+        </div>
+        <div>
+          <Label>Client Name</Label>
+          <Input value={currentInvoiceData?.client_name ?? ''} disabled />
         </div>
         <div>
           <Label>Client Address</Label>
-          <Input value={invoiceData.client_address} disabled />
+          <Input value={currentInvoiceData?.client_address ?? ''} disabled />
         </div>
         <div>
-          <Label>Client City</Label>
-          <Input value={invoiceData.client_city} disabled />
-        </div>
-        <div>
-          <Label>Client State</Label>
-          <Input value={invoiceData.client_state} disabled />
+          <Label>Client Phone</Label>
+          <Input value={currentInvoiceData?.client_phone ?? ''} disabled />
         </div>
       </div>
       <div className="flex justify-end mt-8 space-x-3">
