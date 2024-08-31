@@ -16,7 +16,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-export default function SignupForm() {
+export default function SupplierRegistrationForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,8 @@ export default function SignupForm() {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
-  const [role, setRole] = useState("client");
+  const [role, setRole] = useState("supplier");
+  const [priceChargedPerTon, setPriceChargedPerTon] = useState("");
 
   const router = useRouter();
 
@@ -56,56 +57,74 @@ export default function SignupForm() {
           city,
           zip,
           address,
+          price_charged_per_ton: priceChargedPerTon,
           role,
         }),
       });
 
       if (!email) {
+        toast.error("Email is required");
         throw new Error("Email is required");
       }
 
       if (!password) {
+        toast.error("Password is required");
         throw new Error("Password is required");
       }
 
       if (!username) {
+        toast.error("Username is required");
         throw new Error("Username is required");
       }
 
       if (!firstName) {
+        toast.error("First name is required");
         throw new Error("First name is required");
       }
 
       if (!lastName) {
+        toast.error("Last name is required");
         throw new Error("Last name is required");
       }
 
       if (!phone) {
+        toast.error("Phone is required");
         throw new Error("Phone is required");
       }
 
       if (!address) {
+        toast.error("Address is required");
         throw new Error("Address is required");
       }
 
       if (!companyName) {
+        toast.error("Company name is required");
         throw new Error("Company name is required");
       }
 
       if (!country) {
+        toast.error("Country is required");
         throw new Error("Country is required");
       }
 
       if (!state) {
+        toast.error("State is required");
         throw new Error("State is required");
       }
 
       if (!city) {
+        toast.error("City is required");
         throw new Error("City is required");
       }
 
       if (!zip) {
+        toast.error("Zip is required");
         throw new Error("Zip is required");
+      }
+
+      if (!priceChargedPerTon) {
+        toast.error("Price charged per ton is required");
+        throw new Error("Price charged per ton is required");
       }
 
       console.log(
@@ -128,7 +147,7 @@ export default function SignupForm() {
 
       if (response.status === 201) {
         toast.success("User registered successfully");
-        const data = await response.json();
+        // const data = await response.json();
         router.push("/");
       }
     } catch (error: any) {
@@ -142,9 +161,9 @@ export default function SignupForm() {
     <div className="flex flex-col items-center justify-center h-full">
       <Card className="w-full max-w-2xl">
         <CardHeader className="items-center">
-          <CardTitle className="text-xl">Register as User</CardTitle>
+          <CardTitle className="text-xl">Register as Supplier</CardTitle>
           <CardDescription>
-            Enter your information to create user account
+            Enter your information to create supplier account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -157,6 +176,7 @@ export default function SignupForm() {
                   placeholder="johndoe@gmail.com"
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
+                  value={email}
                   required
                 />
               </div>
@@ -167,6 +187,7 @@ export default function SignupForm() {
                   placeholder="John Doe"
                   required
                   onChange={(e) => setUsername(e.target.value)}
+                  value={username}
                 />
               </div>
             </div>
@@ -178,6 +199,7 @@ export default function SignupForm() {
                   placeholder="John"
                   required
                   onChange={(e) => setFirstName(e.target.value)}
+                  value={firstName}
                 />
               </div>
               <div className="grid gap-2">
@@ -187,6 +209,7 @@ export default function SignupForm() {
                   placeholder="Doe"
                   required
                   onChange={(e) => setLastName(e.target.value)}
+                  value={lastName}
                 />
               </div>
             </div>
@@ -202,12 +225,13 @@ export default function SignupForm() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Label htmlFor="country">Country</Label>
                 <Input
-                  id="confirm-password"
-                  placeholder="••••••••"
+                  id="country"
+                  onChange={(e) => setCountry(e.target.value)}
+                  placeholder="United States"
                   required
-                  type="password"
+                  value={country}
                 />
               </div>
             </div>
@@ -219,6 +243,8 @@ export default function SignupForm() {
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="03482051674"
                   required
+                  type="number"
+                  value={phone}
                 />
               </div>
               <div className="grid gap-2">
@@ -228,6 +254,7 @@ export default function SignupForm() {
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="XYZ Limited"
                   required
+                  value={companyName}
                 />
               </div>
             </div>
@@ -239,6 +266,7 @@ export default function SignupForm() {
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Street 12, New York"
                   required
+                  value={address}
                 />
               </div>
               <div className="grid gap-2">
@@ -249,15 +277,7 @@ export default function SignupForm() {
                   onChange={(e) => setZip(e.target.value)}
                   placeholder="42809"
                   required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="country">Country</Label>
-                <Input
-                  id="country"
-                  onChange={(e) => setCountry(e.target.value)}
-                  placeholder="United States"
-                  required
+                  value={zip}
                 />
               </div>
             </div>
@@ -269,6 +289,7 @@ export default function SignupForm() {
                   onChange={(e) => setState(e.target.value)}
                   placeholder="Texax"
                   required
+                  value={state}
                 />
               </div>
               <div className="grid gap-2">
@@ -278,8 +299,20 @@ export default function SignupForm() {
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="New York"
                   required
+                  value={city}
                 />
               </div>
+            </div>
+            <div>
+              <Label htmlFor="price-charged-per-ton">Price Charged Per Ton</Label>
+              <Input
+                id="price-charged-per-ton"
+                onChange={(e) => setPriceChargedPerTon(e.target.value)}
+                placeholder="New York"
+                required
+                value={priceChargedPerTon}
+                type="number"
+              />
             </div>
             <Button
               disabled={loading}
