@@ -39,8 +39,8 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
         <Badge
           className={cn(
             type === "type_1"
-              ? "bg-black text-white"
-              : "bg-orange-500 text-white"
+              ? "bg-blue-500 text-white"
+              : "bg-pink-500 text-white"
           )}
         >
           {type === "type_1" ? "Type 1" : "Type 2"}
@@ -73,8 +73,8 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
         <Badge
           className={cn(
             status === "pending"
-              ? "bg-sky-700 text-white"
-              : "bg-green-700 text-white"
+              ? "bg-red-500 text-white"
+              : "bg-green-500 text-white"
           )}
         >
           {/* 
