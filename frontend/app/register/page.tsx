@@ -128,7 +128,7 @@ export default function SignupForm() {
 
       if (response.status === 201) {
         toast.success("User registered successfully");
-        const data = await response.json();
+        // const data = await response.json();
         router.push("/");
       }
     } catch (error: any) {
