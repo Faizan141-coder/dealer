@@ -74,10 +74,18 @@ export default function LoginForm() {
           sameSite: "strict",
         });
 
-        console.log('Token: ', token);
+        console.log("Token: ", token);
         console.log("Role: ", role);
 
-        router.push("/place-order");
+        if (data.role === "dealer") {
+          router.push("/dashboard");
+        }
+        if (data.role === "supplier") {
+          router.push("/supplier-dashboard");
+        }
+        if (data.role === "client") {
+          router.push("/place-order");
+        }
       }
     } catch (error: any) {
       console.error("Invalid email or password");

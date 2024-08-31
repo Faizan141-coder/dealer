@@ -16,6 +16,7 @@ export type PlaceOrderColumn = {
   product_quantity: string;
   client_address: string;
   delivery_date: string;
+  status: string;
 };
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
@@ -31,6 +32,10 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
         </Button>
       );
     },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
   },
   {
     accessorKey: "product_quantity",
@@ -79,9 +84,11 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     cell: ({ row }) => {
       const [addModalOpen, setAddModalOpen] = useState(false);
       const [loading, setLoading] = useState(false);
-      const [supplierUsername, setSupplierUsername] = useState(new Date());
       const token = Cookies.get("authToken");
       const [invoiceData, setInvoiceData] = useState({});
+
+      const status = row.getValue("status") as string;
+      console.log("Status:", status); 
 
       const handleOpenModal = () => {
         console.log("Modal opening...");
@@ -142,7 +149,9 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
 
       return (
         <>
-          <Button onClick={handleOpenModal}>Generate Invoice</Button>
+          <Button onClick={handleOpenModal} disabled={status === "Confirmed"}>
+            Generate Invoice
+          </Button>
           <SupplierInvoiceModal
             isOpen={addModalOpen}
             onClose={() => setAddModalOpen(false)}

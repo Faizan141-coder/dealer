@@ -165,7 +165,12 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
 
       return (
         <>
-          <Button onClick={handleOpenModal} disabled={status === "Pending with Supplier"}>Invoice</Button>
+          <Button
+            onClick={handleOpenModal}
+            disabled={status !== "Pending with Dealer"}
+          >
+            Invoice
+          </Button>
           <InvoiceModal
             isOpen={addModalOpen}
             onClose={() => setAddModalOpen(false)}

@@ -59,6 +59,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
     } catch (error: any) {
       console.error("supplier id not provided", error.message);
     } finally {
+      onClose();
     }
   };
 

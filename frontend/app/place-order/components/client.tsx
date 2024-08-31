@@ -10,6 +10,7 @@ import { AddModal } from "@/components/modals/add-modal";
 import { DataTable } from "@/components/ui/data-table";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
@@ -26,7 +27,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
   const token = Cookies.get("authToken");
   // console.log("Token: ", token);
 
@@ -56,7 +57,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         }),
       });
       console.log("Order placed successfully");
-      router.refresh()
+      router.refresh();
     } catch (error: any) {
       console.error("Error placing order:", error);
     } finally {
@@ -65,17 +66,27 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     }
   };
 
+  const handleLogout = () => {
+    Cookies.remove("authToken");
+    Cookies.remove("userRole");
+    toast.success("Logged out successfully");
+    router.push("/");
+  };
+
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading title="Place Order" description={`Total (${data.length})`} />
-        <div>
+        <div className="flex space-x-2">
           <Button
             onClick={() => setAddModalOpen(true)}
             className="bg-gray-900 text-white text-sm px-4 py-2.5 rounded-md hover:bg-gray-800"
           >
             <Plus size={16} className="inline mr-2" />
             Place Order
+          </Button>
+          <Button onClick={handleLogout} className="ml-4">
+            Logout
           </Button>
         </div>
       </div>

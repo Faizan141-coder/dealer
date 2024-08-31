@@ -6,6 +6,7 @@ import { Input } from "../ui/input";
 import { Modal } from "../ui/modal";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface SupplierInvoiceDetailModalProps {
   isOpen: boolean;
@@ -49,13 +50,16 @@ export const SupplierInvoiceDetailModal: React.FC<SupplierInvoiceDetailModalProp
       const data = await response.json();
       router.refresh();
 
-      if (response.status === 201) {
+      if (response.status === 200) {
+        toast.success("Order Confirmed");
         console.log("Invoice generated successfully");
       }
 
       console.log("Invoice Data1 :", invoiceData);
     } catch (error: any) {
       console.error("supplier id not provided", error.message);
+    } finally {
+      onClose();
     }
   };
 
