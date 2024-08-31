@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -12,31 +12,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const handleLogin = async () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:8000/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
       if (!email) {
         throw new Error("Email is required");
@@ -46,10 +46,14 @@ export default function LoginForm() {
         throw new Error("Password is required");
       }
 
+      console.log("Email: ", email);
+      console.log("Password: ", password);
+
       if (response.status === 200) {
         toast.success("Logged in successfully");
         const data = await response.json();
         const token = data.access;
+        const role = data.role;
 
         // Cookies.set("userRole", data.role, {
         //   expires: 7,
@@ -58,25 +62,25 @@ export default function LoginForm() {
         //   sameSite: "strict",
         // });
 
-        // const expirationDate = new Date(); 
-        // expirationDate.setSeconds(expirationDate.getSeconds() + 1); 
+        // const expirationDate = new Date();
+        // expirationDate.setSeconds(expirationDate.getSeconds() + 1);
 
         // const cookieExpiration = keepSignedIn ? 7 : undefined;
 
-        // Cookies.set("authToken", token, {
-        //   expires: 7,
-        //   path: "/",
-        //   secure: true,
-        //   sameSite: "strict",
-        // });
+        Cookies.set("authToken", token, {
+          expires: 7,
+          path: "/",
+          secure: true,
+          sameSite: "strict",
+        });
 
-        console.log(token);
+        console.log('Token: ', token);
+        console.log("Role: ", role);
 
-      } else {
-        toast.error("Invalid email or password");
+        router.push("/place-order");
       }
     } catch (error: any) {
-      toast.error("Invalid email or password");
+      console.error("Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -100,6 +104,7 @@ export default function LoginForm() {
                 type="email"
                 placeholder="m@example.com"
                 required
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
@@ -112,13 +117,16 @@ export default function LoginForm() {
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
             </div>
             <Button type="submit" className="w-full" onClick={handleLogin}>
               Login
-            </Button>
-            <Button variant="outline" className="w-full">
-              Login with Google
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
