@@ -139,12 +139,12 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
               variant="secondary"
               className={cn(
                 "text-xs flex w-fit",
-                subProduct.product_type === "type 1"
+                subProduct.product_type === "type_1"
                   ? "bg-blue-100 text-blue-800"
                   : "bg-pink-100 text-pink-800"
               )}
             >
-              {subProduct.product_type === "type 1" ? "Type 1" : "Type 2"}
+              {subProduct.product_type === "type_1" ? "Type 1" : "Type 2"}
             </Badge>
           ))}
         </div>
