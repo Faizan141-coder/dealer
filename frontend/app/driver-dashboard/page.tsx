@@ -1,16 +1,14 @@
-import { getAllOrders } from "@/actions/get-all-orders";
 import { PlaceOrderClient } from "./components/client";
 import { cookies } from "next/headers";
+import { getAllInvoices } from "@/actions/get-all-invoices";
 
-const PlaceOrderPage = async () => {
+const DashboardPage = async () => {
   const cookieStore = cookies();
   const token = cookieStore.get("authToken");
   console.log("Token: ", token?.value);
-  const data = await getAllOrders(token?.value);
+  const data = await getAllInvoices(token?.value);
 
-  const orders = data || [];
-
-  console.log("Orders: ", orders);
+  const orders = data?.invoices || [];
 
   return (
     <div className="flex-col">
@@ -21,4 +19,4 @@ const PlaceOrderPage = async () => {
   );
 };
 
-export default PlaceOrderPage;
+export default DashboardPage;

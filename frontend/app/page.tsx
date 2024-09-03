@@ -20,6 +20,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const router = useRouter();
 
@@ -46,26 +47,11 @@ export default function LoginForm() {
         throw new Error("Password is required");
       }
 
-      console.log("Email: ", email);
-      console.log("Password: ", password);
-
       if (response.status === 200) {
         toast.success("Logged in successfully");
         const data = await response.json();
         const token = data.access;
         const role = data.role;
-
-        // Cookies.set("userRole", data.role, {
-        //   expires: 7,
-        //   path: "/",
-        //   secure: true,
-        //   sameSite: "strict",
-        // });
-
-        // const expirationDate = new Date();
-        // expirationDate.setSeconds(expirationDate.getSeconds() + 1);
-
-        // const cookieExpiration = keepSignedIn ? 7 : undefined;
 
         Cookies.set("authToken", token, {
           expires: 7,
@@ -74,24 +60,33 @@ export default function LoginForm() {
           sameSite: "strict",
         });
 
-        console.log("Token: ", token);
-        console.log("Role: ", role);
-
-        if (data.role === "dealer") {
+        if (role === "dealer") {
           router.push("/dashboard");
-        }
-        if (data.role === "supplier") {
+        } else if (role === "supplier") {
           router.push("/supplier-dashboard");
-        }
-        if (data.role === "client") {
+        } else if (role === "client") {
           router.push("/place-order");
+        } else if (role === "trucker") {
+          router.push("/trucker-dashboard");
+        } else if (role === "driver") {
+          router.push("/driver-dashboard");
         }
+      } else {
+        throw new Error("Invalid email or password");
       }
     } catch (error: any) {
-      console.error("Invalid email or password");
+      toast.error(error.message || "An error occurred");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSignupClick = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -139,12 +134,59 @@ export default function LoginForm() {
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="underline">
+            <span
+              onClick={handleSignupClick}
+              className="underline cursor-pointer"
+            >
               Sign up
-            </Link>
+            </span>
           </div>
         </CardContent>
       </Card>
+
+      {/* Modal */}
+      {modalVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Sign up as</h2>
+            <div className="flex flex-col gap-4">
+              <Button
+                onClick={() => router.push("/register")}
+                className="w-full"
+              >
+                Client
+              </Button>
+              <Button
+                onClick={() => router.push("/register-admin")}
+                className="w-full"
+              >
+                Dealer
+              </Button>
+              <Button
+                onClick={() => router.push("/register-supplier")}
+                className="w-full"
+              >
+                Supplier
+              </Button>
+              <Button
+                onClick={() => router.push("/register-trucker")}
+                className="w-full"
+              >
+                Trucker
+              </Button>
+              <Button
+                onClick={() => router.push("/register-driver")}
+                className="w-full"
+              >
+                Driver
+              </Button>
+              <Button onClick={handleCloseModal} className="w-full mt-2">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
