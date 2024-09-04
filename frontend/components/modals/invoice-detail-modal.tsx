@@ -34,7 +34,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
   const handleConfirm = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/assign-order-to-supplier/`,
+        "http://127.0.0.1:8000/assign-order-to-supplier/",
         {
           method: "POST",
           headers: {
@@ -50,14 +50,13 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
       );
 
       const data = await response.json();
-      //   console.log(data.invoice);
       router.refresh();
 
       if (response.status === 201) {
         console.log("Invoice generated successfully");
       }
     } catch (error: any) {
-      console.error("supplier id not provided", error.message);
+      console.error("Error assigning order to supplier:", error.message);
     } finally {
       onClose();
     }
@@ -71,37 +70,33 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
       onClose={onClose}
     >
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label>Name</Label>
-          <Input value={invoiceData.product_name} disabled />
-        </div>
-        <div>
-          <Label>Type</Label>
-          <Input value={invoiceData.product_type} disabled />
-        </div>
-        <div>
-          <Label>Quantity</Label>
-          <Input value={invoiceData.product_quantity} disabled />
-        </div>
+        {invoiceData?.ProductDetail?.sub_products?.map((subProduct: any, index: number) => (
+          <div key={index} className="border p-4 rounded-md mb-4">
+            <div>
+              <Label>Product Name</Label>
+              <Input value={subProduct.product_name || ""} disabled />
+            </div>
+            <div>
+              <Label>Product Type</Label>
+              <Input value={subProduct.product_type || ""} disabled />
+            </div>
+            <div>
+              <Label>Quantity</Label>
+              <Input value={subProduct.quantity || ""} disabled />
+            </div>
+            <div>
+              <Label>Delivery Address</Label>
+              <Input value={subProduct.delivery_address || ""} disabled />
+            </div>
+          </div>
+        ))}
         <div>
           <Label>Assigned To</Label>
-          <Input value={invoiceData.assigned_to} disabled />
+          <Input value={supplier_username} disabled />
         </div>
         <div>
-          <Label>Client Name</Label>
-          <Input value={invoiceData.client_name} disabled />
-        </div>
-        <div>
-          <Label>Client Address</Label>
-          <Input value={invoiceData.client_address} disabled />
-        </div>
-        <div>
-          <Label>Client City</Label>
-          <Input value={invoiceData.client_city} disabled />
-        </div>
-        <div>
-          <Label>Client State</Label>
-          <Input value={invoiceData.client_state} disabled />
+          <Label>Client Username</Label>
+          <Input value={invoiceData?.dealer_username || ""} disabled />
         </div>
       </div>
       <div className="flex justify-end mt-8 space-x-3">

@@ -1,5 +1,3 @@
-"use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
@@ -12,27 +10,37 @@ import toast from "react-hot-toast";
 
 export type PlaceOrderColumn = {
   id: string;
-  product_name: string;
-  product_type: string;
-  quantity: string;
   status: string;
   user_details: {
     username: string;
   };
+  sub_products: {
+    product_name: string;
+    product_type: string;
+    sub_status: string;
+    quantity: string;
+  }[];
   delivery_date: string;
 };
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
-    accessorKey: "product_name",
-    header: ({ column }) => {
+    accessorKey: "sub_products",
+    header: "Sub Products",
+    cell: ({ row }) => {
+      const subProducts = row.original.sub_products;
+
       return (
-        <Button
-          variant="ghost"
-          className="hover:bg-slate-100 transition duration-100"
-        >
-          Product Name
-        </Button>
+        <div>
+          {subProducts.map((subProduct, index) => (
+            <div key={index} className="mb-2 p-2 border rounded">
+              <p><strong>Product Name:</strong> {subProduct.product_name}</p>
+              <p><strong>Product Type:</strong> {subProduct.product_type}</p>
+              <p><strong>Quantity:</strong> {subProduct.quantity}</p>
+              <p><strong>Status:</strong> {subProduct.sub_status}</p>
+            </div>
+          ))}
+        </div>
       );
     },
   },
@@ -41,42 +49,17 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     header: "Client Username",
   },
   {
-    accessorKey: "product_type",
-    header: "Product Type",
-    cell: ({ row }) => {
-      const type = row.getValue("product_type") as string;
-
-      return (
-        <Badge
-          className={cn(
-            type === "type_1"
-              ? "bg-blue-500 text-white"
-              : "bg-pink-500 text-white"
-          )}
-        >
-          {type === "type_1" ? "Type 1" : "Type 2"}
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: "quantity",
-    header: "Quantity",
-  },
-  {
     accessorKey: "status",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="hover:bg-slate-100 transition duration-100"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Status
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="hover:bg-slate-100 transition duration-100"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Status
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
 
@@ -107,7 +90,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       const [loading, setLoading] = useState(false);
       const [supplierUsername, setSupplierUsername] = useState("");
       const token = Cookies.get("authToken");
-      const [invoiceData, setInvoiceData] = useState({});
+      const [invoiceData, setInvoiceData] = useState<any>({});
 
       const status = row.getValue("status") as string;
 
@@ -152,22 +135,19 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
           }
         } catch (error: any) {
           toast.error("Failed to generate invoice");
-          console.error("supplier id not provided", error.message);
+          console.error("Error:", error.message);
         } finally {
           setLoading(false);
         }
 
-        setLoading(false);
         setAddModalOpen(false);
       };
-
-      console.log("Invoice Data:", invoiceData);
 
       return (
         <>
           <Button
             onClick={handleOpenModal}
-            disabled={status !== "Pending with Dealer"}
+            disabled={status !== "Pending with dealer"}
           >
             Invoice
           </Button>
@@ -178,11 +158,12 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
             loading={loading}
             invoiceData={invoiceData}
             productId={row.original.id}
-            supplierUsername={supplierUsername} // Pass the state
-            setSupplierUsername={setSupplierUsername} // Pass the state setter
+            supplierUsername={supplierUsername}
+            setSupplierUsername={setSupplierUsername}
           />
         </>
       );
     },
   },
 ];
+

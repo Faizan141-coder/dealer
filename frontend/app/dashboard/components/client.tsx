@@ -77,24 +77,14 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         </div>
       </div>
       <Separator />
-      <DataTable searchKey="product_name" columns={columns} data={data} />
+      <DataTable searchKey="status" columns={columns} data={data} />
       <AddModal
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}
         onConfirm={onConfirm}
         loading={loading}
-        // address={address}
         dealerUsername={dealerUsername}
-        deliveryDate={deliveryDate}
-        productType={productType}
-        productName={productName}
-        quantity={quantity}
-        // setAddress={setAddress}
         setDealerUsername={setDealerUsername}
-        setDeliveryDate={setDeliveryDate}
-        setProductType={setProductType}
-        setProductName={setProductName}
-        setQuantity={setQuantity}
       />
     </>
   );
