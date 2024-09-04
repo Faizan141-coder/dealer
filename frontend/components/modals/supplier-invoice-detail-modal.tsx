@@ -80,28 +80,8 @@ export const SupplierInvoiceDetailModal: React.FC<SupplierInvoiceDetailModalProp
           <Input value={currentInvoiceData.access_code || ''} disabled />
         </div>
         <div>
-          <Label>Client Name</Label>
-          <Input value={currentInvoiceData.client_name || ''} disabled />
-        </div>
-        <div>
           <Label>Pickup Address</Label>
           <Input value={currentInvoiceData.pickup_address || ''} disabled />
-        </div>
-        <div>
-          <Label>Quantity</Label>
-          <Input value={currentInvoiceData.product_quantity || ''} disabled />
-        </div>
-        <div>
-          <Label>Price</Label>
-          <Input value={currentInvoiceData.price || ''} disabled />
-        </div>
-        <div>
-          <Label>Client Address</Label>
-          <Input value={currentInvoiceData.client_address || ''} disabled />
-        </div>
-        <div>
-          <Label>Client Phone</Label>
-          <Input value={currentInvoiceData.client_phone || ''} disabled />
         </div>
       </div>
       <div className="flex justify-end mt-8 space-x-3">

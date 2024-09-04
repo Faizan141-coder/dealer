@@ -11,6 +11,7 @@ import { DataTable } from "@/components/ui/data-table";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
@@ -72,7 +73,10 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           title="Dealer Dashboard"
           description={`Total (${data.length})`}
         />
-        <div>
+        <div className="space-x-3">
+          <Link href={"/dealer-invoices"}>
+            <Button>Show Invoices</Button>
+          </Link>
           <Button onClick={handleLogout}>Logout</Button>
         </div>
       </div>

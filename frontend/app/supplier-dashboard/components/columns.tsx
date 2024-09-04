@@ -16,6 +16,7 @@ export type PlaceOrderColumn = {
   ProductDetail: {
     status: string;
     sub_products: {
+      id: string;
       product_name: string;
       product_type: string;
       quantity: string;
@@ -86,87 +87,98 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       );
     },
   },
-  {
-    accessorKey: "invoice",
-    header: "Invoice",
-    cell: ({ row }) => {
-      const [addModalOpen, setAddModalOpen] = useState(false);
-      const [loading, setLoading] = useState(false);
-      const token = Cookies.get("authToken");
-      const [invoiceData, setInvoiceData] = useState({});
+    {
+      accessorKey: "invoice",
+      header: "Invoice",
+      cell: ({ row }) => {
+        const [addModalOpen, setAddModalOpen] = useState(false);
+        const [loading, setLoading] = useState(false);
+        const token = Cookies.get("authToken");
+        const [invoiceData, setInvoiceData] = useState({});
 
-      const status = row.getValue("status") as string;
-      console.log("Status:", status);
+        const status = row.getValue("status") as string;
+        console.log("Status:", status);
 
-      const handleOpenModal = () => {
-        console.log("Modal opening...");
-        setAddModalOpen(true);
-      };
+        const handleOpenModal = () => {
+          console.log("Modal opening...");
+          setAddModalOpen(true);
+        };
 
-      const handleConfirm = async () => {
-        setLoading(true);
+        const handleConfirm = async (dates: Record<string, Date>, address: string) => {
+          setLoading(true);
 
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/create-invoice/`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                invoice_id: row.original.id,
-                pickup_date: new Date(),
-              }),
+          // Transform dates object into the desired format
+          const pickupDates = Object.keys(dates).map((key, index) => ({
+            sub_product_id: parseInt(key, 10), // Convert the key to an integer if needed
+            pickup_date: dates[key].toISOString(), // Format the date to ISO string
+          }));
+
+          try {
+            const response = await fetch(
+              `http://127.0.0.1:8000/create-invoice/`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  invoice_id: row.original.id,
+                  pickup_dates: pickupDates,
+                  pickup_address: address,
+                }),
+              }
+            );
+
+            if (!row.original.id) {
+              throw new Error("Product ID is required");
             }
-          );
 
-          if (!row.original.id) {
-            throw new Error("Product ID is required");
+            const data = await response.json();
+            console.log("Full Response Data:", data);
+            console.log("Invoice Data:", data.invoice);
+
+            if (data.invoice) {
+              setInvoiceData(data.invoice);
+            } else {
+              console.error("Invoice data is missing from the response");
+            }
+
+            if (response.status === 201 || response.status === 200) {
+              toast.success("Invoice generated successfully");
+              console.log("Invoice generated successfully");
+            }
+          } catch (error: any) {
+            toast.error("Failed to generate invoice");
+            console.error("Error generating invoice:", error.message);
+          } finally {
+            setLoading(false);
           }
 
-          const data = await response.json();
-          console.log("Full Response Data:", data);
-          console.log("Invoice Data:", data.invoice);
+          setAddModalOpen(false);
+          
+        };
 
-          if (data.invoice) {
-            setInvoiceData(data.invoice);
-          } else {
-            console.error("Invoice data is missing from the response");
-          }
+        // console.log("Invoice Data:", invoiceData);
 
-          if (response.status === 201 || response.status === 200) {
-            toast.success("Invoice generated successfully");
-            console.log("Invoice generated successfully");
-          }
-        } catch (error: any) {
-          toast.error("Failed to generate invoice");
-          console.error("Error generating invoice:", error.message);
-        } finally {
-          setLoading(false);
-        }
-
-        setAddModalOpen(false);
-      };
-
-      console.log("Invoice Data:", invoiceData);
-
-      return (
-        <>
-          <Button onClick={handleOpenModal} disabled={status === "Confirmed"}>
-            Generate Invoice
-          </Button>
-          <SupplierInvoiceModal
-            isOpen={addModalOpen}
-            onClose={() => setAddModalOpen(false)}
-            onConfirm={handleConfirm}
-            loading={loading}
-            invoiceData={invoiceData}
-            productId={row.original.id}
-          />
-        </>
-      );
+        return (
+          <>
+            <Button onClick={handleOpenModal} disabled={status === "Confirmed"}>
+              Generate Invoice
+            </Button>
+            <SupplierInvoiceModal
+              isOpen={addModalOpen}
+              onClose={() => setAddModalOpen(false)}
+              onConfirm={handleConfirm}
+              loading={loading}
+              invoiceData={invoiceData}
+              productId={row.original.id}
+              subProductIds={row.original.ProductDetail.sub_products.map(
+                (subProduct) => subProduct.id
+              )}
+            />
+          </>
+        );
+      },
     },
-  },
 ];
