@@ -30,6 +30,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     useState<SubProduct | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [dealerUsername, setDealerUsername] = useState("");
 
   const router = useRouter();
   const token = Cookies.get("authToken");
@@ -44,6 +45,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          dealer_username: dealerUsername,
           sub_products: subProducts.map((subProduct) => ({
             ...subProduct,
             delivery_date: subProduct.delivery_date.toISOString().split("T")[0], // Format date
@@ -77,6 +79,13 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     setAddModalOpen(true);
   };
 
+  const handleLogout = () => {
+    Cookies.remove("authToken");
+    Cookies.remove("userRole");
+    toast.success("Logged out successfully");
+    router.push("/");
+  };
+
   return (
     <>
       <div className="flex items-center justify-between mb-4">
@@ -101,6 +110,9 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
             className="bg-green-600 text-white text-sm px-5 py-3 rounded-md hover:bg-green-500 disabled:opacity-50"
           >
             {loading ? "Placing Order..." : "Place Order"}
+          </Button>
+          <Button onClick={handleLogout} className="ml-4">
+            Logout
           </Button>
         </div>
       </div>
@@ -141,6 +153,8 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         onConfirm={handleAddSubOrder}
         loading={loading}
         initialSubOrder={selectedSubProduct}
+        dealerUsername={dealerUsername}
+        setDealerUsername={setDealerUsername}
       />
     </>
   );

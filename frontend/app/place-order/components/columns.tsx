@@ -24,6 +24,7 @@ export type PlaceOrderColumn = {
   status: string;
   created_at: string;
   sub_products: SubProduct[];
+  dealer_username: string;
 };
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
