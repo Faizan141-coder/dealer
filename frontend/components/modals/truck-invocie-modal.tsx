@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,7 +6,6 @@ import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { SingleCombobox } from "../ui/combo";
 import Cookies from "js-cookie";
-import { InvoiceDetailModal } from "./invoice-detail-modal";
 import { TruckInvoiceDetailModal } from "./truck-invoice-detail-modal";
 
 interface TruckInvoiceModalProps {
@@ -17,8 +15,9 @@ interface TruckInvoiceModalProps {
   loading: boolean;
   invoiceData: any;
   productId: string;
-  supplierUsername: string;
+  // supplierUsername: string;
   setSupplierUsername: React.Dispatch<React.SetStateAction<string>>;
+  subProductIds: string[];
 }
 
 export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
@@ -28,13 +27,16 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
   loading,
   productId,
   invoiceData,
-  supplierUsername,
+  // supplierUsername,
   setSupplierUsername,
+  subProductIds,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [dealers, setDealers] = useState<string[]>([]);
+  const [selectedDealer, setSelectedDealer] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [InvoiceDetailModalOpen, setInvoiceDetailModalOpen] = useState<boolean>(false);
+  const [InvoiceDetailModalOpen, setInvoiceDetailModalOpen] =
+    useState<boolean>(false);
   const token = Cookies.get("authToken");
 
   useEffect(() => {
@@ -46,17 +48,22 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
 
   const getTruckCompanies = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/get-all-truck-companies/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/get-all-truck-companies/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         const data = await response.json();
         setDealers(data.truck_companies); // Update state with fetched dealers
+        setSupplierUsername(data.truck_companies); // Set initial dealer
+        setSelectedDealer(data.truck_companies[0] || null); // Set initial dealer
       } else {
         setError("Failed to fetch truck companies.");
       }
@@ -70,13 +77,21 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
   }
 
   const handleConfirm = () => {
+    if (!selectedDealer) {
+      setError("Please select a truck company.");
+      return;
+    }
+
     const requestData = {
       product_id: productId,
-      supplier_username: supplierUsername,
+      truck_company_username: selectedDealer,
+      sub_product_ids: subProductIds,
     };
 
+    console.log("Request Data:", requestData);
+
     onConfirm(requestData);
-    setInvoiceDetailModalOpen(true);
+    // setInvoiceDetailModalOpen(true);
   };
 
   return (
@@ -103,7 +118,12 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
                 nothingFoundText="No Truck Companies Found."
                 customWidth="w-full"
                 defaultValue={dealers[0]}
-                setCurrentItem={setSupplierUsername}
+                setCurrentItem={(value) => {
+                  // setSelectedDealer(value);
+                  // if (setSupplierUsername) setSupplierUsername(value);
+                  setSelectedDealer(value as string);
+                  if (setSupplierUsername) setSupplierUsername(value as string);
+                }}
               />
             </div>
           </div>
@@ -119,15 +139,15 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
         </div>
         {error && <p className="text-red-500 mt-2">{error}</p>}
       </Modal>
-      <TruckInvoiceDetailModal 
-        isOpen={InvoiceDetailModalOpen} 
+      <TruckInvoiceDetailModal
+        isOpen={InvoiceDetailModalOpen}
         onClose={() => setInvoiceDetailModalOpen(false)}
         loading={loading}
         onConfirm={onConfirm}
         invoiceData={invoiceData}
         product_reference_id={productId}
         id={invoiceData.id}
-        supplier_username={supplierUsername}
+        supplier_username={selectedDealer || ""}
       />
     </>
   );

@@ -73,6 +73,8 @@ export default function LoginForm() {
           router.push("/trucker-dashboard");
         } else if (role === "driver") {
           router.push("/driver-dashboard");
+        } else if (role === "truck") {
+          router.push("/trucker-dashboard");
         }
       } else {
         throw new Error("Invalid email or password");

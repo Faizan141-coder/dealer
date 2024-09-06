@@ -18,7 +18,9 @@ interface TruckInvoiceDetailModalProps {
   supplier_username: string;
 }
 
-export const TruckInvoiceDetailModal: React.FC<TruckInvoiceDetailModalProps> = ({
+export const TruckInvoiceDetailModal: React.FC<
+  TruckInvoiceDetailModalProps
+> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -43,11 +45,12 @@ export const TruckInvoiceDetailModal: React.FC<TruckInvoiceDetailModalProps> = (
           },
           body: JSON.stringify({
             invoice_id: id,
-            product_id: product_reference_id,
+            // product_id: product_reference_id,
             ProductDetail: {
-              supplier_username: supplier_username,
-
-            }
+              sub_products: {
+                supplier_username: supplier_username,
+              },
+            },
           }),
         }
       );
@@ -73,26 +76,28 @@ export const TruckInvoiceDetailModal: React.FC<TruckInvoiceDetailModalProps> = (
       onClose={onClose}
     >
       <div className="grid grid-cols-2 gap-4">
-        {invoiceData?.ProductDetail?.sub_products?.map((subProduct: any, index: number) => (
-          <div key={index} className="border p-4 rounded-md mb-4">
-            <div>
-              <Label>Product Name</Label>
-              <Input value={subProduct.product_name || ""} disabled />
+        {invoiceData?.ProductDetail?.sub_products?.map(
+          (subProduct: any, index: number) => (
+            <div key={index} className="border p-4 rounded-md mb-4">
+              <div>
+                <Label>Product Name</Label>
+                <Input value={subProduct.product_name || ""} disabled />
+              </div>
+              <div>
+                <Label>Product Type</Label>
+                <Input value={subProduct.product_type || ""} disabled />
+              </div>
+              <div>
+                <Label>Quantity</Label>
+                <Input value={subProduct.quantity || ""} disabled />
+              </div>
+              <div>
+                <Label>Delivery Address</Label>
+                <Input value={subProduct.delivery_address || ""} disabled />
+              </div>
             </div>
-            <div>
-              <Label>Product Type</Label>
-              <Input value={subProduct.product_type || ""} disabled />
-            </div>
-            <div>
-              <Label>Quantity</Label>
-              <Input value={subProduct.quantity || ""} disabled />
-            </div>
-            <div>
-              <Label>Delivery Address</Label>
-              <Input value={subProduct.delivery_address || ""} disabled />
-            </div>
-          </div>
-        ))}
+          )
+        )}
         <div>
           <Label>Assigned To</Label>
           <Input value={supplier_username} disabled />
