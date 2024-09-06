@@ -30,8 +30,8 @@ export default function SupplierRegistrationForm() {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
-  const [role, setRole] = useState("supplier");
-  const [priceChargedPerTon, setPriceChargedPerTon] = useState("");
+  const [role, setRole] = useState("driver");
+  const [truckNoPlate, setTruckNoPlate] = useState("");
 
   const router = useRouter();
 
@@ -57,7 +57,7 @@ export default function SupplierRegistrationForm() {
           city,
           zip,
           address,
-          price_charged_per_ton: priceChargedPerTon,
+          truck_plate_number: truckNoPlate,
           role,
         }),
       });
@@ -122,7 +122,7 @@ export default function SupplierRegistrationForm() {
         throw new Error("Zip is required");
       }
 
-      if (!priceChargedPerTon) {
+      if (!truckNoPlate) {
         toast.error("Price charged per ton is required");
         throw new Error("Price charged per ton is required");
       }
@@ -304,13 +304,13 @@ export default function SupplierRegistrationForm() {
               </div>
             </div>
             <div>
-              <Label htmlFor="price-charged-per-ton">Price Charged Per Ton</Label>
+              <Label htmlFor="price-charged-per-ton">Truck Number Plate</Label>
               <Input
                 id="price-charged-per-ton"
-                onChange={(e) => setPriceChargedPerTon(e.target.value)}
+                onChange={(e) => setTruckNoPlate(e.target.value)}
                 placeholder="New York"
                 required
-                value={priceChargedPerTon}
+                value={truckNoPlate}
                 type="number"
               />
             </div>

@@ -211,7 +211,6 @@
 //   },
 // ];
 
-
 // "use client"
 
 // import { ColumnDef } from "@tanstack/react-table"
@@ -396,47 +395,50 @@
 //   )
 // }
 
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { useState } from "react"
-import Cookies from "js-cookie"
-import toast from "react-hot-toast"
-import { SupplierInvoiceModal } from "@/components/modals/supplier-invoice-modal"
+import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+import { SupplierInvoiceModal } from "@/components/modals/supplier-invoice-modal";
+import { TruckInvoiceModal } from "@/components/modals/truck-invocie-modal";
+import { DriverInvoiceModal } from "@/components/modals/driver-invocie-modal";
 
 export type PlaceOrderColumn = {
-  id: string
-  pickup_address: string
-  pickup_date: string
-  product_name: string
-  product_type: string
-  quantity: string
-  delivery_date: string
-  delivery_address: string
-  client_name: string
-  client_phone_number: string
-  supplier_name: string
-  supplier_phone: string
-  dealer_name: string
-  dealer_phone: string
-}
+  id: string;
+  pickup_address: string;
+  pickup_date: string;
+  product_name: string;
+  product_type: string;
+  quantity: string;
+  delivery_date: string;
+  delivery_address: string;
+  client_name: string;
+  client_phone_number: string;
+  supplier_name: string;
+  supplier_phone: string;
+  dealer_name: string;
+  dealer_phone: string;
+};
 
 // New component to handle invoice generation
 const InvoiceButton = ({ row }: { row: any }) => {
-  const [addModalOpen, setAddModalOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [invoiceData, setInvoiceData] = useState({})
-  const token = Cookies.get("authToken")
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [invoiceData, setInvoiceData] = useState({});
+  const token = Cookies.get("authToken");
+  const [truckCompanyUsername, setTruckCompanyUsername] = useState("");
 
   const handleOpenModal = () => {
-    setAddModalOpen(true)
-  }
+    setAddModalOpen(true);
+  };
 
   const handleConfirm = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await fetch(`http://127.0.0.1:8000/create-invoice/`, {
         method: "POST",
@@ -448,23 +450,23 @@ const InvoiceButton = ({ row }: { row: any }) => {
           invoice_id: row.original.id,
           pickup_date: new Date(),
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
       if (data.invoice) {
-        setInvoiceData(data.invoice)
-        toast.success("Invoice generated successfully")
+        setInvoiceData(data.invoice);
+        toast.success("Invoice generated successfully");
       } else {
-        throw new Error("Invoice data is missing from the response")
+        throw new Error("Invoice data is missing from the response");
       }
     } catch (error: any) {
-      toast.error("Failed to generate invoice")
-      console.error("Error generating invoice:", error.message)
+      toast.error("Failed to generate invoice");
+      console.error("Error generating invoice:", error.message);
     } finally {
-      setLoading(false)
-      setAddModalOpen(false)
+      setLoading(false);
+      setAddModalOpen(false);
     }
-  }
+  };
 
   return (
     <>
@@ -480,15 +482,29 @@ const InvoiceButton = ({ row }: { row: any }) => {
         invoiceData={invoiceData}
         productId={row.original.id}
       /> */}
+      <DriverInvoiceModal
+        isOpen={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onConfirm={() => handleConfirm()}
+        loading={loading}
+        invoiceData={invoiceData}
+        productId={row.original.id}
+        setSupplierUsername={setTruckCompanyUsername}
+        subProductIds={[]}
+      />
     </>
-  )
-}
+  );
+};
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     accessorKey: "pickup_address",
     header: "Pickup Address",
-    cell: ({ row }) => <div className="max-w-[150px] truncate">{row.getValue("pickup_address")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("pickup_address")}
+      </div>
+    ),
   },
   {
     accessorKey: "pickup_date",
@@ -497,29 +513,37 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     accessorKey: "product_name",
     header: "Product Name",
-    cell: ({ row }) => <div className="max-w-[150px] truncate">{row.getValue("product_name")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("product_name")}
+      </div>
+    ),
   },
   {
     accessorKey: "product_type",
     header: "Product Type",
     cell: ({ row }) => {
-      const type = row.getValue("product_type") as string
+      const type = row.getValue("product_type") as string;
       return (
         <Badge
           className={cn(
             "whitespace-nowrap",
-            type === "type_1" ? "bg-blue-500 text-white" : "bg-pink-500 text-white"
+            type === "type_1"
+              ? "bg-blue-500 text-white"
+              : "bg-pink-500 text-white"
           )}
         >
           {type === "type_1" ? "Type 1" : "Type 2"}
         </Badge>
-      )
+      );
     },
   },
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => <div className="text-center">{row.getValue("quantity")}</div>,
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("quantity")}</div>
+    ),
   },
   {
     accessorKey: "delivery_date",
@@ -528,46 +552,67 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     accessorKey: "delivery_address",
     header: "Delivery Address",
-    cell: ({ row }) => <div className="max-w-[150px] truncate">{row.getValue("delivery_address")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("delivery_address")}
+      </div>
+    ),
   },
   {
     accessorKey: "client_name",
     header: "Client Name",
-    cell: ({ row }) => <div className="max-w-[150px] truncate">{row.getValue("client_name")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("client_name")}
+      </div>
+    ),
   },
   {
     accessorKey: "client_phone_number",
     header: "Client Phone",
-    cell: ({ row }) => <div className="whitespace-nowrap">{row.getValue("client_phone_number")}</div>,
+    cell: ({ row }) => (
+      <div className="whitespace-nowrap">
+        {row.getValue("client_phone_number")}
+      </div>
+    ),
   },
   {
     accessorKey: "supplier_name",
     header: "Supplier Name",
-    cell: ({ row }) => <div className="max-w-[150px] truncate">{row.getValue("supplier_name")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("supplier_name")}
+      </div>
+    ),
   },
   {
     accessorKey: "supplier_phone",
     header: "Supplier Phone",
-    cell: ({ row }) => <div className="whitespace-nowrap">{row.getValue("supplier_phone")}</div>,
+    cell: ({ row }) => (
+      <div className="whitespace-nowrap">{row.getValue("supplier_phone")}</div>
+    ),
   },
   {
     accessorKey: "dealer_name",
     header: "Dealer Name",
-    cell: ({ row }) => <div className="max-w-[150px] truncate">{row.getValue("dealer_name")}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("dealer_name")}
+      </div>
+    ),
   },
   {
     accessorKey: "invoice",
     header: "Invoice",
     cell: ({ row }) => <InvoiceButton row={row} />, // Use the new component
   },
-]
+];
 
 export default function Component() {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
-        <thead>
-        </thead>
+        <thead></thead>
         <tbody>
           <tr>
             <td colSpan={columns.length} className="p-2 text-center">
@@ -577,5 +622,5 @@ export default function Component() {
         </tbody>
       </table>
     </div>
-  )
+  );
 }
