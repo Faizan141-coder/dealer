@@ -1,7 +1,5 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import { CalendarIcon, SendHorizontal } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
@@ -16,7 +14,7 @@ import { Input } from "../ui/input";
 interface SupplierInvoiceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (data: any, address: string) => void;
+  onConfirm: (data: any, address: string, time: any) => void;
   loading: boolean;
   invoiceData: any;
   productId: string;
@@ -42,8 +40,15 @@ export const SupplierInvoiceModal: React.FC<SupplierInvoiceModalProps> = ({
       return acc;
     }, {} as Record<string, Date>)
   );
+  const [deliveryTimes, setDeliveryTimes] = useState<Record<string, string>>(
+    subProductIds.reduce((acc, id) => {
+      acc[id] = ""; // Initialize with empty string or another default
+      return acc;
+    }, {} as Record<string, string>)
+  );
   const [address, setAddress] = useState<string>("");
   const token = Cookies.get("authToken");
+
   let count = 0;
 
   useEffect(() => {
@@ -58,15 +63,9 @@ export const SupplierInvoiceModal: React.FC<SupplierInvoiceModalProps> = ({
     console.log("Sub product IDs:", subProductIds);
     console.log("Invoice Data:", invoiceData);
     console.log("Product ID:", productId);
-    // Call the onConfirm function to handle any additional logic needed, such as API calls.
-    // onConfirm({
-    //   product_id: productId,
-    //   date: dates,
-    //   // invoiceData: invoiceData,
-    // });
 
-    onConfirm(dates, address);
-    // Open the detail modal after confirming the action.
+    // onConfirm({ dates, deliveryTimes }, address);
+    onConfirm(dates, address, deliveryTimes);
     setInvoiceDetailModalOpen(true);
   };
 
@@ -81,36 +80,49 @@ export const SupplierInvoiceModal: React.FC<SupplierInvoiceModalProps> = ({
         <div className="flex flex-col items-center justify-center space-y-3">
           {subProductIds.map((id) => (
             <div key={id} className="w-full">
-              <div>
-                <h1 className="mb-2">Order: {++count}</h1>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !dates[id] && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dates[id] ? (
-                        format(dates[id], "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dates[id]}
-                      onSelect={(day) =>
-                        setDates((prev) => ({ ...prev, [id]: day as Date }))
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+              <h1 className="mb-2">Order: {++count}</h1>
+              <div className="flex items-center space-x-2">
+                <div className="w-full">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          " w-full justify-start text-left font-normal",
+                          !dates[id] && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {dates[id] ? (
+                          format(dates[id], "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={dates[id]}
+                        onSelect={(day) =>
+                          setDates((prev) => ({ ...prev, [id]: day as Date }))
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <Input
+                  type="time"
+                  value={deliveryTimes[id]}
+                  onChange={(e) =>
+                    setDeliveryTimes((prev) => ({
+                      ...prev,
+                      [id]: e.target.value,
+                    }))
+                  }
+                  className="w-40"
+                />
               </div>
             </div>
           ))}
