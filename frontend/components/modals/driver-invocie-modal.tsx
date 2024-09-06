@@ -6,7 +6,6 @@ import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { SingleCombobox } from "../ui/combo";
 import Cookies from "js-cookie";
-import { TruckInvoiceDetailModal } from "./truck-invoice-detail-modal";
 
 interface DriverInvoiceModalProps {
   isOpen: boolean;
@@ -14,10 +13,10 @@ interface DriverInvoiceModalProps {
   onConfirm: (data: any) => void;
   loading: boolean;
   invoiceData: any;
-  productId: string;
-  // supplierUsername: string;
   setSupplierUsername: React.Dispatch<React.SetStateAction<string>>;
-  subProductIds: string[];
+  subProductId: string;
+  supplierInvoiceId: string;
+  dealerInvoiceId: string;
 }
 
 export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
@@ -25,11 +24,11 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
   onClose,
   onConfirm,
   loading,
-  productId,
   invoiceData,
-  // supplierUsername,
   setSupplierUsername,
-  subProductIds,
+  subProductId,
+  supplierInvoiceId,
+  dealerInvoiceId,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [dealers, setDealers] = useState<string[]>([]);
@@ -83,9 +82,10 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
     }
 
     const requestData = {
-      product_id: productId,
       truck_company_username: selectedDealer,
-      sub_product_ids: subProductIds,
+      sub_product_ids: subProductId,
+      supplier_invoice_id: supplierInvoiceId,
+      dealer_invoice_id: dealerInvoiceId,
     };
 
     console.log("Request Data:", requestData);
@@ -139,16 +139,6 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
         </div>
         {error && <p className="text-red-500 mt-2">{error}</p>}
       </Modal>
-      <TruckInvoiceDetailModal
-        isOpen={InvoiceDetailModalOpen}
-        onClose={() => setInvoiceDetailModalOpen(false)}
-        loading={loading}
-        onConfirm={onConfirm}
-        invoiceData={invoiceData}
-        product_reference_id={productId}
-        id={invoiceData.id}
-        supplier_username={selectedDealer || ""}
-      />
     </>
   );
 };

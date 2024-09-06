@@ -423,6 +423,9 @@ export type PlaceOrderColumn = {
   supplier_phone: string;
   dealer_name: string;
   dealer_phone: string;
+  supplier_invoice_id: string;
+  dealer_invoice_id: string;
+  sub_product_id: string;
 };
 
 // New component to handle invoice generation
@@ -431,7 +434,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const [loading, setLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState({});
   const token = Cookies.get("authToken");
-  const [truckCompanyUsername, setTruckCompanyUsername] = useState("");
+  const [driverUsername, setDriverUsername] = useState("");
 
   const handleOpenModal = () => {
     setAddModalOpen(true);
@@ -441,7 +444,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://dealer-backend-kz82.vercel.app/create-invoice/`,
+        `https://dealer-backend-kz82.vercel.app/assign-to-driver/`,
         {
           method: "POST",
           headers: {
@@ -449,21 +452,25 @@ const InvoiceButton = ({ row }: { row: any }) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            invoice_id: row.original.id,
-            pickup_date: new Date(),
+            driver_username: driverUsername,
+            sub_product_id: row.original.sub_product_id,
+            supplier_invoice_id: row.original.supplier_invoice_id,
+            dealer_invoice_id: row.original.dealer_invoice_id,
           }),
         }
       );
 
       const data = await response.json();
-      if (data.invoice) {
-        setInvoiceData(data.invoice);
-        toast.success("Invoice generated successfully");
-      } else {
-        throw new Error("Invoice data is missing from the response");
-      }
+
+      console.log(data)
+      // if (data.invoice) {
+      //   setInvoiceData(data.invoice);
+      //   toast.success("Invoice generated successfully");
+      // } else {
+      //   throw new Error("Invoice data is missing from the response");
+      // }
     } catch (error: any) {
-      toast.error("Failed to generate invoice");
+      // toast.error("Failed to generate invoice");
       console.error("Error generating invoice:", error.message);
     } finally {
       setLoading(false);
@@ -476,24 +483,16 @@ const InvoiceButton = ({ row }: { row: any }) => {
       <Button onClick={handleOpenModal} className="whitespace-nowrap">
         Generate Invoice
       </Button>
-      {/* Uncomment and update SupplierInvoiceModal when it's available */}
-      {/* <SupplierInvoiceModal
-        isOpen={addModalOpen}
-        onClose={() => setAddModalOpen(false)}
-        onConfirm={handleConfirm}
-        loading={loading}
-        invoiceData={invoiceData}
-        productId={row.original.id}
-      /> */}
       <DriverInvoiceModal
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}
         onConfirm={() => handleConfirm()}
         loading={loading}
         invoiceData={invoiceData}
-        productId={row.original.id}
-        setSupplierUsername={setTruckCompanyUsername}
-        subProductIds={[]}
+        setSupplierUsername={setDriverUsername}
+        subProductId={row.original.sub_product_id}
+        supplierInvoiceId={row.original.supplier_invoice_id}
+        dealerInvoiceId={row.original.dealer_invoice_id}
       />
     </>
   );
