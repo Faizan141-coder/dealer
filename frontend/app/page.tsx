@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import Cookies from "js-cookie";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -48,7 +48,10 @@ export default function LoginForm() {
       }
 
       if (response.status === 200) {
-        toast.success("Logged in successfully");
+        toast({
+          description: "Login successful",
+          variant: "default",
+        })
         const data = await response.json();
         const token = data.access;
         const role = data.role;
@@ -75,7 +78,10 @@ export default function LoginForm() {
         throw new Error("Invalid email or password");
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred");
+      toast({
+        description: error.message,
+        variant: "destructive",
+      })
     } finally {
       setLoading(false);
     }

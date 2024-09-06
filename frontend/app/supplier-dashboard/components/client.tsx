@@ -67,19 +67,6 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     router.push("/");
   };
 
-  // Map backend data to the frontend format
-  // const mappedData: PlaceOrderColumn[] = data.flatMap((invoice: any) =>
-  //   invoice.ProductDetail.sub_products.map((subProduct: any) => ({
-  //     id: subProduct.id.toString(),
-  //     product_name: subProduct.product_name,
-  //     product_type: subProduct.product_type,
-  //     product_quantity: subProduct.quantity.toString(),
-  //     client_address: subProduct.delivery_address,
-  //     delivery_date: subProduct.delivery_date,
-  //     status: subProduct.sub_status,
-  //   }))
-  // );
-
   return (
     <>
       <div className="flex items-center justify-between">
@@ -92,7 +79,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="product_name" columns={columns} data={data} />
+      <DataTable searchKey="dealer_username" columns={columns} data={data} />
     </>
   );
 };
