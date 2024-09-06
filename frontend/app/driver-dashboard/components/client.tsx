@@ -28,7 +28,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Supplier Dashboard"
+          title="Driver Dashboard"
           description={`Total (${data.length})`}
         />
         <Button onClick={handleLogout}>

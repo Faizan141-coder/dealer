@@ -1,204 +1,50 @@
-// "use client";
+"use client";
 
-// import { ColumnDef } from "@tanstack/react-table";
-// import { Button } from "@/components/ui/button";
-// import { cn } from "@/lib/utils";
-// import { Badge } from "@/components/ui/badge";
-// import { useState } from "react";
-// import Cookies from "js-cookie";
-// import toast from "react-hot-toast";
-// import { SupplierInvoiceModal } from "@/components/modals/supplier-invoice-modal";
-
-// export type PlaceOrderColumn = {
-//   id: string;
-//   product_name: string;
-//   product_type: string;
-//   product_quantity: string;
-//   client_address: string;
-//   delivery_date: string;
-//   status: string;
-// };
-
-// export const columns: ColumnDef<PlaceOrderColumn>[] = [
-//   {
-//     accessorKey: "product_name",
-//     header: ({ column }) => {
-//       return (
-//         <Button
-//           variant="ghost"
-//           className="hover:bg-slate-100 transition duration-100"
-//         >
-//           Product Name
-//         </Button>
-//       );
-//     },
-//   },
-//   {
-//     accessorKey: "status",
-//     header: "Status",
-//   },
-//   {
-//     accessorKey: "product_quantity",
-//     header: "Quantity",
-//   },
-//   {
-//     accessorKey: "client_address",
-//     header: "Client Address",
-//   },
-//   {
-//     accessorKey: "product_type",
-//     header: "Product Type",
-//     cell: ({ row }) => {
-//       const type = row.getValue("product_type") as string;
-
-//       return (
-//         <Badge
-//           className={cn(
-//             type === "type_1"
-//               ? "bg-blue-500 text-white"
-//               : "bg-pink-500 text-white"
-//           )}
-//         >
-//           {type === "type_1" ? "Type 1" : "Type 2"}
-//         </Badge>
-//       );
-//     },
-//   },
-//   {
-//     accessorKey: "delivery_date",
-//     header: "Delivery Date",
-//     cell: ({ row }) => {
-//       const date = new Date(row.getValue("delivery_date") as string);
-//       const formattedDate = date.toLocaleDateString("en-US", {
-//         year: "numeric",
-//         month: "long",
-//         day: "numeric",
-//       });
-
-//       return <span>{formattedDate}</span>;
-//     },
-//   },
-//   {
-//     accessorKey: "invoice",
-//     header: "Invoice",
-//     cell: ({ row }) => {
-//       // @ts-ignore
-//       const [addModalOpen, setAddModalOpen] = useState(false);
-//       const [loading, setLoading] = useState(false);
-//       const token = Cookies.get("authToken");
-//       const [invoiceData, setInvoiceData] = useState({});
-
-//       const status = row.getValue("status") as string;
-//       console.log("Status:", status);
-
-//       const handleOpenModal = () => {
-//         console.log("Modal opening...");
-//         setAddModalOpen(true);
-//       };
-
-//       const handleConfirm = async () => {
-//         setLoading(true);
-
-//         try {
-//           const response = await fetch(
-//             `https://dealer-backend-kz82.vercel.app/create-invoice/`,
-//             {
-//               method: "POST",
-//               headers: {
-//                 "Content-Type": "application/json",
-//                 Authorization: `Bearer ${token}`,
-//               },
-//               body: JSON.stringify({
-//                 invoice_id: row.original.id,
-//                 pickup_date: new Date(),
-//               }),
-//             }
-//           );
-
-//           if (!row.original.id) {
-//             throw new Error("Product ID is required");
-//           }
-
-//           // Read the response body as JSON
-//           const data = await response.json();
-//           console.log("Full Response Data:", data);
-//           console.log("Invoice Data:", data.invoice);
-
-//           // Check if invoice data is available
-//           if (data.invoice) {
-//             setInvoiceData(data.invoice);
-//           } else {
-//             console.error("Invoice data is missing from the response");
-//           }
-
-//           // Check response status
-//           if (response.status === 201 || response.status === 200) {
-//             toast.success("Invoice generated successfully");
-//             console.log("Invoice generated successfully");
-//           }
-//         } catch (error: any) {
-//           toast.error("Failed to generate invoice");
-//           console.error("Error generating invoice:", error.message);
-//         } finally {
-//           setLoading(false);
-//         }
-
-//         setAddModalOpen(false);
-//       };
-
-//       console.log("Invoice Data:", invoiceData);
-
-//       return (
-//         <>
-//           <Button onClick={handleOpenModal} disabled={status === "Confirmed"}>
-//             Generate Invoice
-//           </Button>
-//         </>
-//       );
-//     },
-//   },
-// ];
-
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import Cookies from "js-cookie";
-import toast from "react-hot-toast";
-import { SupplierInvoiceModal } from "@/components/modals/supplier-invoice-modal";
 import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-
-type InvoiceCellProps = {
-  row: any;
-};
+import { useState } from "react";
+import Cookies from "js-cookie";
+import { ConfirmPickupModal } from "@/components/modals/confirm-pickup-modal";
 
 export type PlaceOrderColumn = {
   id: string;
+  access_code: string;
+  pickup_address: string;
+  pickup_date: string;
   product_name: string;
   product_type: string;
-  product_quantity: string;
-  client_address: string;
+  quantity: string;
   delivery_date: string;
-  status: string;
+  delivery_address: string;
+  client_name: string;
+  client_phone_number: string;
+  supplier_name: string;
+  supplier_phone: string;
+  dealer_name: string;
+  dealer_phone: string;
+  supplier_invoice_id: string;
+  dealer_invoice_id: string;
+  sub_product_id: string;
 };
 
-const InvoiceCell: React.FC<InvoiceCellProps> = ({ row }) => {
+const InvoiceButton = ({ row }: { row: any }) => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const token = Cookies.get("authToken");
   const [invoiceData, setInvoiceData] = useState({});
-
-  const status = row.getValue("status") as string;
+  const [weight, setWeight] = useState<number>(0); // State to handle weight input
+  const token = Cookies.get("authToken");
 
   const handleOpenModal = () => {
     setAddModalOpen(true);
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (weight: number) => {
     setLoading(true);
-
     try {
       const response = await fetch(
-        `https://dealer-backend-kz82.vercel.app/create-invoice/`,
+        `https://dealer-backend-kz82.vercel.app/pickup-from-facility/`,
         {
           method: "POST",
           headers: {
@@ -206,76 +52,65 @@ const InvoiceCell: React.FC<InvoiceCellProps> = ({ row }) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            invoice_id: row.original.id,
-            pickup_date: new Date(),
+            sub_product_id: row.original.sub_product_id,
+            actual_weight: weight,
           }),
         }
       );
 
-      if (!row.original.id) {
-        throw new Error("Product ID is required");
-      }
-
       const data = await response.json();
-      if (data.invoice) {
-        setInvoiceData(data.invoice);
-      } else {
-        console.error("Invoice data is missing from the response");
-      }
-
-      if (response.status === 201 || response.status === 200) {
-        toast.success("Invoice generated successfully");
-      }
+      console.log("API Response:", data);
+      setInvoiceData(data);
     } catch (error: any) {
-      toast.error("Failed to generate invoice");
       console.error("Error generating invoice:", error.message);
     } finally {
       setLoading(false);
+      setAddModalOpen(false);
     }
-
-    setAddModalOpen(false);
   };
 
   return (
     <>
-      <Button onClick={handleOpenModal} disabled={status === "Confirmed"}>
-        Generate Invoice
+      <Button onClick={handleOpenModal} className="whitespace-nowrap">
+        Confirm Pickup
       </Button>
-      {/* <SupplierInvoiceModal
+      <ConfirmPickupModal
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}
         onConfirm={handleConfirm}
         loading={loading}
-        invoiceData={invoiceData}
-        productId={row.original.id}
-      /> */}
+        weights={setWeight}
+      />
     </>
   );
 };
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
-    accessorKey: "product_name",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        className="hover:bg-slate-100 transition duration-100"
-      >
-        Product Name
-      </Button>
+    accessorKey: "pickup_address",
+    header: "Pickup Address",
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("pickup_address")}
+      </div>
     ),
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "pickup_date",
+    header: "Pickup Date",
   },
   {
-    accessorKey: "product_quantity",
-    header: "Quantity",
+    accessorKey: "access_code",
+    header: "Access Code",
   },
   {
-    accessorKey: "client_address",
-    header: "Client Address",
+    accessorKey: "product_name",
+    header: "Product Name",
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("product_name")}
+      </div>
+    ),
   },
   {
     accessorKey: "product_type",
@@ -284,11 +119,12 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       const type = row.getValue("product_type") as string;
       return (
         <Badge
-          className={
+          className={cn(
+            "whitespace-nowrap",
             type === "type_1"
               ? "bg-blue-500 text-white"
               : "bg-pink-500 text-white"
-          }
+          )}
         >
           {type === "type_1" ? "Type 1" : "Type 2"}
         </Badge>
@@ -296,21 +132,88 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     },
   },
   {
+    accessorKey: "quantity",
+    header: "Quantity",
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("quantity")}</div>
+    ),
+  },
+  {
     accessorKey: "delivery_date",
     header: "Delivery Date",
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("delivery_date") as string);
-      const formattedDate = date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-      return <span>{formattedDate}</span>;
-    },
+  },
+  {
+    accessorKey: "delivery_address",
+    header: "Delivery Address",
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("delivery_address")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "client_name",
+    header: "Client Name",
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("client_name")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "client_phone_number",
+    header: "Client Phone",
+    cell: ({ row }) => (
+      <div className="whitespace-nowrap">
+        {row.getValue("client_phone_number")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "supplier_name",
+    header: "Supplier Name",
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("supplier_name")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "supplier_phone",
+    header: "Supplier Phone",
+    cell: ({ row }) => (
+      <div className="whitespace-nowrap">{row.getValue("supplier_phone")}</div>
+    ),
+  },
+  {
+    accessorKey: "dealer_name",
+    header: "Dealer Name",
+    cell: ({ row }) => (
+      <div className="max-w-[150px] truncate">
+        {row.getValue("dealer_name")}
+      </div>
+    ),
   },
   {
     accessorKey: "invoice",
     header: "Invoice",
-    cell: ({ row }) => <InvoiceCell row={row} />,
+    cell: ({ row }) => <InvoiceButton row={row} />, // Use the new component
   },
 ];
+
+export default function Component() {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead></thead>
+        <tbody>
+          <tr>
+            <td colSpan={columns.length} className="p-2 text-center">
+              Table data would be rendered here
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}

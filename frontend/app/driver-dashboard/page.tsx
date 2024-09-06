@@ -1,14 +1,14 @@
-import { PlaceOrderClient } from "./components/client";
 import { cookies } from "next/headers";
-import { getAllInvoices } from "@/actions/get-all-invoices";
+import { getPendingDeliveries } from "@/actions/get-pending-deliveries";
+import { PlaceOrderClient } from "./components/client";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
   const token = cookieStore.get("authToken");
   console.log("Token: ", token?.value);
-  const data = await getAllInvoices(token?.value);
+  const data = await getPendingDeliveries(token?.value);
 
-  const orders = data?.invoices || [];
+  const orders = data || [];
 
   return (
     <div className="flex-col">

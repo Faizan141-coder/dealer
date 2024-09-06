@@ -83,7 +83,7 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
 
     const requestData = {
       truck_company_username: selectedDealer,
-      sub_product_ids: subProductId,
+      sub_product_id: subProductId,
       supplier_invoice_id: supplierInvoiceId,
       dealer_invoice_id: dealerInvoiceId,
     };
