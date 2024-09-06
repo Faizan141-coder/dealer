@@ -86,7 +86,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       return (
         <div className="space-y-1">
           {subProducts.map((subProduct, index) => (
-            <TooltipProvider>
+            <TooltipProvider key={index}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center space-x-2 cursor-pointer hover:bg-gray-200 p-2 rounded-md transition-all duration-200 ease-in-out">
