@@ -28,7 +28,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/`, {
+      const response = await fetch(`https://dealer-backend-kz82.vercel.app/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function LoginForm() {
         toast({
           description: "Login successful",
           variant: "default",
-        })
+        });
         const data = await response.json();
         const token = data.access;
         const role = data.role;
@@ -83,7 +83,7 @@ export default function LoginForm() {
       toast({
         description: error.message,
         variant: "destructive",
-      })
+      });
     } finally {
       setLoading(false);
     }

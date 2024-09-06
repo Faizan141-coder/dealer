@@ -34,7 +34,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
   const handleConfirm = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/assign-order-to-supplier/",
+        "https://dealer-backend-kz82.vercel.app/assign-order-to-supplier/",
         {
           method: "POST",
           headers: {
@@ -70,26 +70,28 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
       onClose={onClose}
     >
       <div className="grid grid-cols-2 gap-4">
-        {invoiceData?.ProductDetail?.sub_products?.map((subProduct: any, index: number) => (
-          <div key={index} className="border p-4 rounded-md mb-4">
-            <div>
-              <Label>Product Name</Label>
-              <Input value={subProduct.product_name || ""} disabled />
+        {invoiceData?.ProductDetail?.sub_products?.map(
+          (subProduct: any, index: number) => (
+            <div key={index} className="border p-4 rounded-md mb-4">
+              <div>
+                <Label>Product Name</Label>
+                <Input value={subProduct.product_name || ""} disabled />
+              </div>
+              <div>
+                <Label>Product Type</Label>
+                <Input value={subProduct.product_type || ""} disabled />
+              </div>
+              <div>
+                <Label>Quantity</Label>
+                <Input value={subProduct.quantity || ""} disabled />
+              </div>
+              <div>
+                <Label>Delivery Address</Label>
+                <Input value={subProduct.delivery_address || ""} disabled />
+              </div>
             </div>
-            <div>
-              <Label>Product Type</Label>
-              <Input value={subProduct.product_type || ""} disabled />
-            </div>
-            <div>
-              <Label>Quantity</Label>
-              <Input value={subProduct.quantity || ""} disabled />
-            </div>
-            <div>
-              <Label>Delivery Address</Label>
-              <Input value={subProduct.delivery_address || ""} disabled />
-            </div>
-          </div>
-        ))}
+          )
+        )}
         <div>
           <Label>Assigned To</Label>
           <Input value={supplier_username} disabled />

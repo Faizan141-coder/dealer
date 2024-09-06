@@ -72,13 +72,16 @@ export const AddModal: React.FC<AddModalProps> = ({
 
   const getDealers = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/get-all-dealers/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `https://dealer-backend-kz82.vercel.app/get-all-dealers/`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         const data = await response.json();
@@ -199,19 +202,18 @@ export const AddModal: React.FC<AddModalProps> = ({
   );
 };
 
-
 function convertDateString(dateString: string): string {
   // Extract the date and time parts
-  const [datePart, timePart] = dateString.split('-').map(part => part.trim());
+  const [datePart, timePart] = dateString.split("-").map((part) => part.trim());
 
   // Remove the GMT and timezone part from the date string
-  const dateWithoutTimezone = datePart.split(' GMT')[0];
+  const dateWithoutTimezone = datePart.split(" GMT")[0];
 
   // Parse the date part manually
   const dateObject = new Date(dateWithoutTimezone);
 
   // Extract the hour and minute from the time part
-  const [hour, minute] = timePart.split(':').map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
 
   // Set the time on the date object
   dateObject.setHours(hour);
@@ -219,13 +221,13 @@ function convertDateString(dateString: string): string {
 
   // Format the final output
   const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'short',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   };
 
-  return dateObject.toLocaleString('en-US', options).replace(',', '');
+  return dateObject.toLocaleString("en-US", options).replace(",", "");
 }

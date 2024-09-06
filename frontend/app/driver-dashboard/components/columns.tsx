@@ -89,7 +89,7 @@
 //       const [invoiceData, setInvoiceData] = useState({});
 
 //       const status = row.getValue("status") as string;
-//       console.log("Status:", status); 
+//       console.log("Status:", status);
 
 //       const handleOpenModal = () => {
 //         console.log("Modal opening...");
@@ -101,7 +101,7 @@
 
 //         try {
 //           const response = await fetch(
-//             `http://127.0.0.1:8000/create-invoice/`,
+//             `https://dealer-backend-kz82.vercel.app/create-invoice/`,
 //             {
 //               method: "POST",
 //               headers: {
@@ -159,7 +159,6 @@
 //   },
 // ];
 
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
@@ -198,17 +197,20 @@ const InvoiceCell: React.FC<InvoiceCellProps> = ({ row }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/create-invoice/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          invoice_id: row.original.id,
-          pickup_date: new Date(),
-        }),
-      });
+      const response = await fetch(
+        `https://dealer-backend-kz82.vercel.app/create-invoice/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            invoice_id: row.original.id,
+            pickup_date: new Date(),
+          }),
+        }
+      );
 
       if (!row.original.id) {
         throw new Error("Product ID is required");
@@ -281,7 +283,13 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     cell: ({ row }) => {
       const type = row.getValue("product_type") as string;
       return (
-        <Badge className={type === "type_1" ? "bg-blue-500 text-white" : "bg-pink-500 text-white"}>
+        <Badge
+          className={
+            type === "type_1"
+              ? "bg-blue-500 text-white"
+              : "bg-pink-500 text-white"
+          }
+        >
           {type === "type_1" ? "Type 1" : "Type 2"}
         </Badge>
       );

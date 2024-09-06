@@ -17,21 +17,16 @@ interface SupplierInvoiceDetailModalProps {
   id: string;
 }
 
-export const SupplierInvoiceDetailModal: React.FC<SupplierInvoiceDetailModalProps> = ({
-  isOpen,
-  onClose,
-  loading,
-  invoiceData,
-  product_reference_id,
-  id,
-}) => {
+export const SupplierInvoiceDetailModal: React.FC<
+  SupplierInvoiceDetailModalProps
+> = ({ isOpen, onClose, loading, invoiceData, product_reference_id, id }) => {
   const token = Cookies.get("authToken");
   const router = useRouter();
 
   const handleConfirm = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/confirm-order/",
+        "https://dealer-backend-kz82.vercel.app/confirm-order/",
         {
           method: "POST",
           headers: {
@@ -53,7 +48,10 @@ export const SupplierInvoiceDetailModal: React.FC<SupplierInvoiceDetailModalProp
         console.log("Invoice confirmed successfully");
       } else {
         toast.error("Failed to confirm the order");
-        console.error("Error confirming order:", data.message || response.statusText);
+        console.error(
+          "Error confirming order:",
+          data.message || response.statusText
+        );
       }
 
       console.log("Invoice Data:", invoiceData);
@@ -77,11 +75,11 @@ export const SupplierInvoiceDetailModal: React.FC<SupplierInvoiceDetailModalProp
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label>Access Code</Label>
-          <Input value={currentInvoiceData.access_code || ''} disabled />
+          <Input value={currentInvoiceData.access_code || ""} disabled />
         </div>
         <div>
           <Label>Pickup Address</Label>
-          <Input value={currentInvoiceData.pickup_address || ''} disabled />
+          <Input value={currentInvoiceData.pickup_address || ""} disabled />
         </div>
       </div>
       <div className="flex justify-end mt-8 space-x-3">

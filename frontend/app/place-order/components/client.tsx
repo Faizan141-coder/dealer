@@ -38,7 +38,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
   const onConfirm = async () => {
     setLoading(true);
     try {
-      await fetch(`http://127.0.0.1:8000/place-order/`, {
+      await fetch(`https://dealer-backend-kz82.vercel.app/place-order/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -130,8 +130,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
                       {subProduct.product_name}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      Delivery Date:{" "}
-                      {subProduct.delivery_date.toString()}
+                      Delivery Date: {subProduct.delivery_date.toString()}
                     </p>
                   </div>
                   <Button

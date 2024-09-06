@@ -118,7 +118,7 @@
 //         }));
 
 //         try {
-//           const response = await fetch(`http://127.0.0.1:8000/create-invoice/`, {
+//           const response = await fetch(`https://dealer-backend-kz82.vercel.app/create-invoice/`, {
 //             method: "POST",
 //             headers: {
 //               "Content-Type": "application/json",
@@ -176,7 +176,6 @@
 //   },
 // ];
 
-
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
@@ -233,18 +232,21 @@ const InvoiceButton = ({ row }: { row: any }) => {
     }));
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/create-invoice/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          invoice_id: row.original.id,
-          pickup_dates: pickupDates,
-          pickup_address: address,
-        }),
-      });
+      const response = await fetch(
+        `https://dealer-backend-kz82.vercel.app/create-invoice/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            invoice_id: row.original.id,
+            pickup_dates: pickupDates,
+            pickup_address: address,
+          }),
+        }
+      );
 
       if (!row.original.id) {
         throw new Error("Product ID is required");

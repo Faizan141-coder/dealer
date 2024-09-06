@@ -67,7 +67,7 @@
 
 //         try {
 //           const response = await fetch(
-//             "http://127.0.0.1:8000/forward-invoice-to-truck-company/",
+//             "https://dealer-backend-kz82.vercel.app/forward-invoice-to-truck-company/",
 //             {
 //               method: "POST",
 //               headers: {
@@ -216,7 +216,9 @@ export type PlaceOrderColumn = {
 
 const SubProductsCell = ({ row }: { row: any }) => {
   const subProducts = row.original.ProductDetail.sub_products;
-  const [modalStates, setModalStates] = useState<boolean[]>(Array(subProducts.length).fill(false));
+  const [modalStates, setModalStates] = useState<boolean[]>(
+    Array(subProducts.length).fill(false)
+  );
   const [loading, setLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState({});
   const [truckCompanyUsername, setTruckCompanyUsername] = useState("");
@@ -239,18 +241,21 @@ const SubProductsCell = ({ row }: { row: any }) => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/forward-invoice-to-truck-company/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          truck_company_username: truckCompanyUsername,
-          invoice_id: row.original.id,
-          sub_product_ids: subProductIds,
-        }),
-      });
+      const response = await fetch(
+        "https://dealer-backend-kz82.vercel.app/forward-invoice-to-truck-company/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            truck_company_username: truckCompanyUsername,
+            invoice_id: row.original.id,
+            sub_product_ids: subProductIds,
+          }),
+        }
+      );
 
       if (!row.original.id) {
         throw new Error("Product ID is required");
@@ -278,16 +283,31 @@ const SubProductsCell = ({ row }: { row: any }) => {
   return (
     <div>
       {subProducts.map((subProduct: any, index: any) => (
-        <div key={subProduct.id} className="mb-2 p-2 border rounded flex justify-between items-center">
+        <div
+          key={subProduct.id}
+          className="mb-2 p-2 border rounded flex justify-between items-center"
+        >
           <div>
-            <p><strong>Product Name:</strong> {subProduct.product_name}</p>
-            <p><strong>Product Type:</strong> {subProduct.product_type}</p>
-            <p><strong>Quantity:</strong> {subProduct.quantity}</p>
-            <p><strong>Delivery Date:</strong> {subProduct.delivery_date}</p>
-            <p><strong>Pickup Date:</strong> {subProduct.pickup_date}</p>
+            <p>
+              <strong>Product Name:</strong> {subProduct.product_name}
+            </p>
+            <p>
+              <strong>Product Type:</strong> {subProduct.product_type}
+            </p>
+            <p>
+              <strong>Quantity:</strong> {subProduct.quantity}
+            </p>
+            <p>
+              <strong>Delivery Date:</strong> {subProduct.delivery_date}
+            </p>
+            <p>
+              <strong>Pickup Date:</strong> {subProduct.pickup_date}
+            </p>
           </div>
           <div>
-            <Button onClick={() => handleOpenModal(index)}>Forward Invoice</Button>
+            <Button onClick={() => handleOpenModal(index)}>
+              Forward Invoice
+            </Button>
           </div>
           <TruckInvoiceModal
             isOpen={modalStates[index]}

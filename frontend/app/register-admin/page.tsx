@@ -32,21 +32,24 @@ export default function DealerRegistrationForm() {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/signup/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          username,
-          first_name: firstName,
-          last_name: lastName,
-          phone,
-          role,
-        }),
-      });
+      const response = await fetch(
+        `https://dealer-backend-kz82.vercel.app/signup/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            username,
+            first_name: firstName,
+            last_name: lastName,
+            phone,
+            role,
+          }),
+        }
+      );
 
       if (!email) {
         throw new Error("Email is required");
@@ -168,7 +171,12 @@ export default function DealerRegistrationForm() {
               </div>
             </div>
 
-            <Button onClick={handleRegister} type="submit" variant="default" className="w-full">
+            <Button
+              onClick={handleRegister}
+              type="submit"
+              variant="default"
+              className="w-full"
+            >
               Register
             </Button>
           </div>

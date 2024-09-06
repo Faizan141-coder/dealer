@@ -145,7 +145,7 @@
 
 //         try {
 //           const response = await fetch(
-//             `http://127.0.0.1:8000/create-invoice/`,
+//             `https://dealer-backend-kz82.vercel.app/create-invoice/`,
 //             {
 //               method: "POST",
 //               headers: {
@@ -326,7 +326,7 @@
 //       const handleConfirm = async () => {
 //         setLoading(true)
 //         try {
-//           const response = await fetch(`http://127.0.0.1:8000/create-invoice/`, {
+//           const response = await fetch(`https://dealer-backend-kz82.vercel.app/create-invoice/`, {
 //             method: "POST",
 //             headers: {
 //               "Content-Type": "application/json",
@@ -440,17 +440,20 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const handleConfirm = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/create-invoice/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          invoice_id: row.original.id,
-          pickup_date: new Date(),
-        }),
-      });
+      const response = await fetch(
+        `https://dealer-backend-kz82.vercel.app/create-invoice/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            invoice_id: row.original.id,
+            pickup_date: new Date(),
+          }),
+        }
+      );
 
       const data = await response.json();
       if (data.invoice) {

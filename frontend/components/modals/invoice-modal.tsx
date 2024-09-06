@@ -46,7 +46,7 @@
 
 //   const getDealers = async () => {
 //     try {
-//       const response = await fetch(`http://127.0.0.1:8000/get-all-suppliers/`, {
+//       const response = await fetch(`https://dealer-backend-kz82.vercel.app/get-all-suppliers/`, {
 //         method: "GET",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -127,8 +127,8 @@
 //         {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
 //         {/* Display error message */}
 //       </Modal>
-//       <InvoiceDetailModal 
-//         isOpen={InvoiceDetailModalOpen} 
+//       <InvoiceDetailModal
+//         isOpen={InvoiceDetailModalOpen}
 //         onClose={() => setInvoiceDetailModalOpen(false)}
 //         loading={loading}
 //         onConfirm={onConfirm}
@@ -140,7 +140,6 @@
 //     </>
 //   );
 // };
-
 
 // export const InvoiceModal: React.FC<InvoiceModalProps> = ({
 //   isOpen,
@@ -167,7 +166,7 @@
 
 //   const getDealers = async () => {
 //     try {
-//       const response = await fetch(`http://127.0.0.1:8000/get-all-suppliers/`, {
+//       const response = await fetch(`https://dealer-backend-kz82.vercel.app/get-all-suppliers/`, {
 //         method: "GET",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -241,8 +240,8 @@
 //         </div>
 //         {error && <p className="text-red-500 mt-2">{error}</p>}
 //       </Modal>
-//       <InvoiceDetailModal 
-//         isOpen={InvoiceDetailModalOpen} 
+//       <InvoiceDetailModal
+//         isOpen={InvoiceDetailModalOpen}
 //         onClose={() => setInvoiceDetailModalOpen(false)}
 //         loading={loading}
 //         onConfirm={onConfirm}
@@ -289,7 +288,8 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
   const [isMounted, setIsMounted] = useState(false);
   const [dealers, setDealers] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [InvoiceDetailModalOpen, setInvoiceDetailModalOpen] = useState<boolean>(false);
+  const [InvoiceDetailModalOpen, setInvoiceDetailModalOpen] =
+    useState<boolean>(false);
   const token = Cookies.get("authToken");
 
   useEffect(() => {
@@ -301,13 +301,16 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
 
   const getDealers = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/get-all-suppliers/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://dealer-backend-kz82.vercel.app/get-all-suppliers/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         const data = await response.json();
@@ -374,8 +377,8 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({
         </div>
         {error && <p className="text-red-500 mt-2">{error}</p>}
       </Modal>
-      <InvoiceDetailModal 
-        isOpen={InvoiceDetailModalOpen} 
+      <InvoiceDetailModal
+        isOpen={InvoiceDetailModalOpen}
         onClose={() => setInvoiceDetailModalOpen(false)}
         loading={loading}
         onConfirm={onConfirm}

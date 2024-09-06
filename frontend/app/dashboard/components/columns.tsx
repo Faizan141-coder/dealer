@@ -103,7 +103,7 @@
 
 //         try {
 //           const response = await fetch(
-//             `http://127.0.0.1:8000/generate-invoice/`,
+//             `https://dealer-backend-kz82.vercel.app/generate-invoice/`,
 //             {
 //               method: "POST",
 //               headers: {
@@ -167,7 +167,6 @@
 //   },
 // ];
 
-
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
@@ -211,7 +210,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/generate-invoice/`,
+        `https://dealer-backend-kz82.vercel.app/generate-invoice/`,
         {
           method: "POST",
           headers: {
@@ -284,10 +283,18 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
         <div>
           {subProducts.map((subProduct, index) => (
             <div key={index} className="mb-2 p-2 border rounded">
-              <p><strong>Product Name:</strong> {subProduct.product_name}</p>
-              <p><strong>Product Type:</strong> {subProduct.product_type}</p>
-              <p><strong>Quantity:</strong> {subProduct.quantity}</p>
-              <p><strong>Status:</strong> {subProduct.sub_status}</p>
+              <p>
+                <strong>Product Name:</strong> {subProduct.product_name}
+              </p>
+              <p>
+                <strong>Product Type:</strong> {subProduct.product_type}
+              </p>
+              <p>
+                <strong>Quantity:</strong> {subProduct.quantity}
+              </p>
+              <p>
+                <strong>Status:</strong> {subProduct.sub_status}
+              </p>
             </div>
           ))}
         </div>

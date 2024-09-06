@@ -38,27 +38,30 @@ export default function SignupForm() {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/signup/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          username,
-          first_name: firstName,
-          last_name: lastName,
-          phone,
-          company_name: companyName,
-          country,
-          state,
-          city,
-          zip,
-          address,
-          role,
-        }),
-      });
+      const response = await fetch(
+        `https://dealer-backend-kz82.vercel.app/signup/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            username,
+            first_name: firstName,
+            last_name: lastName,
+            phone,
+            company_name: companyName,
+            country,
+            state,
+            city,
+            zip,
+            address,
+            role,
+          }),
+        }
+      );
 
       if (!email) {
         throw new Error("Email is required");
