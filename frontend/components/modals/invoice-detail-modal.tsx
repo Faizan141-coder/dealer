@@ -95,7 +95,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
           <Input value={supplier_username} disabled />
         </div>
         <div>
-          <Label>Client Username</Label>
+          <Label>Dealer Username</Label>
           <Input value={invoiceData?.dealer_username || ""} disabled />
         </div>
       </div>

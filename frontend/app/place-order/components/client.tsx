@@ -48,7 +48,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           dealer_username: dealerUsername,
           sub_products: subProducts.map((subProduct) => ({
             ...subProduct,
-            delivery_date: subProduct.delivery_date.toISOString().split("T")[0], // Format date
+            delivery_date: subProduct.delivery_date, // Format date
           })),
         }),
       });
@@ -131,7 +131,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
                     </h3>
                     <p className="text-sm text-gray-600">
                       Delivery Date:{" "}
-                      {subProduct.delivery_date.toISOString().split("T")[0]}
+                      {subProduct.delivery_date.toString()}
                     </p>
                   </div>
                   <Button

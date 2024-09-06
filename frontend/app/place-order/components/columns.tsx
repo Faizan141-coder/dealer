@@ -193,10 +193,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
         <div className="space-y-1">
           {subProducts.map((subProduct, index) => (
             <span key={index} className="text-sm text-muted-foreground flex">
-              {new Date(subProduct.delivery_date).toLocaleDateString(
-                undefined,
-                { year: "numeric", month: "short", day: "numeric" }
-              )}
+              {subProduct.delivery_date}
             </span>
           ))}
         </div>

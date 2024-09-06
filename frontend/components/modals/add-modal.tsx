@@ -8,7 +8,6 @@ import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { SingleCombobox } from "../ui/combo";
 import Cookies from "js-cookie";
@@ -42,6 +41,9 @@ export const AddModal: React.FC<AddModalProps> = ({
   const [deliveryDate, setDeliveryDate] = useState<Date | null>(
     initialSubOrder?.delivery_date || null
   );
+  const [deliveryTime, setDeliveryTime] = useState<string>(
+    initialSubOrder?.delivery_time || "12:00"
+  );
   const [deliveryAddress, setDeliveryAddress] = useState(
     initialSubOrder?.delivery_address || ""
   );
@@ -56,6 +58,7 @@ export const AddModal: React.FC<AddModalProps> = ({
       setProductType(initialSubOrder.product_type);
       setQuantity(initialSubOrder.quantity);
       setDeliveryDate(initialSubOrder.delivery_date);
+      setDeliveryTime(initialSubOrder.delivery_time || "12:00");
       setDeliveryAddress(initialSubOrder.delivery_address);
     }
   }, [initialSubOrder]);
@@ -88,8 +91,6 @@ export const AddModal: React.FC<AddModalProps> = ({
     }
   };
 
-  // console.log("Dealers:", dealers);
-
   if (!isMounted) {
     return null;
   }
@@ -99,11 +100,12 @@ export const AddModal: React.FC<AddModalProps> = ({
       product_name: productName,
       product_type: productType,
       quantity,
-      delivery_date: deliveryDate,
+      delivery_date: convertDateString(deliveryDate + "-" + deliveryTime), // Combine date and time
       delivery_address: deliveryAddress,
       dealer_username: dealerUsername,
     };
     onConfirm(subOrder);
+    console.log(subOrder);
     onClose(); // Close the modal after confirming
   };
 
@@ -144,9 +146,12 @@ export const AddModal: React.FC<AddModalProps> = ({
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {deliveryDate ? (
-                format(deliveryDate, "PPP")
+                <span>
+                  {format(deliveryDate, "PPP")} {deliveryTime}{" "}
+                  {/* Display time here */}
+                </span>
               ) : (
-                <span>Pick a date</span>
+                <span>Pick a date and time</span>
               )}
             </Button>
           </PopoverTrigger>
@@ -159,6 +164,11 @@ export const AddModal: React.FC<AddModalProps> = ({
             />
           </PopoverContent>
         </Popover>
+        <Input
+          type="time"
+          value={deliveryTime}
+          onChange={(e) => setDeliveryTime(e.target.value)} // Time input handler
+        />
         <div className="mt-5">
           <SingleCombobox
             items={
@@ -188,3 +198,34 @@ export const AddModal: React.FC<AddModalProps> = ({
     </Modal>
   );
 };
+
+
+function convertDateString(dateString: string): string {
+  // Extract the date and time parts
+  const [datePart, timePart] = dateString.split('-').map(part => part.trim());
+
+  // Remove the GMT and timezone part from the date string
+  const dateWithoutTimezone = datePart.split(' GMT')[0];
+
+  // Parse the date part manually
+  const dateObject = new Date(dateWithoutTimezone);
+
+  // Extract the hour and minute from the time part
+  const [hour, minute] = timePart.split(':').map(Number);
+
+  // Set the time on the date object
+  dateObject.setHours(hour);
+  dateObject.setMinutes(minute);
+
+  // Format the final output
+  const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+  };
+
+  return dateObject.toLocaleString('en-US', options).replace(',', '');
+}
