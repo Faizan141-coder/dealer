@@ -30,8 +30,8 @@ export default function SupplierRegistrationForm() {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
-  const [role, setRole] = useState("supplier");
-  const [priceChargedPerTon, setPriceChargedPerTon] = useState("");
+  const [role, setRole] = useState("truck");
+  // const [priceChargedPerTon, setPriceChargedPerTon] = useState("");
 
   const router = useRouter();
 
@@ -57,7 +57,7 @@ export default function SupplierRegistrationForm() {
           city,
           zip,
           address,
-          price_charged_per_ton: priceChargedPerTon,
+          // price_charged_per_ton: priceChargedPerTon,
           role,
         }),
       });
@@ -122,10 +122,10 @@ export default function SupplierRegistrationForm() {
         throw new Error("Zip is required");
       }
 
-      if (!priceChargedPerTon) {
-        toast.error("Price charged per ton is required");
-        throw new Error("Price charged per ton is required");
-      }
+      // if (!priceChargedPerTon) {
+      //   toast.error("Price charged per ton is required");
+      //   throw new Error("Price charged per ton is required");
+      // }
 
       console.log(
         email,
@@ -161,9 +161,9 @@ export default function SupplierRegistrationForm() {
     <div className="flex flex-col items-center justify-center h-full">
       <Card className="w-full max-w-2xl">
         <CardHeader className="items-center">
-          <CardTitle className="text-xl">Register as Trucker</CardTitle>
+          <CardTitle className="text-xl">Register as Truck Company</CardTitle>
           <CardDescription>
-            Enter your information to create trucker account
+            Enter your information to create truck company account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -303,7 +303,7 @@ export default function SupplierRegistrationForm() {
                 />
               </div>
             </div>
-            <div>
+            {/* <div>
               <Label htmlFor="price-charged-per-ton">Price Charged Per Ton</Label>
               <Input
                 id="price-charged-per-ton"
@@ -313,7 +313,7 @@ export default function SupplierRegistrationForm() {
                 value={priceChargedPerTon}
                 type="number"
               />
-            </div>
+            </div> */}
             <Button
               disabled={loading}
               onClick={handleRegister}

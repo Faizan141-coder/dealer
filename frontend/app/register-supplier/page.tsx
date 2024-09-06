@@ -31,7 +31,7 @@ export default function SupplierRegistrationForm() {
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
   const [role, setRole] = useState("supplier");
-  const [priceChargedPerTon, setPriceChargedPerTon] = useState("");
+  // const [priceChargedPerTon, setPriceChargedPerTon] = useState("");
 
   const router = useRouter();
 
@@ -57,7 +57,7 @@ export default function SupplierRegistrationForm() {
           city,
           zip,
           address,
-          price_charged_per_ton: priceChargedPerTon,
+          // price_charged_per_ton: priceChargedPerTon,
           role,
         }),
       });
@@ -122,10 +122,10 @@ export default function SupplierRegistrationForm() {
         throw new Error("Zip is required");
       }
 
-      if (!priceChargedPerTon) {
-        toast.error("Price charged per ton is required");
-        throw new Error("Price charged per ton is required");
-      }
+      // if (!priceChargedPerTon) {
+      //   toast.error("Price charged per ton is required");
+      //   throw new Error("Price charged per ton is required");
+      // }
 
       console.log(
         email,
@@ -303,7 +303,7 @@ export default function SupplierRegistrationForm() {
                 />
               </div>
             </div>
-            <div>
+            {/* <div>
               <Label htmlFor="price-charged-per-ton">Price Charged Per Ton</Label>
               <Input
                 id="price-charged-per-ton"
@@ -313,7 +313,7 @@ export default function SupplierRegistrationForm() {
                 value={priceChargedPerTon}
                 type="number"
               />
-            </div>
+            </div> */}
             <Button
               disabled={loading}
               onClick={handleRegister}
