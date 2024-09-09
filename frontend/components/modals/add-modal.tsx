@@ -73,7 +73,7 @@ export const AddModal: React.FC<AddModalProps> = ({
   const getDealers = async () => {
     try {
       const response = await fetch(
-        `https://dealer-backend-kz82.vercel.app/get-all-dealers/`,
+        `http://127.0.0.1:8000/get-all-dealers/`,
         {
           method: "GET",
           headers: {

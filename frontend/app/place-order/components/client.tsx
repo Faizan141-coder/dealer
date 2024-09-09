@@ -38,7 +38,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
   const onConfirm = async () => {
     setLoading(true);
     try {
-      await fetch(`https://dealer-backend-kz82.vercel.app/place-order/`, {
+      await fetch(`http://127.0.0.1:8000/place-order/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

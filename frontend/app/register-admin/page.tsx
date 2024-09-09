@@ -33,7 +33,7 @@ export default function DealerRegistrationForm() {
 
     try {
       const response = await fetch(
-        `https://dealer-backend-kz82.vercel.app/signup/`,
+        `http://127.0.0.1:8000/signup/`,
         {
           method: "POST",
           headers: {

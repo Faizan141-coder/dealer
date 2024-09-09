@@ -2,7 +2,7 @@
 
 export async function getAllInvoicesFromSupplier(token: any) {
 
-    const response = await fetch(`https://dealer-backend-kz82.vercel.app/get-all-confirmed-invoices-from-supplier/`, {
+    const response = await fetch(`http://127.0.0.1:8000/get-all-confirmed-invoices-from-supplier/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

@@ -67,7 +67,7 @@
 
 //         try {
 //           const response = await fetch(
-//             "https://dealer-backend-kz82.vercel.app/forward-invoice-to-truck-company/",
+//             "http://127.0.0.1:8000/forward-invoice-to-truck-company/",
 //             {
 //               method: "POST",
 //               headers: {
@@ -242,7 +242,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
 
     try {
       const response = await fetch(
-        "https://dealer-backend-kz82.vercel.app/forward-invoice-to-truck-company/",
+        "http://127.0.0.1:8000/forward-invoice-to-truck-company/",
         {
           method: "POST",
           headers: {

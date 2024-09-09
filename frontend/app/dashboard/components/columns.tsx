@@ -103,7 +103,7 @@
 
 //         try {
 //           const response = await fetch(
-//             `https://dealer-backend-kz82.vercel.app/generate-invoice/`,
+//             `http://127.0.0.1:8000/generate-invoice/`,
 //             {
 //               method: "POST",
 //               headers: {
@@ -210,7 +210,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
 
     try {
       const response = await fetch(
-        `https://dealer-backend-kz82.vercel.app/generate-invoice/`,
+        `http://127.0.0.1:8000/generate-invoice/`,
         {
           method: "POST",
           headers: {

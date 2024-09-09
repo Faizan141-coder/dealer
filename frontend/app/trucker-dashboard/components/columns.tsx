@@ -145,7 +145,7 @@
 
 //         try {
 //           const response = await fetch(
-//             `https://dealer-backend-kz82.vercel.app/create-invoice/`,
+//             `http://127.0.0.1:8000/create-invoice/`,
 //             {
 //               method: "POST",
 //               headers: {
@@ -326,7 +326,7 @@
 //       const handleConfirm = async () => {
 //         setLoading(true)
 //         try {
-//           const response = await fetch(`https://dealer-backend-kz82.vercel.app/create-invoice/`, {
+//           const response = await fetch(`http://127.0.0.1:8000/create-invoice/`, {
 //             method: "POST",
 //             headers: {
 //               "Content-Type": "application/json",
@@ -444,7 +444,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://dealer-backend-kz82.vercel.app/assign-to-driver/`,
+        `http://127.0.0.1:8000/assign-to-driver/`,
         {
           method: "POST",
           headers: {
