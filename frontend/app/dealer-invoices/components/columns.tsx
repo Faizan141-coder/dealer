@@ -289,6 +289,9 @@ const SubProductsCell = ({ row }: { row: any }) => {
         >
           <div>
             <p>
+              <strong>Product Id: </strong> {subProduct.id}
+            </p>
+            <p>
               <strong>Product Name:</strong> {subProduct.product_name}
             </p>
             <p>
@@ -326,6 +329,10 @@ const SubProductsCell = ({ row }: { row: any }) => {
 };
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
+  {
+    accessorKey: "id",
+    header: "ID",
+  },
   {
     accessorKey: "access_code",
     header: "Access Code",

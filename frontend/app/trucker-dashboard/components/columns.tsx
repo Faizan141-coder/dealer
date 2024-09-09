@@ -436,6 +436,12 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const token = Cookies.get("authToken");
   const [driverUsername, setDriverUsername] = useState("");
 
+  const [truckPlateNumber, setTruckPlateNumber] = useState<string>("");
+  const [driverPhoneNumber, setDriverPhoneNumber] = useState<string>("");
+  const [driverAddress, setDriverAddress] = useState<string>("");
+  const [driverEmail, setDriverEmail] = useState<string>("");
+  const [driverFullName, setDriverFullName] = useState<string>("");
+
   const handleOpenModal = () => {
     setAddModalOpen(true);
   };
@@ -452,9 +458,12 @@ const InvoiceButton = ({ row }: { row: any }) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            driver_username: driverUsername,
+            driver_username: driverFullName,
+            truck_plate_number: truckPlateNumber,
+            driver_phone_number: driverPhoneNumber,
+            driver_address: driverAddress,
+            driver_email: driverEmail,
             sub_product_id: row.original.sub_product_id,
-            supplier_invoice_id: row.original.supplier_invoice_id,
             dealer_invoice_id: row.original.dealer_invoice_id,
           }),
         }
@@ -489,7 +498,16 @@ const InvoiceButton = ({ row }: { row: any }) => {
         onConfirm={() => handleConfirm()}
         loading={loading}
         invoiceData={invoiceData}
-        setSupplierUsername={setDriverUsername}
+        setDriverFullName={setDriverFullName}
+        setTruckPlateNumber={setTruckPlateNumber}
+        setDriverPhoneNumber={setDriverPhoneNumber}
+        setDriverAddress={setDriverAddress}
+        setDriverEmail={setDriverEmail}
+        driverFullName={driverFullName}
+        truckPlateNumber={truckPlateNumber}
+        driverPhoneNumber={driverPhoneNumber}
+        driverAddress={driverAddress}
+        driverEmail={driverEmail}
         subProductId={row.original.sub_product_id}
         supplierInvoiceId={row.original.supplier_invoice_id}
         dealerInvoiceId={row.original.dealer_invoice_id}
@@ -594,15 +612,15 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       <div className="whitespace-nowrap">{row.getValue("supplier_phone")}</div>
     ),
   },
-  {
-    accessorKey: "dealer_name",
-    header: "Dealer Name",
-    cell: ({ row }) => (
-      <div className="max-w-[150px] truncate">
-        {row.getValue("dealer_name")}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "dealer_name",
+  //   header: "Dealer Name",
+  //   cell: ({ row }) => (
+  //     <div className="max-w-[150px] truncate">
+  //       {row.getValue("dealer_name")}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "invoice",
     header: "Invoice",

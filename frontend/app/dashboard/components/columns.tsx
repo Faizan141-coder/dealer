@@ -258,7 +258,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
         <div key={subProduct.id}>
           <Button
             onClick={() => handleOpenModal(subProduct.id)}
-            disabled={subProduct.sub_status === "Pending with truck"}
+            disabled={subProduct.sub_status !== "Pending with dealer"}
             className="mt-5"
           >
             Invoice {subProduct.id}
