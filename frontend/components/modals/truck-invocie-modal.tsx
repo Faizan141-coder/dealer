@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { SingleCombobox } from "../ui/combo";
 import Cookies from "js-cookie";
 import { TruckInvoiceDetailModal } from "./truck-invoice-detail-modal";
+import { useRouter } from "next/navigation";
 
 interface TruckInvoiceModalProps {
   isOpen: boolean;
@@ -38,6 +39,7 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
   const [InvoiceDetailModalOpen, setInvoiceDetailModalOpen] =
     useState<boolean>(false);
   const token = Cookies.get("authToken");
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -58,12 +60,14 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
           },
         }
       );
+      
 
       if (response.status === 200) {
         const data = await response.json();
         setDealers(data.truck_companies); // Update state with fetched dealers
         setSupplierUsername(data.truck_companies); // Set initial dealer
         setSelectedDealer(data.truck_companies[0] || null); // Set initial dealer
+        router.refresh();
       } else {
         setError("Failed to fetch truck companies.");
       }
@@ -91,6 +95,7 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
     console.log("Request Data:", requestData);
 
     onConfirm(requestData);
+    onClose();
     // setInvoiceDetailModalOpen(true);
   };
 

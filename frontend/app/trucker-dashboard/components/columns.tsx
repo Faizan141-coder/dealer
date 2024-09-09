@@ -555,7 +555,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     accessorKey: "delivery_address",
     header: "Delivery Address",
     cell: ({ row }) => (
-      <div className="max-w-[150px] truncate">
+      <div className="">
         {row.getValue("delivery_address")}
       </div>
     ),

@@ -172,12 +172,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { InvoiceModal } from "@/components/modals/invoice-modal";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { TruckInvoiceModal } from "@/components/modals/truck-invocie-modal";
 import { toast } from "@/components/ui/use-toast";
-import { sub } from "date-fns";
 
 export type PlaceOrderColumn = {
   id: string;
@@ -201,55 +199,15 @@ const InvoiceCell = ({ row }: { row: any }) => {
   const [supplierUsername, setSupplierUsername] = useState("");
   const token = Cookies.get("authToken");
   const [invoiceData, setInvoiceData] = useState<any>({});
+  const [subProductId, setSubProductId] = useState<string>("");
 
   const status = row.getValue("status") as string;
   const subProducts = row.original.sub_products;
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (subProductId: string) => {
+    setSubProductId(subProductId);
     setAddModalOpen(true);
   };
-
-  // const handleConfirm = async () => {
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await fetch(`http://127.0.0.1:8000/generate-invoice/`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({
-  //         supplier_username: supplierUsername,
-  //         product_id: row.original.id,
-  //       }),
-  //     });
-
-  //     if (!supplierUsername) {
-  //       throw new Error("Supplier username is required");
-  //     }
-
-  //     if (!row.original.id) {
-  //       throw new Error("Product ID is required");
-  //     }
-
-  //     const data = await response.json();
-  //     console.log(data.invoice);
-  //     setInvoiceData(data.invoice);
-
-  //     if (response.status === 201) {
-  //       toast.success("Invoice generated successfully");
-  //       console.log("Invoice generated successfully");
-  //     }
-  //   } catch (error: any) {
-  //     toast.error("Failed to generate invoice");
-  //     console.error("Error:", error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-
-  //   setAddModalOpen(false);
-  // };
 
   const handleConfirm = async (subProductIds: string[]) => {
     setLoading(true);
@@ -266,7 +224,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
           body: JSON.stringify({
             truck_company_username: supplierUsername,
             // invoice_id: row.original.id,
-            sub_product_ids: subProductIds,
+            sub_product_ids: [subProductId],
           }),
         }
       );
@@ -297,23 +255,14 @@ const InvoiceCell = ({ row }: { row: any }) => {
   return (
     <div>
       {subProducts.map((subProduct: any, index: any) => (
-        <div>
+        <div key={subProduct.id}>
           <Button
-            onClick={handleOpenModal}
+            onClick={() => handleOpenModal(subProduct.id)}
             disabled={subProduct.sub_status === "Pending with truck"}
+            className="mt-5"
           >
-            Invoice
+            Invoice {subProduct.id}
           </Button>
-          {/* <InvoiceModal
-            isOpen={addModalOpen}
-            onClose={() => setAddModalOpen(false)}
-            onConfirm={handleConfirm}
-            loading={loading}
-            invoiceData={invoiceData}
-            productId={row.original.id}
-            supplierUsername={supplierUsername}
-            setSupplierUsername={setSupplierUsername}
-          /> */}
           <TruckInvoiceModal
             isOpen={addModalOpen}
             onClose={() => setAddModalOpen(false)}
@@ -322,7 +271,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
             invoiceData={invoiceData}
             productId={row.original.id}
             setSupplierUsername={setSupplierUsername}
-            subProductIds={[subProduct.id]}
+            subProductIds={[subProduct.id || ""]}
           />
         </div>
       ))}
@@ -341,6 +290,9 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
         <div>
           {subProducts.map((subProduct, index) => (
             <div key={subProduct.id} className="mb-2 p-2 border rounded">
+              <p>
+                <strong>ID:</strong> {subProduct.id}
+              </p>
               <p>
                 <strong>Product Name:</strong> {subProduct.product_name}
               </p>

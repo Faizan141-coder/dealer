@@ -70,7 +70,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Dealer Dashboard"
+          title="Admin Dashboard"
           description={`Total (${data.length})`}
         />
         <div className="space-x-3">
