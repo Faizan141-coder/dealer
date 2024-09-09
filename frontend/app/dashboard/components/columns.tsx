@@ -175,7 +175,9 @@ import { Badge } from "@/components/ui/badge";
 import { InvoiceModal } from "@/components/modals/invoice-modal";
 import { useState } from "react";
 import Cookies from "js-cookie";
-import toast from "react-hot-toast";
+import { TruckInvoiceModal } from "@/components/modals/truck-invocie-modal";
+import { toast } from "@/components/ui/use-toast";
+import { sub } from "date-fns";
 
 export type PlaceOrderColumn = {
   id: string;
@@ -184,6 +186,7 @@ export type PlaceOrderColumn = {
     username: string;
   };
   sub_products: {
+    id: string;
     product_name: string;
     product_type: string;
     sub_status: string;
@@ -200,17 +203,60 @@ const InvoiceCell = ({ row }: { row: any }) => {
   const [invoiceData, setInvoiceData] = useState<any>({});
 
   const status = row.getValue("status") as string;
+  const subProducts = row.original.sub_products;
 
   const handleOpenModal = () => {
     setAddModalOpen(true);
   };
 
-  const handleConfirm = async () => {
+  // const handleConfirm = async () => {
+  //   setLoading(true);
+
+  //   try {
+  //     const response = await fetch(`http://127.0.0.1:8000/generate-invoice/`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({
+  //         supplier_username: supplierUsername,
+  //         product_id: row.original.id,
+  //       }),
+  //     });
+
+  //     if (!supplierUsername) {
+  //       throw new Error("Supplier username is required");
+  //     }
+
+  //     if (!row.original.id) {
+  //       throw new Error("Product ID is required");
+  //     }
+
+  //     const data = await response.json();
+  //     console.log(data.invoice);
+  //     setInvoiceData(data.invoice);
+
+  //     if (response.status === 201) {
+  //       toast.success("Invoice generated successfully");
+  //       console.log("Invoice generated successfully");
+  //     }
+  //   } catch (error: any) {
+  //     toast.error("Failed to generate invoice");
+  //     console.error("Error:", error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+
+  //   setAddModalOpen(false);
+  // };
+
+  const handleConfirm = async (subProductIds: string[]) => {
     setLoading(true);
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/generate-invoice/`,
+        "http://127.0.0.1:8000/forward-invoice-to-truck-company/",
         {
           method: "POST",
           headers: {
@@ -218,57 +264,69 @@ const InvoiceCell = ({ row }: { row: any }) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            supplier_username: supplierUsername,
-            product_id: row.original.id,
+            truck_company_username: supplierUsername,
+            // invoice_id: row.original.id,
+            sub_product_ids: subProductIds,
           }),
         }
       );
-
-      if (!supplierUsername) {
-        throw new Error("Supplier username is required");
-      }
 
       if (!row.original.id) {
         throw new Error("Product ID is required");
       }
 
       const data = await response.json();
-      console.log(data.invoice);
-      setInvoiceData(data.invoice);
 
-      if (response.status === 201) {
-        toast.success("Invoice generated successfully");
-        console.log("Invoice generated successfully");
+      if (response.status === 200) {
+        toast({
+          variant: "default",
+          description: data.message,
+        });
       }
     } catch (error: any) {
-      toast.error("Failed to generate invoice");
-      console.error("Error:", error.message);
+      toast({
+        variant: "destructive",
+        description: error.message,
+      });
+      console.error("Error generating invoice:", error.message);
     } finally {
       setLoading(false);
     }
-
-    setAddModalOpen(false);
   };
 
   return (
-    <>
-      <Button
-        onClick={handleOpenModal}
-        disabled={status !== "Pending with dealer"}
-      >
-        Invoice
-      </Button>
-      <InvoiceModal
-        isOpen={addModalOpen}
-        onClose={() => setAddModalOpen(false)}
-        onConfirm={handleConfirm}
-        loading={loading}
-        invoiceData={invoiceData}
-        productId={row.original.id}
-        supplierUsername={supplierUsername}
-        setSupplierUsername={setSupplierUsername}
-      />
-    </>
+    <div>
+      {subProducts.map((subProduct: any, index: any) => (
+        <div>
+          <Button
+            onClick={handleOpenModal}
+            disabled={subProduct.sub_status === "Pending with truck"}
+          >
+            Invoice
+          </Button>
+          {/* <InvoiceModal
+            isOpen={addModalOpen}
+            onClose={() => setAddModalOpen(false)}
+            onConfirm={handleConfirm}
+            loading={loading}
+            invoiceData={invoiceData}
+            productId={row.original.id}
+            supplierUsername={supplierUsername}
+            setSupplierUsername={setSupplierUsername}
+          /> */}
+          <TruckInvoiceModal
+            isOpen={addModalOpen}
+            onClose={() => setAddModalOpen(false)}
+            onConfirm={() => handleConfirm([subProduct.id])}
+            loading={loading}
+            invoiceData={invoiceData}
+            productId={row.original.id}
+            setSupplierUsername={setSupplierUsername}
+            subProductIds={[subProduct.id]}
+          />
+        </div>
+      ))}
+    </div>
   );
 };
 
@@ -282,7 +340,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       return (
         <div>
           {subProducts.map((subProduct, index) => (
-            <div key={index} className="mb-2 p-2 border rounded">
+            <div key={subProduct.id} className="mb-2 p-2 border rounded">
               <p>
                 <strong>Product Name:</strong> {subProduct.product_name}
               </p>

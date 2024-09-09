@@ -1,16 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarIcon, SendHorizontal } from "lucide-react";
-import { format } from "date-fns";
 
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Calendar } from "../ui/calendar";
-import { SingleCombobox } from "../ui/combo";
 import Cookies from "js-cookie";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { SingleCombobox } from "../ui/combo";
 
 interface AddModalProps {
   isOpen: boolean;
@@ -38,15 +45,20 @@ export const AddModal: React.FC<AddModalProps> = ({
     initialSubOrder?.product_type || ""
   );
   const [quantity, setQuantity] = useState(initialSubOrder?.quantity || 0);
-  const [deliveryDate, setDeliveryDate] = useState<Date | null>(
+  const [deliveryDate, setDeliveryDate] = useState<Date>(
     initialSubOrder?.delivery_date || null
   );
-  const [deliveryTime, setDeliveryTime] = useState<string>(
-    initialSubOrder?.delivery_time || "12:00"
-  );
+  // const [deliveryTime, setDeliveryTime] = useState<string>(
+  //   initialSubOrder?.delivery_time || "12:00"
+  // );
   const [deliveryAddress, setDeliveryAddress] = useState(
     initialSubOrder?.delivery_address || ""
   );
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+
   const [dealers, setDealers] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -58,7 +70,7 @@ export const AddModal: React.FC<AddModalProps> = ({
       setProductType(initialSubOrder.product_type);
       setQuantity(initialSubOrder.quantity);
       setDeliveryDate(initialSubOrder.delivery_date);
-      setDeliveryTime(initialSubOrder.delivery_time || "12:00");
+      // setDeliveryTime(initialSubOrder.delivery_time || "12:00");
       setDeliveryAddress(initialSubOrder.delivery_address);
     }
   }, [initialSubOrder]);
@@ -72,16 +84,13 @@ export const AddModal: React.FC<AddModalProps> = ({
 
   const getDealers = async () => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/get-all-dealers/`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:8000/get-all-dealers/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.status === 200) {
         const data = await response.json();
@@ -103,8 +112,9 @@ export const AddModal: React.FC<AddModalProps> = ({
       product_name: productName,
       product_type: productType,
       quantity,
-      delivery_date: convertDateString(deliveryDate + "-" + deliveryTime), // Combine date and time
-      delivery_address: deliveryAddress,
+      // delivery_date: convertDateString(deliveryDate + "-" + deliveryTime), // Combine date and time
+      delivery_date: deliveryDate, // Combine date and time
+      delivery_address: streetAddress + ", " + city + ", " + state + ", " + zipCode,
       dealer_username: dealerUsername,
     };
     onConfirm(subOrder);
@@ -120,59 +130,76 @@ export const AddModal: React.FC<AddModalProps> = ({
       onClose={onClose}
     >
       <div className="flex flex-col space-y-4">
-        <Input
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
-          placeholder="Product Name"
-        />
-        <Input
-          value={productType}
-          onChange={(e) => setProductType(e.target.value)}
-          placeholder="Product Type"
-        />
+        <Select onValueChange={setProductName}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select product" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="Cement">Cement</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select onValueChange={setProductType}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select product type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="type_1">Type 1</SelectItem>
+              <SelectItem value="type_2">Type 2</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <Input
           value={quantity}
           type="number"
           onChange={(e) => setQuantity(parseInt(e.target.value))}
           placeholder="Quantity"
         />
-        <Input
-          value={deliveryAddress}
-          onChange={(e) => setDeliveryAddress(e.target.value)}
-          placeholder="Delivery Address"
-        />
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-full justify-start text-left font-normal"
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {deliveryDate ? (
-                <span>
-                  {format(deliveryDate, "PPP")} {deliveryTime}{" "}
-                  {/* Display time here */}
-                </span>
-              ) : (
-                <span>Pick a date and time</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={deliveryDate ?? undefined}
-              onSelect={(day) => setDeliveryDate(day as Date)}
-              initialFocus
+        <div>
+          <div className=" flex space-x-5">
+            <Input
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="City"
             />
-          </PopoverContent>
-        </Popover>
-        <Input
-          type="time"
-          value={deliveryTime}
-          onChange={(e) => setDeliveryTime(e.target.value)} // Time input handler
+            <Input
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              placeholder="State"
+            />
+          </div>
+          <div className="mt-5 flex space-x-5">
+            <Input
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
+              placeholder="Zip Code"
+            />
+            <Input
+              value={streetAddress}
+              onChange={(e) => setStreetAddress(e.target.value)}
+              placeholder="Street Address"
+            />
+          </div>
+        </div>
+
+        <DatePicker
+          selected={deliveryDate}
+          className="border-gray-200 p-2 border-2 rounded-md w-full"
+          onChange={(
+            date: Date | null,
+            event?: React.SyntheticEvent<any> | undefined
+          ) => setDeliveryDate(date)}
+          showTimeSelect
+          timeFormat="HH:mm"
+          timeIntervals={1}
+          timeCaption="time"
+          dateFormat="MMMM d, yyyy h:mm aa"
+          wrapperClassName="datePicker"
         />
-        <div className="mt-5">
+
+        {/* <div className="mt-5">
           <SingleCombobox
             items={
               dealers.length > 0
@@ -188,7 +215,7 @@ export const AddModal: React.FC<AddModalProps> = ({
             defaultValue={dealerUsername}
             setCurrentItem={setDealerUsername}
           />
-        </div>
+        </div> */}
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <Button
           disabled={loading}
@@ -202,32 +229,32 @@ export const AddModal: React.FC<AddModalProps> = ({
   );
 };
 
-function convertDateString(dateString: string): string {
-  // Extract the date and time parts
-  const [datePart, timePart] = dateString.split("-").map((part) => part.trim());
+// function convertDateString(dateString: string): string {
+//   // Extract the date and time parts
+//   const [datePart, timePart] = dateString.split("-").map((part) => part.trim());
 
-  // Remove the GMT and timezone part from the date string
-  const dateWithoutTimezone = datePart.split(" GMT")[0];
+//   // Remove the GMT and timezone part from the date string
+//   const dateWithoutTimezone = datePart.split(" GMT")[0];
 
-  // Parse the date part manually
-  const dateObject = new Date(dateWithoutTimezone);
+//   // Parse the date part manually
+//   const dateObject = new Date(dateWithoutTimezone);
 
-  // Extract the hour and minute from the time part
-  const [hour, minute] = timePart.split(":").map(Number);
+//   // Extract the hour and minute from the time part
+//   const [hour, minute] = timePart.split(":").map(Number);
 
-  // Set the time on the date object
-  dateObject.setHours(hour);
-  dateObject.setMinutes(minute);
+//   // Set the time on the date object
+//   dateObject.setHours(hour);
+//   dateObject.setMinutes(minute);
 
-  // Format the final output
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  };
+//   // Format the final output
+//   const options: Intl.DateTimeFormatOptions = {
+//     year: "numeric",
+//     month: "short",
+//     day: "2-digit",
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     hour12: true,
+//   };
 
-  return dateObject.toLocaleString("en-US", options).replace(",", "");
-}
+//   return dateObject.toLocaleString("en-US", options).replace(",", "");
+// }
