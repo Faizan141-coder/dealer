@@ -436,12 +436,14 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const [invoiceData, setInvoiceData] = useState({});
   const token = Cookies.get("authToken");
   const [driverUsername, setDriverUsername] = useState("");
-  const status  = row.getValue()
   const [truckPlateNumber, setTruckPlateNumber] = useState<string>("");
   const [driverPhoneNumber, setDriverPhoneNumber] = useState<string>("");
   const [driverAddress, setDriverAddress] = useState<string>("");
   const [driverEmail, setDriverEmail] = useState<string>("");
   const [driverFullName, setDriverFullName] = useState<string>("");
+
+
+  const status = row.getValue("status") as string;
 
   const handleOpenModal = () => {
     setAddModalOpen(true);
@@ -488,9 +490,10 @@ const InvoiceButton = ({ row }: { row: any }) => {
     }
   };
 
+  // disabled={status !== "Pending with truck"}
   return (
     <>
-      <Button onClick={handleOpenModal} className="whitespace-nowrap" disabled={status!=="Pending With Truck"} >
+      <Button onClick={handleOpenModal} className="whitespace-nowrap">
         Generate Invoice
       </Button>
       <DriverInvoiceModal

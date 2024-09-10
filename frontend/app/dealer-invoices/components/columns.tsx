@@ -144,7 +144,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
               <strong>Product Type:</strong> {subProduct.product_type}
             </p>
             <p>
-              <strong>Quantity:</strong> {subProduct.quantity *25}
+              <strong>Quantity:</strong> {subProduct.quantity}
             </p>
             <p>
               <strong>Actual Quantity</strong> {subProduct.actual_quantity}
