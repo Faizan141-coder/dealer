@@ -355,3 +355,4 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     cell: InvoiceCell, // Use the component here
   },
 ];
+

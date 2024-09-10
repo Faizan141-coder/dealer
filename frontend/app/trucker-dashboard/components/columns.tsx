@@ -426,6 +426,7 @@ export type PlaceOrderColumn = {
   supplier_invoice_id: string;
   dealer_invoice_id: string;
   sub_product_id: string;
+  status: string;
 };
 
 // New component to handle invoice generation
@@ -435,7 +436,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const [invoiceData, setInvoiceData] = useState({});
   const token = Cookies.get("authToken");
   const [driverUsername, setDriverUsername] = useState("");
-
+  const status  = row.getValue()
   const [truckPlateNumber, setTruckPlateNumber] = useState<string>("");
   const [driverPhoneNumber, setDriverPhoneNumber] = useState<string>("");
   const [driverAddress, setDriverAddress] = useState<string>("");
@@ -489,7 +490,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
 
   return (
     <>
-      <Button onClick={handleOpenModal} className="whitespace-nowrap">
+      <Button onClick={handleOpenModal} className="whitespace-nowrap" disabled={status!=="Pending With Truck"} >
         Generate Invoice
       </Button>
       <DriverInvoiceModal
@@ -610,6 +611,13 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     header: "Supplier Phone",
     cell: ({ row }) => (
       <div className="whitespace-nowrap">{row.getValue("supplier_phone")}</div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "status",
+    cell: ({ row }) => (
+      <div className="whitespace-nowrap">{row.getValue("status")}</div>
     ),
   },
   // {

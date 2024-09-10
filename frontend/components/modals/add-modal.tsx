@@ -183,21 +183,25 @@ export const AddModal: React.FC<AddModalProps> = ({
             />
           </div>
         </div>
+        <div className="required w-full">
+  <DatePicker
+    selected={deliveryDate}
+    className="border-gray-200 p-2 border-2 rounded-md w-full"
+    onChange={(
+      date: Date | null,
+      event?: React.SyntheticEvent<any> | undefined
+    ) => setDeliveryDate(date)}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={1}
+    timeCaption="time"
+    dateFormat="MMMM d, yyyy h:mm aa"
+    wrapperClassName="w-full"
+    placeholderText="Pick a date and time for delivery"
+    required
+  />
+</div>
 
-        <DatePicker
-          selected={deliveryDate}
-          className="border-gray-200 p-2 border-2 rounded-md w-full"
-          onChange={(
-            date: Date | null,
-            event?: React.SyntheticEvent<any> | undefined
-          ) => setDeliveryDate(date)}
-          showTimeSelect
-          timeFormat="HH:mm"
-          timeIntervals={1}
-          timeCaption="time"
-          dateFormat="MMMM d, yyyy h:mm aa"
-          wrapperClassName="datePicker"
-        />
 
         {/* <div className="mt-5">
           <SingleCombobox
@@ -216,7 +220,7 @@ export const AddModal: React.FC<AddModalProps> = ({
             setCurrentItem={setDealerUsername}
           />
         </div> */}
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
         <Button
           disabled={loading}
           className="bg-green-500 text-white"
