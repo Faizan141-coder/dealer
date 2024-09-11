@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import Link from "next/link";
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
@@ -28,11 +27,13 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Truck Dashboard"
+          title="Truck Sales Dashboard"
           description={`Total (${data.length})`}
         />
         <div className="flex items-center gap-2">
-          <Button onClick={() => router.push("/trucker-sales-dashboard")}>Sales Dashboard</Button>
+          <Button onClick={() => router.push("/trucker-dashboard")}>
+            Truck Dashboard
+          </Button>
           <Button onClick={handleLogout}>Logout</Button>
         </div>
       </div>
