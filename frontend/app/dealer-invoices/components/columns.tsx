@@ -98,10 +98,6 @@ const SubProductsCell = ({ row }: { row: any }) => {
       }
       router.refresh();
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        description: error.message,
-      });
       console.error("Error generating invoice:", error.message);
     } finally {
       setLoading(false);
@@ -245,7 +241,81 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const [loading, setLoading] = useState(false);
+      const token = Cookies.get("authToken");
+
+      const subProductId = row.original.ProductDetail.sub_products[0].id;
+
+      const getSupplierTicket = async (subProductId: string) => {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            "http://127.0.0.1:8000/get-supplier-ticket/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                sub_product_id: subProductId.toString(),
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Handle successful response (e.g., open ticket in new window)
+            window.open(data.ticket_url, "_blank");
+            toast({
+              variant: "default",
+              description: "Supplier ticket retrieved successfully",
+            });
+          }
+        } catch (error: any) {
+          toast({
+            variant: "destructive",
+            description: error.message,
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const getSupplierInvoice = async (supplierInvoiceId: string) => {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            "http://127.0.0.1:8000/get-supplier-invoice/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                supplier_invoice_id: supplierInvoiceId,
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Handle successful response (e.g., open invoice in new window)
+            window.open(data.invoice_url, "_blank");
+            toast({
+              variant: "default",
+              description: "Supplier invoice retrieved successfully",
+            });
+          }
+        } catch (error: any) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      };
 
       return (
         <DropdownMenu>
@@ -256,15 +326,18 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => getSupplierInvoice(row.original.id)}
+              disabled={loading}
             >
-              Copy payment ID
+              {loading ? "Loading..." : "Supplier Invoice"}
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => getSupplierTicket(subProductId)}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Supplier Ticket"}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
