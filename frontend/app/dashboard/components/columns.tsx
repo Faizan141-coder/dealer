@@ -74,6 +74,8 @@ const InvoiceCell = ({ row }: { row: any }) => {
         }
       );
 
+      console.log(response);
+
       if (!row.original.id) {
         throw new Error("Product ID is required");
       }
@@ -106,6 +108,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
             loading={loading}
             onClick={() => handleOpenModal(subProduct.id)}
             disabled={subProduct.sub_status !== "Pending with dealer"}
+            className="my-5"
           >
             Invoice {subProduct.id}
           </LoadingButton>

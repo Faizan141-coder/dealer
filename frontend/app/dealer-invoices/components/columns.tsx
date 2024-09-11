@@ -127,6 +127,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
           description: "Delivery confirmed successfully",
         });
       }
+      router.refresh(); 
     } catch {
       console.error("Error confirming status");
     } finally {
