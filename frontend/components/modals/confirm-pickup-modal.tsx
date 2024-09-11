@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -46,9 +46,9 @@ export const ConfirmPickupModal = ({
           <Button onClick={onClose} variant="outline">
             Cancel
           </Button>
-          <Button onClick={handleConfirm} disabled={loading}>
+          <LoadingButton onClick={handleConfirm} loading={loading}>
             {loading ? "Processing..." : "Confirm"}
-          </Button>
+          </LoadingButton>
         </div>
       </div>
     </Modal>

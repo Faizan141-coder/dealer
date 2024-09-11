@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { columns, PlaceOrderColumn } from "./columns";
@@ -75,7 +75,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         />
         <div className="space-x-3">
           <Link href={"/dealer-invoices"}>
-            <Button>Show Invoices</Button>
+            <LoadingButton loading={loading}>Show Invoices</LoadingButton>
           </Link>
           <Button onClick={handleLogout}>Logout</Button>
         </div>

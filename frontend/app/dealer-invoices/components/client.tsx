@@ -1,14 +1,15 @@
-
 "use client";
 
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { columns, PlaceOrderColumn } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Link from "next/link";
+import { useState } from "react";
 
 interface PlaceOrderClientProps {
   data: any[]; // Data structure from the backend
@@ -16,6 +17,7 @@ interface PlaceOrderClientProps {
 
 export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleLogout = () => {
     Cookies.remove("authToken");
@@ -31,9 +33,12 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           title="Dealer Dashboard"
           description={`Total (${data.length})`}
         />
-        <Button onClick={handleLogout}>
-          Logout
-        </Button>
+        <div className="flex items-center gap-x-2">
+          <Link href="/dashboard">
+            <LoadingButton loading={loading}>Go Back</LoadingButton>
+          </Link>
+          <Button onClick={handleLogout}>Logout</Button>
+        </div>
       </div>
       <Separator />
       <DataTable searchKey="supplier_username" columns={columns} data={data} />

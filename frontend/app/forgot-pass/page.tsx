@@ -1,6 +1,8 @@
+'use client'
+
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,8 +12,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
 export default function ForgotPassForm() {
+  const [loading, setLoading] = useState(false);
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <Card className="w-full max-w-2xl">
@@ -32,9 +36,9 @@ export default function ForgotPassForm() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full">
+            <LoadingButton loading={loading} type="submit" className="w-full">
               Reset Password
-            </Button>
+            </LoadingButton>
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}

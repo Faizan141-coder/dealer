@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { SendHorizontal } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import { SingleCombobox } from "../ui/combo";
 import Cookies from "js-cookie";
 import { TruckInvoiceDetailModal } from "./truck-invoice-detail-modal";
@@ -95,6 +95,7 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
     console.log("Request Data:", requestData);
 
     onConfirm(requestData);
+    router.refresh();
     onClose();
     // setInvoiceDetailModalOpen(true);
   };
@@ -132,15 +133,15 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
               />
             </div>
           </div>
-          <Button
-            disabled={loading}
+          <LoadingButton
+            loading={loading}
             className="bg-green-500 focus:ring-green-500 hover:bg-green-400 text-white space-x-3"
             type="submit"
             onClick={handleConfirm}
           >
             <span>Forward Invoice</span>
             <SendHorizontal color="#fff" className="h-4 w-4" />
-          </Button>
+          </LoadingButton>
         </div>
         {error && <p className="text-red-500 mt-2">{error}</p>}
       </Modal>

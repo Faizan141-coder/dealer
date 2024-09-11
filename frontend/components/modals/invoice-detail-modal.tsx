@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "../ui/button";
+import { Button, LoadingButton } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Modal } from "../ui/modal";
@@ -105,9 +105,9 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
         <Button onClick={onClose} variant="secondary">
           Cancel
         </Button>
-        <Button onClick={handleConfirm} disabled={loading}>
+        <LoadingButton onClick={handleConfirm} loading={loading}>
           Confirm Order
-        </Button>
+        </LoadingButton>
       </div>
     </Modal>
   );

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -306,26 +306,15 @@ export default function SupplierRegistrationForm() {
                 />
               </div>
             </div>
-            {/* <div>
-              <Label htmlFor="price-charged-per-ton">Price Charged Per Ton</Label>
-              <Input
-                id="price-charged-per-ton"
-                onChange={(e) => setPriceChargedPerTon(e.target.value)}
-                placeholder="New York"
-                required
-                value={priceChargedPerTon}
-                type="number"
-              />
-            </div> */}
-            <Button
-              disabled={loading}
+            <LoadingButton
+              loading={loading}
               onClick={handleRegister}
               type="submit"
               variant="default"
               className="w-full"
             >
               Register
-            </Button>
+            </LoadingButton>
           </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}

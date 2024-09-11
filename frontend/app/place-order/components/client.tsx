@@ -2,7 +2,7 @@
 
 import { Plus, Phone } from "lucide-react"; // Add Phone icon import
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { columns, PlaceOrderColumn } from "./columns";
@@ -118,13 +118,14 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
             <Plus size={16} className="inline mr-2" />
             Add Sub-Order
           </Button>
-          <Button
+          <LoadingButton
+            loading={loading}
             onClick={onConfirm}
             disabled={subProducts.length === 0 || loading}
             className="bg-green-600 text-white text-sm px-5 py-3 rounded-md hover:bg-green-500 disabled:opacity-50"
           >
             {loading ? "Placing Order..." : "Place Order"}
-          </Button>
+          </LoadingButton>
           <Button onClick={handleLogout} className="ml-4">
             Logout
           </Button>

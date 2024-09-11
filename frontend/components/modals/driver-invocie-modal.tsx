@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import { SendHorizontal } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
-import { SingleCombobox } from "../ui/combo";
-import Cookies from "js-cookie";
+import { Button, LoadingButton } from "@/components/ui/button";
 import { Input } from "../ui/input";
 
 interface DriverInvoiceModalProps {
@@ -52,42 +50,10 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
   dealerInvoiceId,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [dealers, setDealers] = useState<string[]>([]);
-  const [selectedDealer, setSelectedDealer] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const token = Cookies.get("authToken");
-
-  
 
   useEffect(() => {
     setIsMounted(true);
-    // if (isOpen) {
-    //   getTruckCompanies(); // Fetch truck companies when modal is opened
-    // }
   }, [isOpen]);
-
-  // const getTruckCompanies = async () => {
-  //   try {
-  //     const response = await fetch("http://127.0.0.1:8000/get-all-drivers/", {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (response.status === 200) {
-  //       const data = await response.json();
-  //       setDealers(data.drivers); // Update state with fetched dealers
-  //       setSupplierUsername(data.drivers); // Set initial dealer
-  //       setSelectedDealer(data.drivers); // Set initial dealer
-  //     } else {
-  //       setError("Failed to fetch truck companies.");
-  //     }
-  //   } catch (err) {
-  //     setError("An error occurred while fetching truck companies.");
-  //   }
-  // };
 
   if (!isMounted) {
     return null;
@@ -148,15 +114,15 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
               </div>
             </div>
           </div>
-          <Button
-            disabled={loading}
+          <LoadingButton
+            loading={loading}
             className="bg-green-500 focus:ring-green-500 hover:bg-green-400 text-white space-x-3"
             type="submit"
             onClick={onConfirm}
           >
             <span>Forward Invoice</span>
             <SendHorizontal color="#fff" className="h-4 w-4" />
-          </Button>
+          </LoadingButton>
         </div>
         {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
       </Modal>

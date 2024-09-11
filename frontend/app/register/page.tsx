@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -284,15 +284,15 @@ export default function SignupForm() {
                 />
               </div>
             </div>
-            <Button
-              disabled={loading}
+            <LoadingButton
+              loading={loading}
               onClick={handleRegister}
               type="submit"
               variant="default"
               className="w-full"
             >
               Register
-            </Button>
+            </LoadingButton>
           </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CalendarIcon } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { SupplierInvoiceDetailModal } from "./supplier-invoice-detail-modal";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -147,13 +147,13 @@ export const SupplierInvoiceModal: React.FC<SupplierInvoiceModalProps> = ({
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
           <div className="flex w-full justify-center">
-            <Button
+            <LoadingButton
+              loading={loading}
               className="w-1/2"
-              disabled={loading}
               onClick={handleConfirm}
             >
               {loading ? "Loading..." : "Generate Invoice"}
-            </Button>
+            </LoadingButton>
           </div>
         </div>
       </Modal>

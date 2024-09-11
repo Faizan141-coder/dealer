@@ -11,6 +11,7 @@ import { SupplierInvoiceModal } from "@/components/modals/supplier-invoice-modal
 import { TruckInvoiceModal } from "@/components/modals/truck-invocie-modal";
 import { DriverInvoiceModal } from "@/components/modals/driver-invocie-modal";
 import { Phone } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export type PlaceOrderColumn = {
   id: string;
@@ -39,12 +40,13 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const [loading, setLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState({});
   const token = Cookies.get("authToken");
-  const [driverUsername, setDriverUsername] = useState("");
   const [truckPlateNumber, setTruckPlateNumber] = useState<string>("");
   const [driverPhoneNumber, setDriverPhoneNumber] = useState<string>("");
   const [driverAddress, setDriverAddress] = useState<string>("");
   const [driverEmail, setDriverEmail] = useState<string>("");
   const [driverFullName, setDriverFullName] = useState<string>("");
+
+  const router = useRouter();
 
   const status = row.getValue("status") as string;
   const dealerPhoneNumber = row.original.dealer_phone;
@@ -78,7 +80,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
       });
 
       const data = await response.json();
-
+      router.refresh();
       console.log(data);
     } catch (error: any) {
       console.error("Error generating invoice:", error.message);

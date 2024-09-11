@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -136,9 +136,9 @@ export default function LoginForm() {
                 placeholder="••••••••"
               />
             </div>
-            <Button type="submit" className="w-full" onClick={handleLogin}>
+            <LoadingButton loading={loading} type="submit" className="w-full" onClick={handleLogin}>
               Login
-            </Button>
+            </LoadingButton>
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
