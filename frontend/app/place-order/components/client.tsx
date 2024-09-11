@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Plus, Phone } from "lucide-react"; // Add Phone icon import
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
@@ -34,6 +34,8 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
 
   const router = useRouter();
   const token = Cookies.get("authToken");
+
+  const phoneNumber = "1234567890"; // Replace with the actual phone number
 
   const onConfirm = async () => {
     setLoading(true);
@@ -86,6 +88,10 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     router.push("/");
   };
 
+  const handleWhatsAppClick = () => {
+    window.open(`https://wa.me/${phoneNumber}`, "_blank");
+  };
+
   return (
     <>
       <div className="flex items-center justify-between mb-4">
@@ -94,6 +100,14 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           description={`Total Products: ${data.length}`}
         />
         <div className="flex space-x-4">
+          <Button
+            onClick={handleWhatsAppClick}
+            className="bg-green-500 text-white rounded-full p-2 hover:bg-green-400"
+            title="Contact on WhatsApp"
+            size={"icon"}
+          >
+            <Phone size={20} />
+          </Button>
           <Button
             onClick={() => {
               setSelectedSubProduct(null);
