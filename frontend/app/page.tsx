@@ -65,14 +65,12 @@ export default function LoginForm() {
 
         if (role === "dealer") {
           router.push("/dashboard");
-        } else if (role === "supplier") {
-          router.push("/supplier-dashboard");
+        } else if (role === "sales") {
+          router.push("/sales-dashboard");
         } else if (role === "client") {
           router.push("/place-order");
         } else if (role === "trucker") {
           router.push("/trucker-dashboard");
-        } else if (role === "driver") {
-          router.push("/driver-dashboard");
         } else if (role === "truck") {
           router.push("/trucker-dashboard");
         }
@@ -136,7 +134,12 @@ export default function LoginForm() {
                 placeholder="••••••••"
               />
             </div>
-            <LoadingButton loading={loading} type="submit" className="w-full" onClick={handleLogin}>
+            <LoadingButton
+              loading={loading}
+              type="submit"
+              className="w-full"
+              onClick={handleLogin}
+            >
               Login
             </LoadingButton>
           </div>
@@ -171,22 +174,16 @@ export default function LoginForm() {
                 Dealer
               </Button>
               <Button
-                onClick={() => router.push("/register-supplier")}
-                className="w-full"
-              >
-                Supplier
-              </Button>
-              <Button
                 onClick={() => router.push("/register-trucker")}
                 className="w-full"
               >
                 Trucker
               </Button>
               <Button
-                onClick={() => router.push("/register-driver")}
+                onClick={() => router.push("/register-sales")}
                 className="w-full"
               >
-                Driver
+                Sales
               </Button>
               <Button onClick={handleCloseModal} className="w-full mt-2">
                 Cancel

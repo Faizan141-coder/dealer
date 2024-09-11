@@ -16,7 +16,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-export default function SupplierRegistrationForm() {
+export default function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,8 +30,7 @@ export default function SupplierRegistrationForm() {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
-  const [role, setRole] = useState("driver");
-  const [truckNoPlate, setTruckNoPlate] = useState("");
+  const [role, setRole] = useState("sales");
 
   const router = useRouter();
 
@@ -39,95 +38,74 @@ export default function SupplierRegistrationForm() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/signup/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            username,
-            first_name: firstName,
-            last_name: lastName,
-            phone,
-            company_name: companyName,
-            country,
-            state,
-            city,
-            zip,
-            address,
-            truck_plate_number: truckNoPlate,
-            role,
-          }),
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:8000/signup/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          username,
+          first_name: firstName,
+          last_name: lastName,
+          phone,
+          company_name: companyName,
+          country,
+          state,
+          city,
+          zip,
+          address,
+          role,
+        }),
+      });
 
       if (!email) {
-        toast.error("Email is required");
         throw new Error("Email is required");
       }
 
       if (!password) {
-        toast.error("Password is required");
         throw new Error("Password is required");
       }
 
       if (!username) {
-        toast.error("Username is required");
         throw new Error("Username is required");
       }
 
       if (!firstName) {
-        toast.error("First name is required");
         throw new Error("First name is required");
       }
 
       if (!lastName) {
-        toast.error("Last name is required");
         throw new Error("Last name is required");
       }
 
       if (!phone) {
-        toast.error("Phone is required");
         throw new Error("Phone is required");
       }
 
       if (!address) {
-        toast.error("Address is required");
         throw new Error("Address is required");
       }
 
       if (!companyName) {
-        toast.error("Company name is required");
         throw new Error("Company name is required");
       }
 
       if (!country) {
-        toast.error("Country is required");
         throw new Error("Country is required");
       }
 
       if (!state) {
-        toast.error("State is required");
         throw new Error("State is required");
       }
 
       if (!city) {
-        toast.error("City is required");
         throw new Error("City is required");
       }
 
       if (!zip) {
-        toast.error("Zip is required");
         throw new Error("Zip is required");
-      }
-
-      if (!truckNoPlate) {
-        toast.error("Price charged per ton is required");
-        throw new Error("Price charged per ton is required");
       }
 
       console.log(
@@ -164,9 +142,9 @@ export default function SupplierRegistrationForm() {
     <div className="flex flex-col items-center justify-center h-full">
       <Card className="w-full max-w-2xl">
         <CardHeader className="items-center">
-          <CardTitle className="text-xl">Register as Driver</CardTitle>
+          <CardTitle className="text-xl">Register as Sales Person</CardTitle>
           <CardDescription>
-            Enter your information to create driver account
+            Enter your information to create sales person account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -179,7 +157,6 @@ export default function SupplierRegistrationForm() {
                   placeholder="johndoe@gmail.com"
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
-                  value={email}
                   required
                 />
               </div>
@@ -190,7 +167,6 @@ export default function SupplierRegistrationForm() {
                   placeholder="John Doe"
                   required
                   onChange={(e) => setUsername(e.target.value)}
-                  value={username}
                 />
               </div>
             </div>
@@ -202,7 +178,6 @@ export default function SupplierRegistrationForm() {
                   placeholder="John"
                   required
                   onChange={(e) => setFirstName(e.target.value)}
-                  value={firstName}
                 />
               </div>
               <div className="grid gap-2">
@@ -212,7 +187,6 @@ export default function SupplierRegistrationForm() {
                   placeholder="Doe"
                   required
                   onChange={(e) => setLastName(e.target.value)}
-                  value={lastName}
                 />
               </div>
             </div>
@@ -228,26 +202,24 @@ export default function SupplierRegistrationForm() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="country">Country</Label>
-                <Input
-                  id="country"
-                  onChange={(e) => setCountry(e.target.value)}
-                  placeholder="United States"
-                  required
-                  value={country}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
                 <Label htmlFor="phone">Phone</Label>
                 <Input
                   id="phone"
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="03482051674"
                   required
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="zip">Zip Code</Label>
+                <Input
+                  id="zip"
                   type="number"
-                  value={phone}
+                  onChange={(e) => setZip(e.target.value)}
+                  placeholder="42809"
+                  required
                 />
               </div>
               <div className="grid gap-2">
@@ -257,7 +229,6 @@ export default function SupplierRegistrationForm() {
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="XYZ Limited"
                   required
-                  value={companyName}
                 />
               </div>
             </div>
@@ -269,18 +240,15 @@ export default function SupplierRegistrationForm() {
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Street 12, New York"
                   required
-                  value={address}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="zip">Zip Code</Label>
+                <Label htmlFor="country">Country</Label>
                 <Input
-                  id="zip"
-                  type="number"
-                  onChange={(e) => setZip(e.target.value)}
-                  placeholder="42809"
+                  id="country"
+                  onChange={(e) => setCountry(e.target.value)}
+                  placeholder="United States"
                   required
-                  value={zip}
                 />
               </div>
             </div>
@@ -292,7 +260,6 @@ export default function SupplierRegistrationForm() {
                   onChange={(e) => setState(e.target.value)}
                   placeholder="Texax"
                   required
-                  value={state}
                 />
               </div>
               <div className="grid gap-2">
@@ -302,20 +269,8 @@ export default function SupplierRegistrationForm() {
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="New York"
                   required
-                  value={city}
                 />
               </div>
-            </div>
-            <div>
-              <Label htmlFor="price-charged-per-ton">Truck Number Plate</Label>
-              <Input
-                id="price-charged-per-ton"
-                onChange={(e) => setTruckNoPlate(e.target.value)}
-                placeholder="New York"
-                required
-                value={truckNoPlate}
-                type="number"
-              />
             </div>
             <LoadingButton
               loading={loading}
