@@ -22,6 +22,7 @@ export type PlaceOrderColumn = {
   status: string;
   user_details: {
     username: string;
+    phone: string;
   };
   sub_products: {
     id: string;
@@ -29,6 +30,8 @@ export type PlaceOrderColumn = {
     product_type: string;
     sub_status: string;
     quantity: string;
+    truck_company_phone: string;
+    driver_phone_number: string;
   }[];
   delivery_date: string;
 };
@@ -205,7 +208,50 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const order = row.original;
+      const token = Cookies.get("authToken");
+
+      const handleDownloadInvoice = async (subProductId: string) => {
+        const response = await fetch(`http://127.0.0.1:8000/generate-pdf/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            product_id: row.original.id,
+          }),
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "invoice.pdf";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        } else {
+          console.error("Failed to download invoice");
+        }
+      };
+
+      const openWhatsAppChat = (phoneNumber: string | null) => {
+        if (phoneNumber && phoneNumber !== "NOT PROVIDED") {
+          window.open(
+            `https://wa.me/${phoneNumber.replace(/\D/g, "")}`,
+            "_blank"
+          );
+        } else {
+          toast({
+            variant: "destructive",
+            description:
+              "Either the relevant party has not provided their phone number or the order is not yet ready to be forwarded to them.",
+          });
+        }
+      };
 
       return (
         <DropdownMenu>
@@ -217,14 +263,29 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
+            <DropdownMenuItem onClick={() => handleDownloadInvoice(order.id)}>
+              Download Invoice
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => openWhatsAppChat(order.user_details.phone)}
+            >
+              Chat with Client
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                openWhatsAppChat(order.sub_products[0]?.driver_phone_number)
+              }
+            >
+              Chat with Driver
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                openWhatsAppChat(order.sub_products[0]?.truck_company_phone)
+              }
+            >
+              Chat with Truck Company
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
