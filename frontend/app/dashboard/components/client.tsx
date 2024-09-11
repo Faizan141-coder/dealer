@@ -74,6 +74,10 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           description={`Total (${data.length})`}
         />
         <div className="space-x-3">
+          {/* add button sales history */}
+          <Link href={"/sales-history"}>
+            <Button>Sales History</Button>
+          </Link>
           <Link href={"/dealer-invoices"}>
             <LoadingButton loading={loading}>Show Invoices</LoadingButton>
           </Link>
