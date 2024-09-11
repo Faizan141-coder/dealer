@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AddModalSales } from "@/components/modals/add-modal-sales";
+import { PlaceOrderModal } from "@/components/modals/place-order-modal";
 
 interface SubProduct {
   product_name: string;
@@ -29,6 +30,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
   const [selectedSubProduct, setSelectedSubProduct] =
     useState<SubProduct | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [placeOrderModalOpen, setPlaceOrderModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dealerUsername, setDealerUsername] = useState("");
 
@@ -37,7 +39,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
 
   const phoneNumber = "1234567890"; // Replace with the actual phone number
 
-  const onConfirm = async () => {
+  const onConfirm = async (dealerUsername: string) => {
     setLoading(true);
     try {
       await fetch(`http://127.0.0.1:8000/place-order-as-sales/`, {
@@ -120,7 +122,10 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           </Button>
           <LoadingButton
             loading={loading}
-            onClick={onConfirm}
+            // onClick={onConfirm}
+            onClick={() => {
+              setPlaceOrderModalOpen(true);
+            }}
             disabled={subProducts.length === 0 || loading}
             className="bg-green-600 text-white text-sm px-5 py-3 rounded-md hover:bg-green-500 disabled:opacity-50"
           >
@@ -167,6 +172,12 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         onConfirm={handleAddSubOrder}
         loading={loading}
         initialSubOrder={selectedSubProduct}
+      />
+      <PlaceOrderModal
+        isOpen={placeOrderModalOpen}
+        onClose={() => setPlaceOrderModalOpen(false)}
+        onConfirm={onConfirm}
+        loading={loading}
         dealerUsername={dealerUsername}
         setDealerUsername={setDealerUsername}
       />
