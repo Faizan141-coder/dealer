@@ -23,9 +23,11 @@ export type PlaceOrderColumn = {
   user_details: {
     username: string;
     phone: string;
+    sales_representative: string;
   };
   sub_products: {
     id: string;
+    delivery_date: string;
     product_name: string;
     product_type: string;
     sub_status: string;
@@ -33,7 +35,6 @@ export type PlaceOrderColumn = {
     truck_company_phone: string;
     driver_phone_number: string;
   }[];
-  delivery_date: string;
 };
 
 const InvoiceCell = ({ row }: { row: any }) => {
@@ -158,6 +159,9 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
               <p>
                 <strong>Status:</strong> {subProduct.sub_status}
               </p>
+              <p>
+                <strong>Delivery Date: </strong> {subProduct.delivery_date}
+              </p>
             </div>
           ))}
         </div>
@@ -167,6 +171,14 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     accessorKey: "user_details.username",
     header: "Client Username",
+  },
+  {
+    accessorKey: "user_details.phone",
+    header: "Client Phone",
+  },
+  {
+    accessorKey: "user_details.sales_representative",
+    header: "Sales Representative",
   },
   {
     accessorKey: "status",
@@ -201,11 +213,6 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
         </Badge>
       );
     },
-  },
-  {
-    accessorKey: "invoice",
-    header: "Invoice",
-    cell: InvoiceCell, // Use the component here
   },
   {
     id: "actions",

@@ -6,12 +6,18 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import Cookies from "js-cookie";
-import toast from "react-hot-toast";
-import { SupplierInvoiceModal } from "@/components/modals/supplier-invoice-modal";
-import { TruckInvoiceModal } from "@/components/modals/truck-invocie-modal";
 import { DriverInvoiceModal } from "@/components/modals/driver-invocie-modal";
-import { Phone } from "lucide-react";
+import { MoreHorizontal, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export type PlaceOrderColumn = {
   id: string;
@@ -99,14 +105,6 @@ const InvoiceButton = ({ row }: { row: any }) => {
           disabled={status !== "Pending with Truck Company"}
         >
           Generate Invoice
-        </Button>
-        <Button
-          onClick={handleWhatsAppClick}
-          className="bg-green-500 text-white rounded-full p-2 hover:bg-green-400"
-          title="Contact Dealer on WhatsApp"
-          size={"icon"}
-        >
-          <Phone size={20} />
         </Button>
       </div>
       <DriverInvoiceModal
@@ -234,19 +232,76 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       <div className="whitespace-nowrap">{row.getValue("status")}</div>
     ),
   },
-  // {
-  //   accessorKey: "dealer_name",
-  //   header: "Dealer Name",
-  //   cell: ({ row }) => (
-  //     <div className="max-w-[150px] truncate">
-  //       {row.getValue("dealer_name")}
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "invoice",
     header: "Invoice",
     cell: ({ row }) => <InvoiceButton row={row} />, // Use the new component
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const order = row.original;
+      const token = Cookies.get("authToken");
+
+      const handleQuoteMiles = async (subProductId: string) => {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/quote-miles-travel/`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                sub_product_id: subProductId,
+              }),
+            }
+          );
+        } catch (error: any) {
+          console.error("Error quoting miles:", error.message);
+        }
+      };
+
+      const openWhatsAppChat = (phoneNumber: string | null) => {
+        if (phoneNumber && phoneNumber !== "NOT PROVIDED") {
+          window.open(
+            `https://wa.me/${phoneNumber.replace(/\D/g, "")}`,
+            "_blank"
+          );
+        } else {
+          toast({
+            variant: "destructive",
+            description:
+              "Either the relevant party has not provided their phone number or the order is not yet ready to be forwarded to them.",
+          });
+        }
+      };
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => handleQuoteMiles(order.sub_product_id)}>
+              Quote Miles
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => openWhatsAppChat(order.dealer_phone)}
+            >
+              Chat with Dealer
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
 ];
 
