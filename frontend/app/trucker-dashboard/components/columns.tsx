@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { SupplierInvoiceModal } from "@/components/modals/supplier-invoice-modal";
 import { TruckInvoiceModal } from "@/components/modals/truck-invocie-modal";
 import { DriverInvoiceModal } from "@/components/modals/driver-invocie-modal";
+import { Phone } from "lucide-react";
 
 export type PlaceOrderColumn = {
   id: string;
@@ -45,8 +46,12 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const [driverEmail, setDriverEmail] = useState<string>("");
   const [driverFullName, setDriverFullName] = useState<string>("");
 
-
   const status = row.getValue("status") as string;
+  const dealerPhoneNumber = row.original.dealer_phone;
+
+  const handleWhatsAppClick = () => {
+    window.open(`https://wa.me/${dealerPhoneNumber}`, "_blank");
+  };
 
   const handleOpenModal = () => {
     setAddModalOpen(true);
@@ -55,29 +60,26 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const handleConfirm = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/assign-to-driver/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            driver_username: driverFullName,
-            truck_plate_number: truckPlateNumber,
-            driver_phone_number: driverPhoneNumber,
-            driver_address: driverAddress,
-            driver_email: driverEmail,
-            sub_product_id: row.original.sub_product_id,
-            dealer_invoice_id: row.original.dealer_invoice_id,
-          }),
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:8000/assign-to-driver/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          driver_username: driverFullName,
+          truck_plate_number: truckPlateNumber,
+          driver_phone_number: driverPhoneNumber,
+          driver_address: driverAddress,
+          driver_email: driverEmail,
+          sub_product_id: row.original.sub_product_id,
+          dealer_invoice_id: row.original.dealer_invoice_id,
+        }),
+      });
 
       const data = await response.json();
 
-      console.log(data)
+      console.log(data);
     } catch (error: any) {
       console.error("Error generating invoice:", error.message);
     } finally {
@@ -86,12 +88,25 @@ const InvoiceButton = ({ row }: { row: any }) => {
     }
   };
 
-  // disabled={status !== "Pending with truck"}
   return (
     <>
-      <Button onClick={handleOpenModal} className="whitespace-nowrap">
-        Generate Invoice
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          onClick={handleOpenModal}
+          className="whitespace-nowrap"
+          disabled={status !== "Pending with Truck Company"}
+        >
+          Generate Invoice
+        </Button>
+        <Button
+          onClick={handleWhatsAppClick}
+          className="bg-green-500 text-white rounded-full p-2 hover:bg-green-400"
+          title="Contact Dealer on WhatsApp"
+          size={"icon"}
+        >
+          <Phone size={20} />
+        </Button>
+      </div>
       <DriverInvoiceModal
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}
@@ -173,9 +188,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     accessorKey: "delivery_address",
     header: "Delivery Address",
     cell: ({ row }) => (
-      <div className="">
-        {row.getValue("delivery_address")}
-      </div>
+      <div className="">{row.getValue("delivery_address")}</div>
     ),
   },
   {

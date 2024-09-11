@@ -7,6 +7,7 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import { TruckInvoiceModal } from "@/components/modals/truck-invocie-modal";
 import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export type PlaceOrderColumn = {
   id: string;
@@ -31,6 +32,8 @@ const InvoiceCell = ({ row }: { row: any }) => {
   const token = Cookies.get("authToken");
   const [invoiceData, setInvoiceData] = useState<any>({});
   const [subProductId, setSubProductId] = useState<string>("");
+
+  const router = useRouter();
 
   const status = row.getValue("status") as string;
   const subProducts = row.original.sub_products;
@@ -72,6 +75,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
           description: data.message,
         });
       }
+      router.refresh();
     } catch (error: any) {
       toast({
         variant: "destructive",
