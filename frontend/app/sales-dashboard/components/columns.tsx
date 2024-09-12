@@ -17,6 +17,7 @@ export type SubProduct = {
   delivery_date: string;
   sub_status: string;
   delivery_address: string;
+  sales_commission: number;
 };
 
 export type PlaceOrderColumn = {
@@ -111,10 +112,6 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
                       <strong>Delivery Date:</strong>{" "}
                       {new Date(subProduct.delivery_date).toLocaleDateString()}
                     </p>
-                    {/* <p>
-                      <strong>Delivery Address:</strong>{" "}
-                      {subProduct.delivery_address}
-                    </p> */}
                     <p>
                       <strong>Sub-Status:</strong> {subProduct.sub_status}
                     </p>
@@ -154,6 +151,22 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
   },
   {
     accessorKey: "sub_products",
+    header: "Sales Commission",
+    cell: ({ row }) => {
+      const subProducts = row.getValue("sub_products") as SubProduct[];
+      return (
+        <div className="space-y-1">
+          {subProducts.map((subProduct, index) => (
+            <span key={index} className="text-sm flex">
+              {subProduct.sales_commission === 0 ? 'Not specified' : subProduct.sales_commission}
+            </span>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "sub_products",
     header: "Quantity",
     cell: ({ row }) => {
       const subProducts = row.getValue("sub_products") as SubProduct[];
@@ -174,7 +187,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     cell: ({ row }) => {
       const subProducts = row.getValue("sub_products") as SubProduct[];
       return (
-        <div className="space-y-1">
+        <div className="space-y-1 max-w-[150px]">
           {subProducts.map((subProduct, index) => (
             <span key={index} className="text-sm flex">
               {subProduct.delivery_address}
