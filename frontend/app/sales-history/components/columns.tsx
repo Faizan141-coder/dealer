@@ -110,7 +110,7 @@ export default function FormalSalesDashboard({ initialData }: { initialData: Pro
           description={`Total (${products.length})`}
         />
         <div className="flex items-center gap-x-2">
-          <Link href="/dashboard">
+          <Link href="/admin-dashboard">
             <LoadingButton loading={loading}>Go Back</LoadingButton>
           </Link>
           <Button onClick={handleLogout}>Logout</Button>

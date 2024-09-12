@@ -23,9 +23,10 @@ interface SubProduct {
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
+  username: string;
 }
 
-export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
+export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, username }) => {
   const [subProducts, setSubProducts] = useState<SubProduct[]>([]);
   const [selectedSubProduct, setSelectedSubProduct] =
     useState<SubProduct | null>(null);
@@ -157,7 +158,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           </div>
         </div>
       )}
-      <DataTable searchKey="product_name" columns={columns} data={data} />
+      <DataTable searchKey="product_name" columns={columns} data={data} username={username} />
       <AddModalSales
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}

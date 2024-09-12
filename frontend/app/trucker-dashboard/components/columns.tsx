@@ -18,7 +18,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 
 export type PlaceOrderColumn = {
@@ -246,9 +252,12 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       const order = row.original;
       const token = Cookies.get("authToken");
       const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+      const [isBolNumberModalOpen, setIsBolNumberModalOpen] = useState(false);
       const [miles, setMiles] = useState("");
+      const [bolNumber, setBolNumber] = useState("");
 
       const isDelivered = order.status === "Delivered";
+      const isPickedUp = order.status === "Picked up from Facility";
 
       const handleQuoteMiles = async () => {
         try {
@@ -277,6 +286,42 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
           toast({
             variant: "destructive",
             description: "Failed to quote miles",
+          });
+        }
+      };
+
+      // similar to handle Quote Miles add function to handle Add Bol Number
+
+      const handleAddBolNumber = async () => {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/link-bol-number/`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                sub_product_id: order.sub_product_id,
+                bol: bolNumber,
+              }),
+            }
+          );
+
+          console.log(bolNumber)
+
+          // Handle response as needed
+          setIsBolNumberModalOpen(false);
+          setBolNumber("");
+          toast({
+            description: "BOL number added successfully",
+          });
+        } catch (error: any) {
+          console.error("Error adding BOL number:", error.message);
+          toast({
+            variant: "destructive",
+            description: "Failed to add BOL number",
           });
         }
       };
@@ -313,6 +358,12 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
               >
                 Quote Miles
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setIsBolNumberModalOpen(true)}
+                disabled={isDelivered || isPickedUp}
+              >
+                Add Bol Number
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => openWhatsAppChat(order.dealer_phone)}
@@ -336,8 +387,40 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
                 />
               </div>
               <DialogFooter>
-                <Button onClick={() => setIsQuoteModalOpen(false)} variant="outline">Cancel</Button>
+                <Button
+                  onClick={() => setIsQuoteModalOpen(false)}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
                 <Button onClick={handleQuoteMiles}>Confirm</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog
+            open={isBolNumberModalOpen}
+            onOpenChange={setIsBolNumberModalOpen}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add BOL Number</DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <Input
+                  placeholder="Enter BOL number"
+                  value={bolNumber}
+                  onChange={(e) => setBolNumber(e.target.value)}
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() => setIsBolNumberModalOpen(false)}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleAddBolNumber}>Confirm</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

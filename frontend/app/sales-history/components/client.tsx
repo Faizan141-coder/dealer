@@ -33,7 +33,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           description={`Total (${data.length})`}
         />
         <div className="flex items-center gap-x-2">
-          <Link href="/dashboard">
+          <Link href="/admin-dashboard">
             <LoadingButton loading={loading}>Go Back</LoadingButton>
           </Link>
           <Button onClick={handleLogout}>Logout</Button>

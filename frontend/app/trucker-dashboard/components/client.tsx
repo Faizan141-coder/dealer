@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import Link from "next/link";
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
+  username: string;
 }
 
-export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
+export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, username }) => {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -37,7 +37,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         </div>
       </div>
       <Separator />
-      <DataTable searchKey="product_name" columns={columns} data={data} />
+      <DataTable searchKey="product_name" columns={columns} data={data} username={username} />
     </>
   );
 };

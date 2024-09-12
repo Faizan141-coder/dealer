@@ -12,10 +12,11 @@ import Link from "next/link";
 import { useState } from "react";
 
 interface PlaceOrderClientProps {
-  data: any[]; // Data structure from the backend
+  data: any[]; 
+  username: string;
 }
 
-export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
+export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, username }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -30,18 +31,18 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Dealer Dashboard"
+          title="Admin Dashboard"
           description={`Total (${data.length})`}
         />
         <div className="flex items-center gap-x-2">
-          <Link href="/dashboard">
+          <Link href="/admin-dashboard">
             <LoadingButton loading={loading}>Go Back</LoadingButton>
           </Link>
           <Button onClick={handleLogout}>Logout</Button>
         </div>
       </div>
       <Separator />
-      <DataTable searchKey="supplier_username" columns={columns} data={data} />
+      <DataTable searchKey="supplier_username" columns={columns} data={data} username={username} />
     </>
   );
 };

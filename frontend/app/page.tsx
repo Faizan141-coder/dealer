@@ -64,7 +64,7 @@ export default function LoginForm() {
         });
 
         if (role === "dealer") {
-          router.push("/dashboard");
+          router.push("/admin-dashboard");
         } else if (role === "sales") {
           router.push("/sales-dashboard");
         } else if (role === "client") {
@@ -171,7 +171,7 @@ export default function LoginForm() {
                 onClick={() => router.push("/register-admin")}
                 className="w-full"
               >
-                Dealer
+                Admin
               </Button>
               <Button
                 onClick={() => router.push("/register-trucker")}

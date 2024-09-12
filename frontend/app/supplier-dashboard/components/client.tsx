@@ -10,10 +10,11 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 interface PlaceOrderClientProps {
-  data: any[]; // Data structure from the backend
+  data: any[]; 
+  username: string;
 }
 
-export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
+export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, username }) => {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -35,7 +36,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="dealer_username" columns={columns} data={data} />
+      <DataTable searchKey="dealer_username" columns={columns} data={data} username={username} />
     </>
   );
 };

@@ -23,17 +23,20 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Username from "../username";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchKey: string;
+  username: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
+  username,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -55,7 +58,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4 space-x-2">
+      <div className="flex items-center py-4 justify-between">
         <Input
           placeholder="Search"
           value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
@@ -64,6 +67,7 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <Username username={username} />
       </div>
       <div className="rounded-md border">
         <Table>

@@ -15,9 +15,10 @@ import Link from "next/link";
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
+  username: string;
 }
 
-export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
+export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, username }) => {
   const [productName, setProductName] = useState("");
   const [productType, setProductType] = useState("");
   const [quantity, setQuantity] = useState(0);
@@ -78,14 +79,14 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           <Link href={"/sales-history"}>
             <Button>Sales History</Button>
           </Link>
-          <Link href={"/dealer-invoices"}>
+          <Link href={"/admin-invoices"}>
             <LoadingButton loading={loading}>Show Invoices</LoadingButton>
           </Link>
           <Button onClick={handleLogout}>Logout</Button>
         </div>
       </div>
       <Separator />
-      <DataTable searchKey="status" columns={columns} data={data} />
+      <DataTable searchKey="status" columns={columns} data={data} username={username} />
       <AddModal
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}
