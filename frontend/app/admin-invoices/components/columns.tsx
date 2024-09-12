@@ -127,7 +127,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
           description: "Delivery confirmed successfully",
         });
       }
-      router.refresh(); 
+      router.refresh();
     } catch {
       console.error("Error confirming status");
     } finally {
@@ -191,6 +191,157 @@ const SubProductsCell = ({ row }: { row: any }) => {
   );
 };
 
+const ActionCell = ({ row }: { row: any }) => {
+  const [loading, setLoading] = useState(false);
+  const token = Cookies.get("authToken");
+
+  // const subProductId = row.original.ProductDetail.sub_products[0].id;
+
+  const getSupplierTicket = async (subProductId: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/get-supplier-ticket/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            sub_product_id: subProductId.toString(),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to retrieve supplier ticket");
+      }
+
+      // Get the filename from the 'Content-Disposition' header
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let fileName = "ticket.pdf"; // Default filename
+
+      if (contentDisposition && contentDisposition.includes("filename=")) {
+        fileName = contentDisposition
+          .split("filename=")[1]
+          .split(";")[0]
+          .replace(/"/g, "");
+      }
+
+      const blob = await response.blob(); // Fetch the response as a blob (PDF)
+      const url = URL.createObjectURL(blob); // Create a URL for the blob
+
+      // Create a temporary <a> element to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName; // Use the extracted filename
+      document.body.appendChild(link);
+      link.click();
+
+      // Remove the link from the DOM
+      document.body.removeChild(link);
+
+      toast({
+        variant: "default",
+        description: "Supplier ticket retrieved successfully",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getSupplierInvoice = async (supplierInvoiceId: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/get-supplier-invoice/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            supplier_invoice_id: supplierInvoiceId,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to retrieve supplier invoice");
+      }
+
+      // Get the filename from the 'Content-Disposition' header
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let fileName = "invoice.pdf"; // Default name in case it's not provided
+
+      if (contentDisposition && contentDisposition.includes("filename=")) {
+        fileName = contentDisposition
+          .split("filename=")[1]
+          .split(";")[0]
+          .replace(/"/g, "");
+      }
+
+      const blob = await response.blob(); // Fetch the response as a blob (PDF)
+      const url = URL.createObjectURL(blob); // Create a URL for the blob
+
+      // Create a temporary <a> element to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName; // Use the extracted filename
+      document.body.appendChild(link);
+      link.click();
+
+      // Remove the link from the DOM
+      document.body.removeChild(link);
+
+      toast({
+        variant: "default",
+        description: "Supplier invoice retrieved successfully",
+      });
+    } catch (error: any) {
+      console.log("Error fetching supplier invoice:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      {row.original.ProductDetail.sub_products.map((subProduct: any) => (
+        <DropdownMenu key={subProduct.id}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => getSupplierInvoice(row.original.id)}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Supplier Invoice"}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => getSupplierTicket(subProduct.id)}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Supplier Ticket"}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ))}
+    </div>
+  );
+};
+
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     accessorKey: "id",
@@ -241,153 +392,6 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const [loading, setLoading] = useState(false);
-      const token = Cookies.get("authToken");
-
-      const subProductId = row.original.ProductDetail.sub_products[0].id;
-
-      const getSupplierTicket = async (subProductId: string) => {
-        setLoading(true);
-        try {
-          const response = await fetch(
-            "http://127.0.0.1:8000/get-supplier-ticket/",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                sub_product_id: subProductId.toString(),
-              }),
-            }
-          );
-      
-          if (!response.ok) {
-            throw new Error("Failed to retrieve supplier ticket");
-          }
-      
-          // Get the filename from the 'Content-Disposition' header
-          const contentDisposition = response.headers.get('Content-Disposition');
-          let fileName = 'ticket.pdf'; // Default filename
-      
-          if (contentDisposition && contentDisposition.includes('filename=')) {
-            fileName = contentDisposition
-              .split('filename=')[1]
-              .split(';')[0]
-              .replace(/"/g, '');
-          }
-      
-          const blob = await response.blob(); // Fetch the response as a blob (PDF)
-          const url = URL.createObjectURL(blob); // Create a URL for the blob
-      
-          // Create a temporary <a> element to trigger the download
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = fileName; // Use the extracted filename
-          document.body.appendChild(link);
-          link.click();
-      
-          // Remove the link from the DOM
-          document.body.removeChild(link);
-      
-          toast({
-            variant: "default",
-            description: "Supplier ticket retrieved successfully",
-          });
-        } catch (error: any) {
-          toast({
-            variant: "destructive",
-            description: error.message,
-          });
-        } finally {
-          setLoading(false);
-        }
-      };
-      
-      const getSupplierInvoice = async (supplierInvoiceId: string) => {
-        setLoading(true);
-        try {
-          const response = await fetch(
-            "http://127.0.0.1:8000/get-supplier-invoice/",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                supplier_invoice_id: supplierInvoiceId,
-              }),
-            }
-          );
-      
-          if (!response.ok) {
-            throw new Error('Failed to retrieve supplier invoice');
-          }
-      
-          // Get the filename from the 'Content-Disposition' header
-          const contentDisposition = response.headers.get('Content-Disposition');
-          let fileName = 'invoice.pdf'; // Default name in case it's not provided
-      
-          if (contentDisposition && contentDisposition.includes('filename=')) {
-            fileName = contentDisposition
-              .split('filename=')[1]
-              .split(';')[0]
-              .replace(/"/g, '');
-          }
-      
-          const blob = await response.blob(); // Fetch the response as a blob (PDF)
-          const url = URL.createObjectURL(blob); // Create a URL for the blob
-      
-          // Create a temporary <a> element to trigger the download
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = fileName; // Use the extracted filename
-          document.body.appendChild(link);
-          link.click();
-      
-          // Remove the link from the DOM
-          document.body.removeChild(link);
-      
-          toast({
-            variant: "default",
-            description: "Supplier invoice retrieved successfully",
-          });
-        } catch (error: any) {
-          console.log("Error fetching supplier invoice:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      
-      
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={() => getSupplierInvoice(row.original.id)}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "Supplier Invoice"}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => getSupplierTicket(subProductId)}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "Supplier Ticket"}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ActionCell,
   },
 ];
