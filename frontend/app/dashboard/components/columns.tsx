@@ -129,6 +129,91 @@ const InvoiceCell = ({ row }: { row: any }) => {
   );
 };
 
+const ActionCell = ({ row }: { row: any }) => {
+  const order = row.original;
+  const token = Cookies.get("authToken");
+
+  const handleDownloadInvoice = async (subProductId: string) => {
+    const response = await fetch(`http://127.0.0.1:8000/generate-pdf/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        product_id: row.original.id,
+        sub_product_id: subProductId,
+      }),
+    });
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "invoice.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } else {
+      console.error("Failed to download invoice");
+    }
+  };
+
+  const openWhatsAppChat = (phoneNumber: string | null) => {
+    if (phoneNumber && phoneNumber !== "NOT PROVIDED") {
+      window.open(
+        `https://wa.me/${phoneNumber.replace(/\D/g, "")}`,
+        "_blank"
+      );
+    } else {
+      toast({
+        variant: "destructive",
+        description:
+          "Either the relevant party has not provided their phone number or the order is not yet ready to be forwarded to them.",
+      });
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      {order.sub_products.map((subProduct: any, index: number) => (
+        <DropdownMenu key={subProduct.id}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 my-2">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions for {subProduct.id}</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => handleDownloadInvoice(subProduct.id)}>
+              Download Invoice
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => openWhatsAppChat(order.user_details.phone)}
+            >
+              Chat with Client
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => openWhatsAppChat(subProduct.driver_phone_number)}
+            >
+              Chat with Driver
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => openWhatsAppChat(subProduct.truck_company_phone)}
+            >
+              Chat with Truck Company
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ))}
+    </div>
+  );
+};
+
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     accessorKey: "id",
@@ -217,89 +302,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const order = row.original;
-      const token = Cookies.get("authToken");
-
-      const handleDownloadInvoice = async (subProductId: string) => {
-        const response = await fetch(`http://127.0.0.1:8000/generate-pdf/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            product_id: row.original.id,
-          }),
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "invoice.pdf";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          window.URL.revokeObjectURL(url);
-        } else {
-          console.error("Failed to download invoice");
-        }
-      };
-
-      const openWhatsAppChat = (phoneNumber: string | null) => {
-        if (phoneNumber && phoneNumber !== "NOT PROVIDED") {
-          window.open(
-            `https://wa.me/${phoneNumber.replace(/\D/g, "")}`,
-            "_blank"
-          );
-        } else {
-          toast({
-            variant: "destructive",
-            description:
-              "Either the relevant party has not provided their phone number or the order is not yet ready to be forwarded to them.",
-          });
-        }
-      };
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => handleDownloadInvoice(order.id)}>
-              Download Invoice
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => openWhatsAppChat(order.user_details.phone)}
-            >
-              Chat with Client
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                openWhatsAppChat(order.sub_products[0]?.driver_phone_number)
-              }
-            >
-              Chat with Driver
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                openWhatsAppChat(order.sub_products[0]?.truck_company_phone)
-              }
-            >
-              Chat with Truck Company
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ActionCell, // Use the new ActionCell component here
   },
   {
     accessorKey: "invoice",
