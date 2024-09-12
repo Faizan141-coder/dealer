@@ -1,163 +1,143 @@
-"use client";
+"use client"
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
-import Cookies from "js-cookie";
-import { DriverInvoiceModal } from "@/components/modals/driver-invocie-modal";
-import { MoreHorizontal, Phone } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "@/components/ui/use-toast";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { TruckIcon, PackageIcon, CalendarIcon, DollarSignIcon, MapPinIcon } from "lucide-react"
+import { Heading } from '@/components/ui/heading'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { useRouter } from 'next/navigation'
+import Cookies from 'js-cookie'
+import toast from 'react-hot-toast'
 
-export type PlaceOrderColumn = {
-  id: string;
-  pickup_address: string;
-  pickup_date: string;
-  product_name: string;
-  product_type: string;
-  quantity: string;
-  delivery_date: string;
-  delivery_address: string;
-  client_name: string;
-  client_phone_number: string;
-  supplier_name: string;
-  supplier_phone: string;
-  dealer_name: string;
-  dealer_phone: string;
-  supplier_invoice_id: string;
-  dealer_invoice_id: string;
-  sub_product_id: string;
-  status: string;
-};
+type SaleData = {
+  sub_product__product_name: string
+  sub_product__quantity: number
+  sub_product__delivery_date: string
+  sub_product__price_charged_by_truck: number
+  sub_product__miles_traveled: number
+  driver__driver_full_name: string
+  driver__driver_phone_number: string
+  driver__truck_plate_number: string
+}
 
-export const columns: ColumnDef<PlaceOrderColumn>[] = [
-  {
-    accessorKey: "pickup_address",
-    header: "Pickup Address",
-    cell: ({ row }) => (
-      <div className="max-w-[150px] truncate">
-        {row.getValue("pickup_address")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "pickup_date",
-    header: "Pickup Date",
-  },
-  {
-    accessorKey: "product_name",
-    header: "Product Name",
-    cell: ({ row }) => (
-      <div className="max-w-[150px] truncate">
-        {row.getValue("product_name")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "product_type",
-    header: "Product Type",
-    cell: ({ row }) => {
-      const type = row.getValue("product_type") as string;
-      return (
-        <Badge
-          className={cn(
-            "whitespace-nowrap",
-            type === "type_1"
-              ? "bg-blue-500 text-white"
-              : "bg-pink-500 text-white"
-          )}
-        >
-          {type === "type_1" ? "Type 1" : "Type 2"}
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: "quantity",
-    header: "Quantity",
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("quantity")}</div>
-    ),
-  },
-  {
-    accessorKey: "delivery_date",
-    header: "Delivery Date",
-  },
-  {
-    accessorKey: "delivery_address",
-    header: "Delivery Address",
-    cell: ({ row }) => (
-      <div className="">{row.getValue("delivery_address")}</div>
-    ),
-  },
-  {
-    accessorKey: "client_name",
-    header: "Client Name",
-    cell: ({ row }) => (
-      <div className="max-w-[150px] truncate">
-        {row.getValue("client_name")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "client_phone_number",
-    header: "Client Phone",
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">
-        {row.getValue("client_phone_number")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "supplier_name",
-    header: "Supplier Name",
-    cell: ({ row }) => (
-      <div className="max-w-[150px] truncate">
-        {row.getValue("supplier_name")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "supplier_phone",
-    header: "Supplier Phone",
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">{row.getValue("supplier_phone")}</div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: "status",
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">{row.getValue("status")}</div>
-    ),
-  },
-];
+interface ComponentProps {
+  data: SaleData[]
+}
 
-export default function Component() {
+export default function Component({ data }: ComponentProps) {
+  const [salesData, setSalesData] = useState<SaleData[]>([])
+  const router = useRouter()
+
+  const handleLogout = () => {
+    Cookies.remove("authToken");
+    Cookies.remove("userRole");
+    toast.success("Logged out successfully");
+    router.push("/");
+  };
+
+  useEffect(() => {
+    setSalesData(data)
+  }, [data])
+
+  const totalSales = salesData.reduce((acc, sale) => acc + sale.sub_product__price_charged_by_truck, 0)
+  const totalMiles = salesData.reduce((acc, sale) => acc + sale.sub_product__miles_traveled, 0)
+  const totalQuantity = salesData.reduce((acc, sale) => acc + sale.sub_product__quantity, 0)
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
-        <thead></thead>
-        <tbody>
-          <tr>
-            <td colSpan={columns.length} className="p-2 text-center">
-              Table data would be rendered here
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <Heading
+          title="Truck Sales Dashboard"
+          description={`Total (${data.length})`}
+        />
+        <div className="flex items-center gap-2">
+          <Button onClick={() => router.push("/trucker-dashboard")}>
+            Truck Dashboard
+          </Button>
+          <Button onClick={handleLogout}>Logout</Button>
+        </div>
+      </div>
+      <Separator />    
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+            <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${totalSales.toFixed(2)}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Miles</CardTitle>
+            <MapPinIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalMiles}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Quantity</CardTitle>
+            <PackageIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalQuantity}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Deliveries</CardTitle>
+            <TruckIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{salesData.length}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Sales</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Product</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Delivery Date</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Miles</TableHead>
+                <TableHead>Driver</TableHead>
+                <TableHead>Truck Plate</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {salesData.map((sale, index) => (
+                <TableRow key={index}>
+                  <TableCell>{sale.sub_product__product_name}</TableCell>
+                  <TableCell>{sale.sub_product__quantity}</TableCell>
+                  <TableCell>{new Date(sale.sub_product__delivery_date).toLocaleDateString()}</TableCell>
+                  <TableCell>${sale.sub_product__price_charged_by_truck.toFixed(2)}</TableCell>
+                  <TableCell>{sale.sub_product__miles_traveled}</TableCell>
+                  <TableCell>
+                    <div>{sale.driver__driver_full_name}</div>
+                    <div className="text-sm text-muted-foreground">{sale.driver__driver_phone_number}</div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{sale.driver__truck_plate_number}</Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
-  );
+  )
 }

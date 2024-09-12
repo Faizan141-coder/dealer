@@ -2,12 +2,22 @@
 
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { columns, PlaceOrderColumn } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+
+interface PlaceOrderColumn {
+  product_name: string;
+  quantity: number;
+  price_charged_by_truck: number;
+  miles_traveled: number;
+  delivery_date: string;
+  driver_full_name: string;
+  driver_phone_number: string;
+  truck_plate_number: string;
+}
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
@@ -38,7 +48,6 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         </div>
       </div>
       <Separator />
-      <DataTable searchKey="product_name" columns={columns} data={data} />
     </>
   );
 };
