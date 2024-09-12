@@ -103,14 +103,6 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         />
         <div className="flex space-x-4">
           <Button
-            onClick={handleWhatsAppClick}
-            className="bg-green-500 text-white rounded-full p-2 hover:bg-green-400"
-            title="Contact on WhatsApp"
-            size={"icon"}
-          >
-            <Phone size={20} />
-          </Button>
-          <Button
             onClick={() => {
               setSelectedSubProduct(null);
               setAddModalOpen(true);
@@ -181,6 +173,16 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
         dealerUsername={dealerUsername}
         setDealerUsername={setDealerUsername}
       />
+      <div className="fixed bottom-4 right-0 m-4">
+        <Button
+          onClick={handleWhatsAppClick}
+          className="bg-green-500 text-white rounded-full p-2 hover:bg-green-400"
+          title="Contact on WhatsApp"
+          size={"icon"}
+        >
+          <Phone size={20} />
+        </Button>
+      </div>
     </>
   );
 };
