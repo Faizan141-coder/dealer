@@ -139,6 +139,188 @@ const InvoiceButton = ({ row }: { row: any }) => {
   );
 };
 
+const ActionButton = ({ row }: { row: any }) => {
+  {
+    const order = row.original;
+    const token = Cookies.get("authToken");
+    const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+    const [isBolNumberModalOpen, setIsBolNumberModalOpen] = useState(false);
+    const [miles, setMiles] = useState("");
+    const [bolNumber, setBolNumber] = useState("");
+
+    const isDelivered = order.status === "Delivered";
+    const isPickedUp = order.status === "Picked up from Facility";
+
+    const handleQuoteMiles = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/quote-miles-traveled/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              sub_product_id: order.sub_product_id,
+              miles_traveled: miles,
+            }),
+          }
+        );
+        // Handle response as needed
+        setIsQuoteModalOpen(false);
+        setMiles("");
+        toast({
+          description: "Miles quoted successfully",
+        });
+      } catch (error: any) {
+        console.error("Error quoting miles:", error.message);
+        toast({
+          variant: "destructive",
+          description: "Failed to quote miles",
+        });
+      }
+    };
+
+    // similar to handle Quote Miles add function to handle Add Bol Number
+
+    const handleAddBolNumber = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/link-bol-number/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              sub_product_id: order.sub_product_id,
+              bol: bolNumber,
+            }),
+          }
+        );
+
+        console.log(bolNumber)
+
+        // Handle response as needed
+        setIsBolNumberModalOpen(false);
+        setBolNumber("");
+        toast({
+          description: "BOL number added successfully",
+        });
+      } catch (error: any) {
+        console.error("Error adding BOL number:", error.message);
+        toast({
+          variant: "destructive",
+          description: "Failed to add BOL number",
+        });
+      }
+    };
+
+    const openWhatsAppChat = (phoneNumber: string | null) => {
+      if (phoneNumber && phoneNumber !== "NOT PROVIDED") {
+        window.open(
+          `https://wa.me/${phoneNumber.replace(/\D/g, "")}`,
+          "_blank"
+        );
+      } else {
+        toast({
+          variant: "destructive",
+          description:
+            "Either the relevant party has not provided their phone number or the order is not yet ready to be forwarded to them.",
+        });
+      }
+    };
+
+    return (
+      <>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => setIsQuoteModalOpen(true)}
+              disabled={!isDelivered}
+            >
+              Quote Miles
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setIsBolNumberModalOpen(true)}
+              disabled={isDelivered || isPickedUp}
+            >
+              Add Bol Number
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => openWhatsAppChat(order.dealer_phone)}
+            >
+              Chat with Dealer
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Dialog open={isQuoteModalOpen} onOpenChange={setIsQuoteModalOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Quote Miles</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input
+                type="number"
+                placeholder="Enter miles"
+                value={miles}
+                onChange={(e) => setMiles(e.target.value)}
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={() => setIsQuoteModalOpen(false)}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleQuoteMiles}>Confirm</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={isBolNumberModalOpen}
+          onOpenChange={setIsBolNumberModalOpen}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add BOL Number</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input
+                placeholder="Enter BOL number"
+                value={bolNumber}
+                onChange={(e) => setBolNumber(e.target.value)}
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={() => setIsBolNumberModalOpen(false)}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleAddBolNumber}>Confirm</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+}
+
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     accessorKey: "pickup_address",
@@ -248,186 +430,8 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const order = row.original;
-      const token = Cookies.get("authToken");
-      const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-      const [isBolNumberModalOpen, setIsBolNumberModalOpen] = useState(false);
-      const [miles, setMiles] = useState("");
-      const [bolNumber, setBolNumber] = useState("");
-
-      const isDelivered = order.status === "Delivered";
-      const isPickedUp = order.status === "Picked up from Facility";
-
-      const handleQuoteMiles = async () => {
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/quote-miles-traveled/`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                sub_product_id: order.sub_product_id,
-                miles_traveled: miles,
-              }),
-            }
-          );
-          // Handle response as needed
-          setIsQuoteModalOpen(false);
-          setMiles("");
-          toast({
-            description: "Miles quoted successfully",
-          });
-        } catch (error: any) {
-          console.error("Error quoting miles:", error.message);
-          toast({
-            variant: "destructive",
-            description: "Failed to quote miles",
-          });
-        }
-      };
-
-      // similar to handle Quote Miles add function to handle Add Bol Number
-
-      const handleAddBolNumber = async () => {
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/link-bol-number/`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                sub_product_id: order.sub_product_id,
-                bol: bolNumber,
-              }),
-            }
-          );
-
-          console.log(bolNumber)
-
-          // Handle response as needed
-          setIsBolNumberModalOpen(false);
-          setBolNumber("");
-          toast({
-            description: "BOL number added successfully",
-          });
-        } catch (error: any) {
-          console.error("Error adding BOL number:", error.message);
-          toast({
-            variant: "destructive",
-            description: "Failed to add BOL number",
-          });
-        }
-      };
-
-      const openWhatsAppChat = (phoneNumber: string | null) => {
-        if (phoneNumber && phoneNumber !== "NOT PROVIDED") {
-          window.open(
-            `https://wa.me/${phoneNumber.replace(/\D/g, "")}`,
-            "_blank"
-          );
-        } else {
-          toast({
-            variant: "destructive",
-            description:
-              "Either the relevant party has not provided their phone number or the order is not yet ready to be forwarded to them.",
-          });
-        }
-      };
-
-      return (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => setIsQuoteModalOpen(true)}
-                disabled={!isDelivered}
-              >
-                Quote Miles
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setIsBolNumberModalOpen(true)}
-                disabled={isDelivered || isPickedUp}
-              >
-                Add Bol Number
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => openWhatsAppChat(order.dealer_phone)}
-              >
-                Chat with Dealer
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Dialog open={isQuoteModalOpen} onOpenChange={setIsQuoteModalOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Quote Miles</DialogTitle>
-              </DialogHeader>
-              <div className="py-4">
-                <Input
-                  type="number"
-                  placeholder="Enter miles"
-                  value={miles}
-                  onChange={(e) => setMiles(e.target.value)}
-                />
-              </div>
-              <DialogFooter>
-                <Button
-                  onClick={() => setIsQuoteModalOpen(false)}
-                  variant="outline"
-                >
-                  Cancel
-                </Button>
-                <Button onClick={handleQuoteMiles}>Confirm</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-          <Dialog
-            open={isBolNumberModalOpen}
-            onOpenChange={setIsBolNumberModalOpen}
-          >
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add BOL Number</DialogTitle>
-              </DialogHeader>
-              <div className="py-4">
-                <Input
-                  placeholder="Enter BOL number"
-                  value={bolNumber}
-                  onChange={(e) => setBolNumber(e.target.value)}
-                />
-              </div>
-              <DialogFooter>
-                <Button
-                  onClick={() => setIsBolNumberModalOpen(false)}
-                  variant="outline"
-                >
-                  Cancel
-                </Button>
-                <Button onClick={handleAddBolNumber}>Confirm</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </>
-      );
-    },
-  },
+    cell: ({ row }) => <ActionButton row={row} />,
+  }
 ];
 
 export default function Component() {
