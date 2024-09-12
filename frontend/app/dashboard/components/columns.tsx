@@ -301,4 +301,9 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       );
     },
   },
+  {
+    accessorKey: "invoice",
+    header: "Invoice",
+    cell: InvoiceCell, // Use the component here
+  },
 ];

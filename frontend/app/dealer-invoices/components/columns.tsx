@@ -263,17 +263,39 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
               }),
             }
           );
-
-          const data = await response.json();
-
-          if (response.ok) {
-            // Handle successful response (e.g., open ticket in new window)
-            window.open(data.ticket_url, "_blank");
-            toast({
-              variant: "default",
-              description: "Supplier ticket retrieved successfully",
-            });
+      
+          if (!response.ok) {
+            throw new Error("Failed to retrieve supplier ticket");
           }
+      
+          // Get the filename from the 'Content-Disposition' header
+          const contentDisposition = response.headers.get('Content-Disposition');
+          let fileName = 'ticket.pdf'; // Default filename
+      
+          if (contentDisposition && contentDisposition.includes('filename=')) {
+            fileName = contentDisposition
+              .split('filename=')[1]
+              .split(';')[0]
+              .replace(/"/g, '');
+          }
+      
+          const blob = await response.blob(); // Fetch the response as a blob (PDF)
+          const url = URL.createObjectURL(blob); // Create a URL for the blob
+      
+          // Create a temporary <a> element to trigger the download
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName; // Use the extracted filename
+          document.body.appendChild(link);
+          link.click();
+      
+          // Remove the link from the DOM
+          document.body.removeChild(link);
+      
+          toast({
+            variant: "default",
+            description: "Supplier ticket retrieved successfully",
+          });
         } catch (error: any) {
           toast({
             variant: "destructive",
@@ -283,7 +305,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
           setLoading(false);
         }
       };
-
+      
       const getSupplierInvoice = async (supplierInvoiceId: string) => {
         setLoading(true);
         try {
@@ -300,23 +322,47 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
               }),
             }
           );
-
-          const data = await response.json();
-
-          if (response.ok) {
-            // Handle successful response (e.g., open invoice in new window)
-            window.open(data.invoice_url, "_blank");
-            toast({
-              variant: "default",
-              description: "Supplier invoice retrieved successfully",
-            });
+      
+          if (!response.ok) {
+            throw new Error('Failed to retrieve supplier invoice');
           }
+      
+          // Get the filename from the 'Content-Disposition' header
+          const contentDisposition = response.headers.get('Content-Disposition');
+          let fileName = 'invoice.pdf'; // Default name in case it's not provided
+      
+          if (contentDisposition && contentDisposition.includes('filename=')) {
+            fileName = contentDisposition
+              .split('filename=')[1]
+              .split(';')[0]
+              .replace(/"/g, '');
+          }
+      
+          const blob = await response.blob(); // Fetch the response as a blob (PDF)
+          const url = URL.createObjectURL(blob); // Create a URL for the blob
+      
+          // Create a temporary <a> element to trigger the download
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName; // Use the extracted filename
+          document.body.appendChild(link);
+          link.click();
+      
+          // Remove the link from the DOM
+          document.body.removeChild(link);
+      
+          toast({
+            variant: "default",
+            description: "Supplier invoice retrieved successfully",
+          });
         } catch (error: any) {
-          console.log(error);
+          console.log("Error fetching supplier invoice:", error);
         } finally {
           setLoading(false);
         }
       };
+      
+      
 
       return (
         <DropdownMenu>
