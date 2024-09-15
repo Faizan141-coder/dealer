@@ -158,6 +158,10 @@ const ActionCell = ({ row }: { row: any }) => {
       window.URL.revokeObjectURL(url);
     } else {
       console.error("Failed to download invoice");
+      toast({
+        variant: "destructive",
+        description: "Failed to download invoice",
+      });
     }
   };
 

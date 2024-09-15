@@ -50,8 +50,9 @@ export const PlaceOrderModal: React.FC<PlaceOrderModalProps> = ({
 
       if (response.status === 200) {
         const data = await response.json();
-        if (data.client) {
-          setClients(data.client);
+        console.log(data);
+        if (data.clients) {
+          setClients(data.clients);
         } else {
           setError("Failed to fetch dealers.");
         } 
