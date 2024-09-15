@@ -88,7 +88,8 @@ export default function LoginForm() {
   };
 
   const handleSignupClick = () => {
-    setModalVisible(true);
+    // setModalVisible(true);
+    router.push("/register");
   };
 
   const handleCloseModal = () => {
@@ -156,7 +157,7 @@ export default function LoginForm() {
       </Card>
 
       {/* Modal */}
-      {modalVisible && (
+      {/* {modalVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Sign up as</h2>
@@ -191,7 +192,7 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

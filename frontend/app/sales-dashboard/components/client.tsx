@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AddModalSales } from "@/components/modals/add-modal-sales";
 import { PlaceOrderModal } from "@/components/modals/place-order-modal";
+import { RegisterClientModal } from "@/components/modals/register-client-modal";
 
 interface SubProduct {
   product_name: string;
@@ -26,7 +27,10 @@ interface PlaceOrderClientProps {
   username: string;
 }
 
-export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, username }) => {
+export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
+  data,
+  username,
+}) => {
   const [subProducts, setSubProducts] = useState<SubProduct[]>([]);
   const [selectedSubProduct, setSelectedSubProduct] =
     useState<SubProduct | null>(null);
@@ -34,6 +38,8 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
   const [placeOrderModalOpen, setPlaceOrderModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dealerUsername, setDealerUsername] = useState("");
+  const [registerClientModalOpen, setRegisterClientModalOpen] = useState(false);
+  const [registerClientLoading, setRegisterClientLoading] = useState(false);
 
   const router = useRouter();
   const token = Cookies.get("authToken");
@@ -95,6 +101,40 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
     window.open(`https://wa.me/${phoneNumber}`, "_blank");
   };
 
+  const handleRegisterClient = async (clientData: any) => {
+    setRegisterClientLoading(true);
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/signup-client/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Add this if the API requires authentication
+        },
+        body: JSON.stringify({
+          ...clientData,
+          role: "client", // Ensure the role is set to "client"
+        }),
+      });
+
+      if (response.status === 201) {
+        const data = await response.json();
+        console.log("Client registered successfully:", data);
+        toast.success("Client registered successfully");
+        setRegisterClientModalOpen(false);
+        // Optionally, you can refresh the client list or update the UI here
+      } else {
+        const errorData = await response.json();
+        console.error("Error registering client:", errorData);
+        toast.error(errorData.message || "Failed to register client");
+      }
+    } catch (error: any) {
+      console.error("Error registering client:", error);
+      toast.error("An error occurred while registering the client");
+    } finally {
+      setRegisterClientLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="flex items-center justify-between mb-4">
@@ -104,13 +144,18 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
         />
         <div className="flex space-x-4">
           <Button
+            onClick={() => setRegisterClientModalOpen(true)}
+            className="bg-purple-600 text-white text-sm px-5 py-3 rounded-md hover:bg-purple-500"
+          >
+            Register Client
+          </Button>
+          <Button
             onClick={() => {
               setSelectedSubProduct(null);
               setAddModalOpen(true);
             }}
             className="bg-blue-600 text-white text-sm px-5 py-3 rounded-md hover:bg-blue-500"
           >
-            <Plus size={16} className="inline mr-2" />
             Add Sub-Order
           </Button>
           <LoadingButton
@@ -158,7 +203,12 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
           </div>
         </div>
       )}
-      <DataTable searchKey="product_name" columns={columns} data={data} username={username} />
+      <DataTable
+        searchKey="product_name"
+        columns={columns}
+        data={data}
+        username={username}
+      />
       <AddModalSales
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}
@@ -173,6 +223,12 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
         loading={loading}
         dealerUsername={dealerUsername}
         setDealerUsername={setDealerUsername}
+      />
+      <RegisterClientModal
+        isOpen={registerClientModalOpen}
+        onClose={() => setRegisterClientModalOpen(false)}
+        onRegister={handleRegisterClient}
+        loading={registerClientLoading}
       />
       <div className="fixed bottom-4 right-0 m-4">
         <Button
