@@ -68,8 +68,8 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
   return (
     <>
       <Modal
-        title="Forward Invoice"
-        description="Please fill in the details below to forward the invoice."
+        title="Assign to Driver"
+        description="Please fill in the driver details below to assign the order to the driver. Write NA if the information is not available."
         isOpen={isOpen}
         onClose={onClose}
       >
@@ -120,11 +120,10 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
             type="submit"
             onClick={onConfirm}
           >
-            <span>Forward Invoice</span>
+            <span>Assign to Driver</span>
             <SendHorizontal color="#fff" className="h-4 w-4" />
           </LoadingButton>
         </div>
-        {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
       </Modal>
     </>
   );

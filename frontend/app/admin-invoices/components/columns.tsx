@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
@@ -156,7 +156,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
               <strong>Quantity:</strong> {subProduct.quantity}
             </p>
             <p>
-              <strong>Actual Quantity</strong> {subProduct.actual_quantity}
+              <strong>Actual Load</strong> {subProduct.actual_quantity}
             </p>
             <p>
               <strong>Delivery Date:</strong> {subProduct.delivery_date}
@@ -166,14 +166,14 @@ const SubProductsCell = ({ row }: { row: any }) => {
             </p>
           </div>
           <div>
-            <Button
+            <LoadingButton
               onClick={() => confirmStatus(subProduct.id)}
               disabled={subProduct.sub_status.toLowerCase() === "delivered"}
             >
               {subProduct.sub_status.toLowerCase() === "delivered"
                 ? "Delivered"
                 : "Confirm Delivery"}
-            </Button>
+            </LoadingButton>
           </div>
           <TruckInvoiceModal
             isOpen={modalStates[index]}

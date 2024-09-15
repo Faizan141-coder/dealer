@@ -108,7 +108,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
           <LoadingButton
             loading={loading}
             onClick={() => handleOpenModal(subProduct.id)}
-            disabled={subProduct.sub_status !== "Pending with dealer"}
+            disabled={subProduct.sub_status !== "Pending with Admin"}
             className="my-5"
           >
             Invoice {subProduct.id}

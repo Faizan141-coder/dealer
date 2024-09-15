@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { DriverInvoiceModal } from "@/components/modals/driver-invocie-modal";
-import { MoreHorizontal, Phone } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -28,7 +28,6 @@ import {
 import { Input } from "@/components/ui/input";
 
 export type PlaceOrderColumn = {
-  id: string;
   pickup_address: string;
   pickup_date: string;
   product_name: string;
@@ -186,22 +185,19 @@ const ActionButton = ({ row }: { row: any }) => {
 
     const handleAddBolNumber = async () => {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/link-bol-number/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              sub_product_id: order.sub_product_id,
-              bol: bolNumber,
-            }),
-          }
-        );
+        const response = await fetch(`http://127.0.0.1:8000/link-bol-number/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            sub_product_id: order.sub_product_id,
+            bol: bolNumber,
+          }),
+        });
 
-        console.log(bolNumber)
+        console.log(bolNumber);
 
         // Handle response as needed
         setIsBolNumberModalOpen(false);
@@ -319,9 +315,23 @@ const ActionButton = ({ row }: { row: any }) => {
       </>
     );
   }
-}
+};
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
+  {
+    accessorKey: "sub_product_id",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          ID
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
   {
     accessorKey: "pickup_address",
     header: "Pickup Address",
@@ -431,7 +441,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => <ActionButton row={row} />,
-  }
+  },
 ];
 
 export default function Component() {
