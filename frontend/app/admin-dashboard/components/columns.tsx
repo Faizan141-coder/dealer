@@ -60,7 +60,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/forward-invoice-to-truck-company/",
+        "https://dealer-backend-kz82.vercel.app/forward-invoice-to-truck-company/",
         {
           method: "POST",
           headers: {
@@ -134,7 +134,7 @@ const ActionCell = ({ row }: { row: any }) => {
   const token = Cookies.get("authToken");
 
   const handleDownloadInvoice = async (subProductId: string) => {
-    const response = await fetch(`http://127.0.0.1:8000/generate-pdf/`, {
+    const response = await fetch(`https://dealer-backend-kz82.vercel.app/generate-pdf/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

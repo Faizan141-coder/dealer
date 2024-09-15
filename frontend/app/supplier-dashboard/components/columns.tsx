@@ -55,7 +55,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/create-invoice/`,
+        `https://dealer-backend-kz82.vercel.app/create-invoice/`,
         {
           method: "POST",
           headers: {

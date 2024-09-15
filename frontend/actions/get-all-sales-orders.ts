@@ -2,7 +2,7 @@
 
 export async function getAllSalesOrders(token: any) {
 
-    const response = await fetch(`http://127.0.0.1:8000/get-associated-orders/`, {
+    const response = await fetch(`https://dealer-backend-kz82.vercel.app/get-associated-orders/`, {
 
         method: "GET",
         headers: {

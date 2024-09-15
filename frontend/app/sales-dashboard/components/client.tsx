@@ -50,7 +50,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
   const onConfirm = async (dealerUsername: string) => {
     setLoading(true);
     try {
-      await fetch(`http://127.0.0.1:8000/place-order-as-sales/`, {
+      await fetch(`https://dealer-backend-kz82.vercel.app/place-order-as-sales/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +108,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
   const handleRegisterClient = async (clientData: any) => {
     setRegisterClientLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/signup-client/`, {
+      const response = await fetch(`https://dealer-backend-kz82.vercel.app/signup-client/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

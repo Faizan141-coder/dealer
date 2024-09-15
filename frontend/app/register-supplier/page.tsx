@@ -41,7 +41,7 @@ export default function SupplierRegistrationForm() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/signup/`,
+        `https://dealer-backend-kz82.vercel.app/signup/`,
         {
           method: "POST",
           headers: {

@@ -34,7 +34,7 @@ export const InvoiceDetailModal: React.FC<InvoiceDetailModalProps> = ({
   const handleConfirm = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/assign-order-to-supplier/",
+        "https://dealer-backend-kz82.vercel.app/assign-order-to-supplier/",
         {
           method: "POST",
           headers: {

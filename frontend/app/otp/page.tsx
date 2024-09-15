@@ -49,7 +49,7 @@ function OTPPageContent() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/reset-password/", {
+      const response = await fetch("https://dealer-backend-kz82.vercel.app/reset-password/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

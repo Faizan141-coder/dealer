@@ -75,7 +75,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const handleConfirm = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/assign-to-driver/`, {
+      const response = await fetch(`https://dealer-backend-kz82.vercel.app/assign-to-driver/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -153,7 +153,7 @@ const ActionButton = ({ row }: { row: any }) => {
     const handleQuoteMiles = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/quote-miles-traveled/`,
+          `https://dealer-backend-kz82.vercel.app/quote-miles-traveled/`,
           {
             method: "POST",
             headers: {
@@ -185,7 +185,7 @@ const ActionButton = ({ row }: { row: any }) => {
 
     const handleAddBolNumber = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/link-bol-number/`, {
+        const response = await fetch(`https://dealer-backend-kz82.vercel.app/link-bol-number/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

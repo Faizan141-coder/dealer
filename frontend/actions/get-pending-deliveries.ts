@@ -2,7 +2,7 @@
 
 export async function getPendingDeliveries(token: any) {
 
-    const response = await fetch(`http://127.0.0.1:8000/get-pending-deliveries/`, {
+    const response = await fetch(`https://dealer-backend-kz82.vercel.app/get-pending-deliveries/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

@@ -25,7 +25,7 @@ export default function ForgotPassForm() {
   const handleForgotPass = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/generate-code/", {
+      const response = await fetch("https://dealer-backend-kz82.vercel.app/generate-code/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
