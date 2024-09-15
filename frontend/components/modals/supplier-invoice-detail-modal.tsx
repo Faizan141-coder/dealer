@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Modal } from "../ui/modal";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SupplierInvoiceDetailModalProps {
   isOpen: boolean;
@@ -22,6 +22,7 @@ export const SupplierInvoiceDetailModal: React.FC<
 > = ({ isOpen, onClose, loading, invoiceData, product_reference_id, id }) => {
   const token = Cookies.get("authToken");
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleConfirm = async () => {
     try {
@@ -44,10 +45,16 @@ export const SupplierInvoiceDetailModal: React.FC<
       router.refresh();
 
       if (response.status === 200) {
-        toast.success("Order Confirmed");
+        toast({
+          title: "Order Confirmed",
+          variant: "default",
+        });
         console.log("Invoice confirmed successfully");
       } else {
-        toast.error("Failed to confirm the order");
+        toast({
+          title: "Failed to confirm the order",
+          variant: "destructive",
+        });
         console.error(
           "Error confirming order:",
           data.message || response.statusText
@@ -56,7 +63,10 @@ export const SupplierInvoiceDetailModal: React.FC<
 
       console.log("Invoice Data:", invoiceData);
     } catch (error: any) {
-      toast.error("Failed to confirm the order");
+      toast({
+        title: "Failed to confirm the order",
+        variant: "destructive",
+      });
       console.error("Error confirming order:", error.message);
     } finally {
       onClose();

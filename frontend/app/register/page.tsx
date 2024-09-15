@@ -13,8 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");
@@ -33,6 +33,7 @@ export default function SignupForm() {
   const [role, setRole] = useState("client");
 
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleRegister = async () => {
     setLoading(true);
@@ -127,7 +128,10 @@ export default function SignupForm() {
       console.log(data);
 
       if (response.status === 201) {
-        toast.success("User registered successfully");
+        toast({
+          title: "User registered successfully",
+          variant: "default",
+        });
         // const data = await response.json();
         router.push("/");
       }

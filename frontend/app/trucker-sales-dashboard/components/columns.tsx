@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
-import toast from 'react-hot-toast'
+import { useToast } from "@/components/ui/use-toast";
 
 type SaleData = {
   sub_product__product_name: string
@@ -30,11 +30,15 @@ interface ComponentProps {
 export default function Component({ data }: ComponentProps) {
   const [salesData, setSalesData] = useState<SaleData[]>([])
   const router = useRouter()
+  const { toast } = useToast();
 
   const handleLogout = () => {
     Cookies.remove("authToken");
     Cookies.remove("userRole");
-    toast.success("Logged out successfully");
+    toast({
+      title: "Logged out successfully",
+      variant: "default",
+    });
     router.push("/");
   };
 

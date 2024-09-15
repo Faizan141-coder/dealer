@@ -13,8 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function DealerRegistrationForm() {
   const [email, setEmail] = useState("");
@@ -27,6 +27,7 @@ export default function DealerRegistrationForm() {
   const [role, setRole] = useState("dealer");
 
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleRegister = async () => {
     setLoading(true);
@@ -81,7 +82,10 @@ export default function DealerRegistrationForm() {
       // console.log(data);
 
       if (response.status === 201) {
-        toast.success("User registered successfully");
+        toast({
+          title: "User registered successfully",
+          variant: "default",
+        });
         // const data = await response.json();
 
         router.push("/");

@@ -6,9 +6,9 @@ import { DataTable } from "@/components/ui/data-table";
 import { Button, LoadingButton } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import Link from "next/link";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface PlaceOrderClientProps {
   data: any[]; // Data structure from the backend
@@ -16,12 +16,16 @@ interface PlaceOrderClientProps {
 
 export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const handleLogout = () => {
     Cookies.remove("authToken");
     Cookies.remove("userRole");
-    toast.success("Logged out successfully");
+    toast({
+      title: "Logged out successfully",
+      variant: "default",
+    });
     router.push("/");
   };
 

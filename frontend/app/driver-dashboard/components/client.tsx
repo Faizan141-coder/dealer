@@ -7,20 +7,23 @@ import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
 }
 
 export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
-
+  const { toast } = useToast();
   const router = useRouter();
 
   const handleLogout = () => {
     Cookies.remove("authToken");
     Cookies.remove("userRole");
-    toast.success("Logged out successfully");
+    toast({
+      title: "Logged out successfully",
+      variant: "default",
+    });
     router.push("/");
   };
 
@@ -31,12 +34,10 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data }) => {
           title="Driver Dashboard"
           description={`Total (${data.length})`}
         />
-        <Button onClick={handleLogout}>
-          Logout
-        </Button>
+        <Button onClick={handleLogout}>Logout</Button>
       </div>
       <Separator />
-      <DataTable searchKey="product_name" columns={columns} data={data} />
+      <DataTable searchKey="product_name" columns={columns} data={data} username={''} />
     </>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import { Button, LoadingButton } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function OTPPage() {
+function OTPPageContent() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [newPassword, setNewPassword] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -84,60 +84,58 @@ export default function OTPPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            Verify and Reset
-          </CardTitle>
-          <CardDescription className="text-center">
-            Enter the OTP and your new password
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="otp-0">One-Time Password</Label>
-              <div className="flex gap-2">
-                {otp.map((digit, index) => (
-                  <Input
-                    key={index}
-                    id={`otp-${index}`}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(index, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(index, e)}
-                    ref={(el) => {
-                      inputRefs.current[index] = el;
-                    }}
-                    className="w-full text-center"
-                    required
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="new-password">New Password</Label>
+    <Card className="w-full max-w-md">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="otp-0">One-Time Password</Label>
+          <div className="flex gap-2">
+            {otp.map((digit, index) => (
               <Input
-                id="new-password"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
+                key={index}
+                id={`otp-${index}`}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleOtpChange(index, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                ref={(el) => {
+                  inputRefs.current[index] = el;
+                }}
+                className="w-full text-center"
                 required
               />
-            </div>
-            <LoadingButton
-              onClick={handleSubmit}
-              loading={loading}
-              className="w-full"
-            >
-              Confirm
-            </LoadingButton>
-          </form>
-        </CardContent>
-      </Card>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="new-password">New Password</Label>
+          <Input
+            id="new-password"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+          />
+        </div>
+        <LoadingButton
+          onClick={handleSubmit}
+          loading={loading}
+          className="w-full"
+        >
+          Confirm
+        </LoadingButton>
+      </form>
+    </Card>
+  );
+}
+
+export default function OTPPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white flex items-center justify-center p-4">
+      <Suspense fallback={<div>Loading...</div>}>
+        <OTPPageContent />
+      </Suspense>
     </div>
   );
 }

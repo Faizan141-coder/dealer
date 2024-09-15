@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import Cookies from "js-cookie";
-import toast from "react-hot-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { SupplierInvoiceModal } from "@/components/modals/supplier-invoice-modal";
 
 export type PlaceOrderColumn = {
@@ -31,7 +31,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
   const [loading, setLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState({});
   const token = Cookies.get("authToken");
-
+  const { toast } = useToast();
   const status = row.getValue("status") as string;
 
   const handleOpenModal = () => {
@@ -81,10 +81,16 @@ const InvoiceButton = ({ row }: { row: any }) => {
       }
 
       if (response.status === 201 || 200) {
-        toast.success("Invoice generated successfully");
+        toast({
+          title: "Invoice generated successfully",
+          variant: "default",
+        });
       }
     } catch (error: any) {
-      toast.error("Failed to generate invoice");
+      toast({
+        title: "Failed to generate invoice",
+        variant: "destructive",
+      });
       console.error("Error generating invoice:", error.message);
     } finally {
       setLoading(false);

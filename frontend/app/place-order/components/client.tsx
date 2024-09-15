@@ -10,7 +10,7 @@ import { AddModal } from "@/components/modals/add-modal";
 import { DataTable } from "@/components/ui/data-table";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SubProduct {
   product_name: string;
@@ -35,6 +35,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
 
   const router = useRouter();
   const token = Cookies.get("authToken");
+  const { toast } = useToast();
 
   const phoneNumber = "1234567890"; // Replace with the actual phone number
 
@@ -85,7 +86,10 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
   const handleLogout = () => {
     Cookies.remove("authToken");
     Cookies.remove("userRole");
-    toast.success("Logged out successfully");
+    toast({
+      title: "Logged out successfully",
+      variant: "default",
+    });
     router.push("/");
   };
 

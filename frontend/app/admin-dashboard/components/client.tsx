@@ -10,8 +10,8 @@ import { AddModal } from "@/components/modals/add-modal";
 import { DataTable } from "@/components/ui/data-table";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import Link from "next/link";
+import { useToast } from "@/components/ui/use-toast";
 
 interface PlaceOrderClientProps {
   data: PlaceOrderColumn[];
@@ -28,6 +28,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   const router = useRouter();
   const token = Cookies.get("authToken");
@@ -63,7 +64,10 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
   const handleLogout = () => {
     Cookies.remove("authToken");
     Cookies.remove("userRole");
-    toast.success("Logged out successfully");
+    toast({
+      title: "Logged out successfully",
+      variant: "default",
+    });
     router.push("/");
   };
 

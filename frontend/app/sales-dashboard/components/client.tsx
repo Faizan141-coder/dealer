@@ -9,10 +9,10 @@ import { columns, PlaceOrderColumn } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import { AddModalSales } from "@/components/modals/add-modal-sales";
 import { PlaceOrderModal } from "@/components/modals/place-order-modal";
 import { RegisterClientModal } from "@/components/modals/register-client-modal";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SubProduct {
   product_name: string;
@@ -43,6 +43,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
 
   const router = useRouter();
   const token = Cookies.get("authToken");
+  const { toast } = useToast();
 
   const phoneNumber = "1234567890"; // Replace with the actual phone number
 
@@ -93,7 +94,10 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
   const handleLogout = () => {
     Cookies.remove("authToken");
     Cookies.remove("userRole");
-    toast.success("Logged out successfully");
+    toast({
+      title: "Logged out successfully",
+      variant: "default",
+    });
     router.push("/");
   };
 
@@ -119,17 +123,26 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
       if (response.status === 201) {
         const data = await response.json();
         console.log("Client registered successfully:", data);
-        toast.success("Client registered successfully");
+        toast({
+          title: "Client registered successfully",
+          variant: "default",
+        });
         setRegisterClientModalOpen(false);
         // Optionally, you can refresh the client list or update the UI here
       } else {
         const errorData = await response.json();
         console.error("Error registering client:", errorData);
-        toast.error(errorData.message || "Failed to register client");
+        toast({
+          title: "Failed to register client",
+          variant: "destructive",
+        });
       }
     } catch (error: any) {
       console.error("Error registering client:", error);
-      toast.error("An error occurred while registering the client");
+      toast({
+        title: "An error occurred while registering the client",
+        variant: "destructive",
+      });
     } finally {
       setRegisterClientLoading(false);
     }

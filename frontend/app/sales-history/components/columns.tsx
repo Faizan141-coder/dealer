@@ -17,8 +17,8 @@ import { Heading } from "@/components/ui/heading"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Cookies from "js-cookie"
-import toast from "react-hot-toast"
 import { Separator } from "@/components/ui/separator"
+import { useToast } from "@/components/ui/use-toast";
 
 type SubProduct = {
   sub_product_name: string
@@ -46,14 +46,18 @@ type Product = {
 export default function FormalSalesDashboard({ initialData }: { initialData: Product[] }) {
   const [products] = useState<Product[]>(initialData)
   const [selectedSubProduct, setSelectedSubProduct] = useState<SubProduct | null>(null)
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleLogout = () => {
     Cookies.remove("authToken");
     Cookies.remove("userRole");
-    toast.success("Logged out successfully");
+    toast({
+      title: "Logged out successfully",
+      variant: "default",
+    });
     router.push("/");
   };
 

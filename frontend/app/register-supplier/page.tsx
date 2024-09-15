@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
 export default function SupplierRegistrationForm() {
@@ -34,6 +34,7 @@ export default function SupplierRegistrationForm() {
   // const [priceChargedPerTon, setPriceChargedPerTon] = useState("");
 
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleRegister = async () => {
     setLoading(true);
@@ -66,62 +67,98 @@ export default function SupplierRegistrationForm() {
       );
 
       if (!email) {
-        toast.error("Email is required");
+        toast({
+          title: "Email is required",
+          variant: "destructive",
+        });
         throw new Error("Email is required");
       }
 
       if (!password) {
-        toast.error("Password is required");
+        toast({
+          title: "Password is required",
+          variant: "destructive",
+        });
         throw new Error("Password is required");
       }
 
       if (!username) {
-        toast.error("Username is required");
+        toast({
+          title: "Username is required",
+          variant: "destructive",
+        });
         throw new Error("Username is required");
       }
 
       if (!firstName) {
-        toast.error("First name is required");
+        toast({
+          title: "First name is required",
+          variant: "destructive",
+        });
         throw new Error("First name is required");
       }
 
       if (!lastName) {
-        toast.error("Last name is required");
+        toast({
+          title: "Last name is required",
+          variant: "destructive",
+        });
         throw new Error("Last name is required");
       }
 
       if (!phone) {
-        toast.error("Phone is required");
+        toast({
+          title: "Phone is required",
+          variant: "destructive",
+        });
         throw new Error("Phone is required");
       }
 
       if (!address) {
-        toast.error("Address is required");
+        toast({
+          title: "Address is required",
+          variant: "destructive",
+        });
         throw new Error("Address is required");
       }
 
       if (!companyName) {
-        toast.error("Company name is required");
+        toast({
+          title: "Company name is required",
+          variant: "destructive",
+        });
         throw new Error("Company name is required");
       }
 
       if (!country) {
-        toast.error("Country is required");
+        toast({
+          title: "Country is required",
+          variant: "destructive",
+        });
         throw new Error("Country is required");
       }
 
       if (!state) {
-        toast.error("State is required");
+        toast({
+          title: "State is required",
+          variant: "destructive",
+        });
         throw new Error("State is required");
       }
 
       if (!city) {
-        toast.error("City is required");
+        toast({
+          title: "City is required",
+          variant: "destructive",
+        });
         throw new Error("City is required");
       }
 
       if (!zip) {
-        toast.error("Zip is required");
+        toast({
+          title: "Zip is required",
+          variant: "destructive",
+        });
         throw new Error("Zip is required");
       }
 
@@ -149,7 +186,10 @@ export default function SupplierRegistrationForm() {
       console.log(data);
 
       if (response.status === 201) {
-        toast.success("User registered successfully");
+        toast({
+          title: "User registered successfully",
+          variant: "default",
+        }); 
         // const data = await response.json();
         router.push("/");
       }
