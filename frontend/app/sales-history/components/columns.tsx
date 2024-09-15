@@ -110,8 +110,8 @@ export default function FormalSalesDashboard({ initialData }: { initialData: Pro
     <div className="bg-white">
       <div className="flex items-center justify-between mb-4">
         <Heading
-          title="Sales Dashboard"
-          description={`Total (${products.length})`}
+          title="Admin Dashboard"
+          description={`Total Sales: (${products.length})`}
         />
         <div className="flex items-center gap-x-2">
           <Link href="/admin-dashboard">
