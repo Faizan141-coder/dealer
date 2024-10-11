@@ -2,7 +2,7 @@
 
 export async function getAllOrdersAsDealer(token: any) {
 
-    const response = await fetch(`http://127.0.0.1:8000/get-all-orders-as-dealer/`, {
+    const response = await fetch(`http://127.0.0.1:8000/get-all-orders-as-admin/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
