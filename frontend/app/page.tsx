@@ -66,7 +66,7 @@ export default function LoginForm() {
         });
 
         switch (role) {
-          case "dealer":
+          case "admin":
             router.push("/admin-dashboard");
             break;
           case "sales":
