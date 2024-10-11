@@ -60,7 +60,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
 
     try {
       const response = await fetch(
-        "https://dealer-backend-kz82.vercel.app/forward-invoice-to-truck-company/",
+        "http://127.0.0.1:8000/forward-invoice-to-truck-company/",
         {
           method: "POST",
           headers: {
@@ -134,7 +134,7 @@ const ActionCell = ({ row }: { row: any }) => {
   const token = Cookies.get("authToken");
 
   const handleDownloadInvoice = async (subProductId: string) => {
-    const response = await fetch(`https://dealer-backend-kz82.vercel.app/generate-pdf/`, {
+    const response = await fetch(`http://127.0.0.1:8000/generate-pdf/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -167,10 +167,7 @@ const ActionCell = ({ row }: { row: any }) => {
 
   const openWhatsAppChat = (phoneNumber: string | null) => {
     if (phoneNumber && phoneNumber !== "NOT PROVIDED") {
-      window.open(
-        `https://wa.me/${phoneNumber.replace(/\D/g, "")}`,
-        "_blank"
-      );
+      window.open(`https://wa.me/${phoneNumber.replace(/\D/g, "")}`, "_blank");
     } else {
       toast({
         variant: "destructive",
@@ -192,7 +189,9 @@ const ActionCell = ({ row }: { row: any }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions for {subProduct.id}</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => handleDownloadInvoice(subProduct.id)}>
+            <DropdownMenuItem
+              onClick={() => handleDownloadInvoice(subProduct.id)}
+            >
               Download Invoice
             </DropdownMenuItem>
             <DropdownMenuSeparator />

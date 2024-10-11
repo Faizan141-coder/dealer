@@ -2,7 +2,7 @@
 
 export async function getUserInfo(token: any) {
 
-    const response = await fetch(`https://dealer-backend-kz82.vercel.app/username/`, {
+    const response = await fetch(`http://127.0.0.1:8000/username/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

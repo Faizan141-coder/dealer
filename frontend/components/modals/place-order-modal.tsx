@@ -40,7 +40,7 @@ export const PlaceOrderModal: React.FC<PlaceOrderModalProps> = ({
 
   const getClients = async () => {
     try {
-      const response = await fetch("https://dealer-backend-kz82.vercel.app/get-all-clients/", {
+      const response = await fetch("http://127.0.0.1:8000/get-all-clients/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export const PlaceOrderModal: React.FC<PlaceOrderModalProps> = ({
           setClients(data.clients);
         } else {
           setError("Failed to fetch dealers.");
-        } 
+        }
       } else {
         setError("Failed to fetch dealers.");
       }

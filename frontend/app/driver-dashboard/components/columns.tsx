@@ -44,7 +44,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://dealer-backend-kz82.vercel.app/pickup-from-facility/`,
+        `http://127.0.0.1:8000/pickup-from-facility/`,
         {
           method: "POST",
           headers: {

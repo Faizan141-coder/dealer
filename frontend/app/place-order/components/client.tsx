@@ -25,7 +25,10 @@ interface PlaceOrderClientProps {
   username: string;
 }
 
-export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, username }) => {
+export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
+  data,
+  username,
+}) => {
   const [subProducts, setSubProducts] = useState<SubProduct[]>([]);
   const [selectedSubProduct, setSelectedSubProduct] =
     useState<SubProduct | null>(null);
@@ -42,7 +45,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
   const onConfirm = async () => {
     setLoading(true);
     try {
-      await fetch(`https://dealer-backend-kz82.vercel.app/place-order/`, {
+      await fetch(`http://127.0.0.1:8000/place-order/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -157,7 +160,12 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({ data, userna
           </div>
         </div>
       )}
-      <DataTable searchKey="product_name" columns={columns} data={data} username={username} />
+      <DataTable
+        searchKey="product_name"
+        columns={columns}
+        data={data}
+        username={username}
+      />
       <AddModal
         isOpen={addModalOpen}
         onClose={() => setAddModalOpen(false)}

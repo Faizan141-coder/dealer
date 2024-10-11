@@ -25,7 +25,7 @@ export default function ForgotPassForm() {
   const handleForgotPass = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://dealer-backend-kz82.vercel.app/generate-code/", {
+      const response = await fetch("http://127.0.0.1:8000/generate-code/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export default function ForgotPassForm() {
         });
       }
 
-      console.log(response);  
+      console.log(response);
 
       if (response.status === 200) {
         toast({
@@ -87,7 +87,11 @@ export default function ForgotPassForm() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <LoadingButton loading={loading} onClick={handleForgotPass} className="w-full">
+            <LoadingButton
+              loading={loading}
+              onClick={handleForgotPass}
+              className="w-full"
+            >
               Reset Password
             </LoadingButton>
           </div>

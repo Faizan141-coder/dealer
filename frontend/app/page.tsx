@@ -28,7 +28,15 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await fetch(`https://dealer-backend-kz82.vercel.app/`, {
+      if (!email) {
+        throw new Error("Email is required");
+      }
+
+      if (!password) {
+        throw new Error("Password is required");
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,20 +47,14 @@ export default function LoginForm() {
         }),
       });
 
-      if (!email) {
-        throw new Error("Email is required");
-      }
+      const data = await response.json();
+      // console.log("Response data:", data);
 
-      if (!password) {
-        throw new Error("Password is required");
-      }
-
-      if (response.status === 200) {
+      if (response.ok) {
         toast({
           description: "Login successful",
           variant: "default",
         });
-        const data = await response.json();
         const token = data.access;
         const role = data.role;
 
@@ -63,23 +65,32 @@ export default function LoginForm() {
           sameSite: "strict",
         });
 
-        if (role === "dealer") {
-          router.push("/admin-dashboard");
-        } else if (role === "sales") {
-          router.push("/sales-dashboard");
-        } else if (role === "client") {
-          router.push("/place-order");
-        } else if (role === "trucker") {
-          router.push("/trucker-dashboard");
-        } else if (role === "truck") {
-          router.push("/trucker-dashboard");
+        switch (role) {
+          case "dealer":
+            router.push("/admin-dashboard");
+            break;
+          case "sales":
+            router.push("/sales-dashboard");
+            break;
+          case "client":
+            router.push("/place-order");
+            break;
+          case "trucker":
+          case "truck":
+            router.push("/trucker-dashboard");
+            break;
+          default:
+            throw new Error("Unknown role");
         }
       } else {
-        throw new Error("Invalid email or password");
+        toast({
+          description: data.message || "Login failed",
+          variant: "destructive",
+        });
       }
     } catch (error: any) {
       toast({
-        description: error.message,
+        description: error.message || "An error occurred",
         variant: "destructive",
       });
     } finally {

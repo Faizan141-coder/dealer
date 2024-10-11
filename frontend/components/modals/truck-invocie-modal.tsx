@@ -51,7 +51,7 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
   const getTruckCompanies = async () => {
     try {
       const response = await fetch(
-        "https://dealer-backend-kz82.vercel.app/get-all-truck-companies/",
+        "http://127.0.0.1:8000/get-all-truck-companies/",
         {
           method: "GET",
           headers: {
@@ -60,7 +60,6 @@ export const TruckInvoiceModal: React.FC<TruckInvoiceModalProps> = ({
           },
         }
       );
-      
 
       if (response.status === 200) {
         const data = await response.json();

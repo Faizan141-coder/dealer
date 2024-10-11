@@ -26,20 +26,17 @@ export const SupplierInvoiceDetailModal: React.FC<
 
   const handleConfirm = async () => {
     try {
-      const response = await fetch(
-        "https://dealer-backend-kz82.vercel.app/confirm-order/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            product_id: product_reference_id,
-            invoice_id: id,
-          }),
-        }
-      );
+      const response = await fetch("http://127.0.0.1:8000/confirm-order/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          product_id: product_reference_id,
+          invoice_id: id,
+        }),
+      });
 
       const data = await response.json();
       router.refresh();

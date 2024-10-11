@@ -69,7 +69,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
 
     try {
       const response = await fetch(
-        "https://dealer-backend-kz82.vercel.app/forward-invoice-to-truck-company/",
+        "http://127.0.0.1:8000/forward-invoice-to-truck-company/",
         {
           method: "POST",
           headers: {
@@ -108,7 +108,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
     try {
       setLoading(true);
 
-      const response = await fetch("https://dealer-backend-kz82.vercel.app/delivery-confirm/", {
+      const response = await fetch("http://127.0.0.1:8000/delivery-confirm/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -201,7 +201,7 @@ const ActionCell = ({ row }: { row: any }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        "https://dealer-backend-kz82.vercel.app/get-supplier-ticket/",
+        "http://127.0.0.1:8000/get-supplier-ticket/",
         {
           method: "POST",
           headers: {
@@ -260,7 +260,7 @@ const ActionCell = ({ row }: { row: any }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        "https://dealer-backend-kz82.vercel.app/get-supplier-invoice/",
+        "http://127.0.0.1:8000/get-supplier-invoice/",
         {
           method: "POST",
           headers: {
