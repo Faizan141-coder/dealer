@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator"
 import { Package2, Truck, DollarSign, MapPin, Calendar } from "lucide-react"
 
 type SubProduct = {
-  sub_product_name: string
+  sub_order_name: string
   quantity: number
   actual_quantity: number
   product_type: string
@@ -32,7 +32,7 @@ export function SubProductModal({ subProduct, isOpen, onClose }: SubProductModal
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">{subProduct.sub_product_name}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">{subProduct.sub_order_name}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-6">
           <div className="flex items-center space-x-2">

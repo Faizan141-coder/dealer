@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type SubProduct = {
+export type SubOrder = {
   product_name: string;
   product_type: string;
   quantity: number;
@@ -24,7 +24,7 @@ export type PlaceOrderColumn = {
   id: number;
   status: string;
   created_at: string;
-  sub_products: SubProduct[];
+  sub_orders: SubOrder[];
   dealer_username: string;
 };
 
@@ -80,40 +80,40 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     },
   },
   {
-    accessorKey: "sub_products",
+    accessorKey: "sub_orders",
     header: "Products",
     cell: ({ row }) => {
-      const subProducts = row.original.sub_products as SubProduct[];
+      const subOrders = row.original.sub_orders as SubOrder[];
       return (
         <div className="space-y-1">
-          {subProducts.map((subProduct, index) => (
+          {subOrders.map((subOrder, index) => (
             <TooltipProvider key={index}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center space-x-2 cursor-pointer hover:bg-gray-200 p-2 rounded-md transition-all duration-200 ease-in-out">
                     <Package className="h-5 w-5 text-gray-600" />
                     <span className="font-medium text-gray-800 truncate max-w-[150px]">
-                      {subProduct.product_name}
+                      {subOrder.product_name}
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent className="bg-gray-800 text-white text-sm p-4 rounded-md shadow-lg">
                   <div>
                     <p>
-                      <strong>Product Name:</strong> {subProduct.product_name}
+                      <strong>Product Name:</strong> {subOrder.product_name}
                     </p>
                     <p>
-                      <strong>Product Type:</strong> {subProduct.product_type}
+                      <strong>Product Type:</strong> {subOrder.product_type}
                     </p>
                     <p>
-                      <strong>Quantity:</strong> {subProduct.quantity}
+                      <strong>Quantity:</strong> {subOrder.quantity}
                     </p>
                     <p>
                       <strong>Delivery Date:</strong>{" "}
-                      {new Date(subProduct.delivery_date).toLocaleDateString()}
+                      {new Date(subOrder.delivery_date).toLocaleDateString()}
                     </p>
                     <p>
-                      <strong>Sub-Status:</strong> {subProduct.sub_status}
+                      <strong>Sub-Status:</strong> {subOrder.sub_status}
                     </p>
                   </div>
                 </TooltipContent>
@@ -125,24 +125,24 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     },
   },
   {
-    accessorKey: "sub_products",
+    accessorKey: "sub_orders",
     header: "Type",
     cell: ({ row }) => {
-      const subProducts = row.getValue("sub_products") as SubProduct[];
+      const subOrders = row.getValue("sub_orders") as SubOrder[];
       return (
         <div className="space-y-1">
-          {subProducts.map((subProduct, index) => (
+          {subOrders.map((subOrder, index) => (
             <Badge
               key={index}
               variant="secondary"
               className={cn(
                 "text-xs flex w-fit",
-                subProduct.product_type === "type_1"
+                subOrder.product_type === "type_1"
                   ? "bg-blue-100 text-blue-800"
                   : "bg-pink-100 text-pink-800"
               )}
             >
-              {subProduct.product_type === "type_1" ? "Type 1" : "Type 2"}
+              {subOrder.product_type === "type_1" ? "Type 1" : "Type 2"}
             </Badge>
           ))}
         </div>
@@ -150,24 +150,24 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     },
   },
   {
-    accessorKey: "sub_products",
+    accessorKey: "sub_orders",
     header: "Actual Price",
     cell: ({ row }) => {
-      const subProducts = row.getValue("sub_products") as SubProduct[];
+      const subOrders = row.getValue("sub_orders") as SubOrder[];
       return (
         <div className="space-y-2">
-          {subProducts.map((subProduct, index) => (
+          {subOrders.map((subOrder, index) => (
             <div
               key={index}
               className="flex items-center justify-center p-2 bg-gray-50 rounded-md shadow-sm"
             >
-              {subProduct.actual_price === 0 ? (
+              {subOrder.actual_price === 0 ? (
                 <span className="text-red-500 font-semibold">
                   Unpaid
                 </span>
               ) : (
                 <span className="font-semibold text-green-600">
-                  {subProduct.actual_price} $
+                  {subOrder.actual_price} $
                 </span>
               )}
             </div>
@@ -177,15 +177,15 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     },
   },
   {
-    accessorKey: "sub_products",
+    accessorKey: "sub_orders",
     header: "Quantity",
     cell: ({ row }) => {
-      const subProducts = row.getValue("sub_products") as SubProduct[];
+      const subOrders = row.getValue("sub_orders") as SubOrder[];
       return (
         <div className="space-y-1">
-          {subProducts.map((subProduct, index) => (
+          {subOrders.map((subOrder, index) => (
             <span key={index} className="text-sm flex">
-              {subProduct.quantity}
+              {subOrder.quantity}
             </span>
           ))}
         </div>
@@ -193,15 +193,15 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     },
   },
   {
-    accessorKey: "sub_products",
+    accessorKey: "sub_orders",
     header: "Delivery Address",
     cell: ({ row }) => {
-      const subProducts = row.getValue("sub_products") as SubProduct[];
+      const subOrders = row.getValue("sub_orders") as SubOrder[];
       return (
         <div className="space-y-1 max-w-[150px]">
-          {subProducts.map((subProduct, index) => (
+          {subOrders.map((subOrder, index) => (
             <span key={index} className="text-sm flex">
-              {subProduct.delivery_address}
+              {subOrder.delivery_address}
             </span>
           ))}
         </div>
@@ -209,15 +209,15 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     },
   },
   {
-    accessorKey: "sub_products",
+    accessorKey: "sub_orders",
     header: "Delivery Date",
     cell: ({ row }) => {
-      const subProducts = row.getValue("sub_products") as SubProduct[];
+      const subOrders = row.getValue("sub_orders") as SubOrder[];
       return (
         <div className="space-y-1">
-          {subProducts.map((subProduct, index) => (
+          {subOrders.map((subOrder, index) => (
             <span key={index} className="text-sm text-muted-foreground flex">
-              {subProduct.delivery_date}
+              {subOrder.delivery_date}
             </span>
           ))}
         </div>
@@ -225,14 +225,14 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     },
   },
   {
-    accessorKey: "sub_products",
+    accessorKey: "sub_orders",
     header: "Sub-Status",
     cell: ({ row }) => {
-      const subProducts = row.getValue("sub_products") as SubProduct[];
+      const subOrders = row.getValue("sub_orders") as SubOrder[];
       return (
         <div className="space-y-1">
-          {subProducts.map((subProduct, index) => {
-            const subStatus = subProduct.sub_status;
+          {subOrders.map((subOrder, index) => {
+            const subStatus = subOrder.sub_status;
             return (
               <Badge
                 key={index}

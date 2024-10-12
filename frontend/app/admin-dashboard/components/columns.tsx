@@ -25,7 +25,7 @@ export type PlaceOrderColumn = {
     phone: string;
     sales_representative: string;
   };
-  sub_products: {
+  sub_orders: {
     id: string;
     delivery_date: string;
     product_name: string;
@@ -43,19 +43,19 @@ const InvoiceCell = ({ row }: { row: any }) => {
   const [supplierUsername, setSupplierUsername] = useState("");
   const token = Cookies.get("authToken");
   const [invoiceData, setInvoiceData] = useState<any>({});
-  const [subProductId, setSubProductId] = useState<string>("");
+  const [subOrderId, setSubOrderId] = useState<string>("");
 
   const router = useRouter();
 
   const status = row.getValue("status") as string;
-  const subProducts = row.original.sub_products;
+  const subOrders = row.original.sub_orders;
 
-  const handleOpenModal = (subProductId: string) => {
-    setSubProductId(subProductId);
+  const handleOpenModal = (subOrderId: string) => {
+    setSubOrderId(subOrderId);
     setAddModalOpen(true);
   };
 
-  const handleConfirm = async (subProductIds: string[]) => {
+  const handleConfirm = async (subOrderIds: string[]) => {
     setLoading(true);
 
     try {
@@ -69,8 +69,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
           },
           body: JSON.stringify({
             truck_company_username: supplierUsername,
-            // invoice_id: row.original.id,
-            sub_product_ids: [subProductId],
+            sub_order_ids: [subOrderId],
           }),
         }
       );
@@ -78,7 +77,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
       console.log(response);
 
       if (!row.original.id) {
-        throw new Error("Product ID is required");
+        throw new Error("Order ID is required");
       }
 
       const data = await response.json();
@@ -103,25 +102,25 @@ const InvoiceCell = ({ row }: { row: any }) => {
 
   return (
     <div>
-      {subProducts.map((subProduct: any, index: any) => (
-        <div key={subProduct.id}>
+      {subOrders.map((subOrder: any, index: any) => (
+        <div key={subOrder.id}>
           <LoadingButton
             loading={loading}
-            onClick={() => handleOpenModal(subProduct.id)}
-            disabled={subProduct.sub_status !== "Pending with Admin"}
+            onClick={() => handleOpenModal(subOrder.id)}
+            disabled={subOrder.sub_status !== "Pending with Admin"}
             className="my-5"
           >
-            Invoice {subProduct.id}
+            Invoice {subOrder.id}
           </LoadingButton>
           <TruckInvoiceModal
             isOpen={addModalOpen}
             onClose={() => setAddModalOpen(false)}
-            onConfirm={() => handleConfirm([subProduct.id])}
+            onConfirm={() => handleConfirm([subOrder.id])}
             loading={loading}
             invoiceData={invoiceData}
             productId={row.original.id}
             setSupplierUsername={setSupplierUsername}
-            subProductIds={[subProduct.id || ""]}
+            subProductIds={[subOrder.id || ""]}
           />
         </div>
       ))}
@@ -133,7 +132,7 @@ const ActionCell = ({ row }: { row: any }) => {
   const order = row.original;
   const token = Cookies.get("authToken");
 
-  const handleDownloadInvoice = async (subProductId: string) => {
+  const handleDownloadInvoice = async (subOrderId: string) => {
     const response = await fetch(`http://127.0.0.1:8000/generate-pdf/`, {
       method: "POST",
       headers: {
@@ -141,8 +140,8 @@ const ActionCell = ({ row }: { row: any }) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        product_id: row.original.id,
-        sub_product_id: subProductId,
+        order_id: row.original.id,
+        sub_order_id: subOrderId,
       }),
     });
 
@@ -179,8 +178,8 @@ const ActionCell = ({ row }: { row: any }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      {order.sub_products.map((subProduct: any, index: number) => (
-        <DropdownMenu key={subProduct.id}>
+      {order.sub_orders.map((subOrder: any, index: number) => (
+        <DropdownMenu key={subOrder.id}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0 my-2">
               <span className="sr-only">Open menu</span>
@@ -188,9 +187,9 @@ const ActionCell = ({ row }: { row: any }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions for {subProduct.id}</DropdownMenuLabel>
+            <DropdownMenuLabel>Actions for {subOrder.id}</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => handleDownloadInvoice(subProduct.id)}
+              onClick={() => handleDownloadInvoice(subOrder.id)}
             >
               Download Invoice
             </DropdownMenuItem>
@@ -201,12 +200,12 @@ const ActionCell = ({ row }: { row: any }) => {
               Chat with Client
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => openWhatsAppChat(subProduct.driver_phone_number)}
+              onClick={() => openWhatsAppChat(subOrder.driver_phone_number)}
             >
               Chat with Driver
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => openWhatsAppChat(subProduct.truck_company_phone)}
+              onClick={() => openWhatsAppChat(subOrder.truck_company_phone)}
             >
               Chat with Truck Company
             </DropdownMenuItem>
@@ -223,32 +222,32 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     header: "Order ID",
   },
   {
-    accessorKey: "sub_products",
-    header: "Sub Products",
+    accessorKey: "sub_orders",
+    header: "Sub Orders",
     cell: ({ row }) => {
-      const subProducts = row.original.sub_products;
+      const subOrders = row.original.sub_orders;
 
       return (
         <div>
-          {subProducts.map((subProduct, index) => (
-            <div key={subProduct.id} className="mb-2 p-2 border rounded">
+          {subOrders.map((subOrder, index) => (
+            <div key={subOrder.id} className="mb-2 p-2 border rounded">
               <p>
-                <strong>ID:</strong> {subProduct.id}
+                <strong>ID:</strong> {subOrder.id}
               </p>
               <p>
-                <strong>Product Name:</strong> {subProduct.product_name}
+                <strong>Product Name:</strong> {subOrder.product_name}
               </p>
               <p>
-                <strong>Product Type:</strong> {subProduct.product_type}
+                <strong>Product Type:</strong> {subOrder.product_type}
               </p>
               <p>
-                <strong>Quantity:</strong> {subProduct.quantity}
+                <strong>Quantity:</strong> {subOrder.quantity}
               </p>
               <p>
-                <strong>Status:</strong> {subProduct.sub_status}
+                <strong>Status:</strong> {subOrder.sub_status}
               </p>
               <p>
-                <strong>Delivery Date: </strong> {subProduct.delivery_date}
+                <strong>Delivery Date: </strong> {subOrder.delivery_date}
               </p>
             </div>
           ))}
@@ -305,11 +304,11 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ActionCell, // Use the new ActionCell component here
+    cell: ActionCell,
   },
   {
     accessorKey: "invoice",
     header: "Invoice",
-    cell: InvoiceCell, // Use the component here
+    cell: InvoiceCell,
   },
 ];

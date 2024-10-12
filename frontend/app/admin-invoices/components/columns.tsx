@@ -26,8 +26,8 @@ export type PlaceOrderColumn = {
   status: string;
   pickup_address: string;
   supplier_username: string;
-  ProductDetail: {
-    sub_products: {
+  OrderDetail: {
+    sub_orders: {
       id: string;
       product_name: string;
       product_type: string;
@@ -40,10 +40,10 @@ export type PlaceOrderColumn = {
   };
 };
 
-const SubProductsCell = ({ row }: { row: any }) => {
-  const subProducts = row.original.ProductDetail.sub_products;
+const SubOrdersCell = ({ row }: { row: any }) => {
+  const subOrders = row.original.OrderDetail.sub_orders;
   const [modalStates, setModalStates] = useState<boolean[]>(
-    Array(subProducts.length).fill(false)
+    Array(subOrders.length).fill(false)
   );
   const [loading, setLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState({});
@@ -64,7 +64,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
     setModalStates(newModalStates);
   };
 
-  const handleConfirm = async (subProductIds: string[]) => {
+  const handleConfirm = async (subOrderIds: string[]) => {
     setLoading(true);
 
     try {
@@ -79,13 +79,13 @@ const SubProductsCell = ({ row }: { row: any }) => {
           body: JSON.stringify({
             truck_company_username: truckCompanyUsername,
             invoice_id: row.original.id,
-            sub_product_ids: subProductIds,
+            sub_order_ids: subOrderIds,
           }),
         }
       );
 
       if (!row.original.id) {
-        throw new Error("Product ID is required");
+        throw new Error("Order ID is required");
       }
 
       const data = await response.json();
@@ -104,7 +104,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
     }
   };
 
-  const confirmStatus = async (subProductId: string) => {
+  const confirmStatus = async (subOrderId: string) => {
     try {
       setLoading(true);
 
@@ -115,7 +115,7 @@ const SubProductsCell = ({ row }: { row: any }) => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          sub_product_id: subProductId,
+          sub_order_id: subOrderId,
         }),
       });
 
@@ -137,40 +137,40 @@ const SubProductsCell = ({ row }: { row: any }) => {
 
   return (
     <div>
-      {subProducts.map((subProduct: any, index: any) => (
+      {subOrders.map((subOrder: any, index: any) => (
         <div
-          key={subProduct.id}
+          key={subOrder.id}
           className="mb-2 p-2 border rounded flex justify-between items-center"
         >
           <div>
             <p>
-              <strong>Product Id: </strong> {subProduct.id}
+              <strong>Order Id: </strong> {subOrder.id}
             </p>
             <p>
-              <strong>Product Name:</strong> {subProduct.product_name}
+              <strong>Product Name:</strong> {subOrder.product_name}
             </p>
             <p>
-              <strong>Product Type:</strong> {subProduct.product_type}
+              <strong>Product Type:</strong> {subOrder.product_type}
             </p>
             <p>
-              <strong>Quantity:</strong> {subProduct.quantity}
+              <strong>Quantity:</strong> {subOrder.quantity}
             </p>
             <p>
-              <strong>Actual Load</strong> {subProduct.actual_quantity}
+              <strong>Actual Load</strong> {subOrder.actual_quantity}
             </p>
             <p>
-              <strong>Delivery Date:</strong> {subProduct.delivery_date}
+              <strong>Delivery Date:</strong> {subOrder.delivery_date}
             </p>
             <p>
-              <strong>Status:</strong> {subProduct.sub_status}
+              <strong>Status:</strong> {subOrder.sub_status}
             </p>
           </div>
           <div>
             <LoadingButton
-              onClick={() => confirmStatus(subProduct.id)}
-              disabled={subProduct.sub_status.toLowerCase() === "delivered"}
+              onClick={() => confirmStatus(subOrder.id)}
+              disabled={subOrder.sub_status.toLowerCase() === "delivered"}
             >
-              {subProduct.sub_status.toLowerCase() === "delivered"
+              {subOrder.sub_status.toLowerCase() === "delivered"
                 ? "Delivered"
                 : "Confirm Delivery"}
             </LoadingButton>
@@ -178,12 +178,12 @@ const SubProductsCell = ({ row }: { row: any }) => {
           <TruckInvoiceModal
             isOpen={modalStates[index]}
             onClose={() => handleCloseModal(index)}
-            onConfirm={() => handleConfirm([subProduct.id])}
+            onConfirm={() => handleConfirm([subOrder.id])}
             loading={loading}
             invoiceData={invoiceData}
             productId={row.original.id}
             setSupplierUsername={setTruckCompanyUsername}
-            subProductIds={[subProduct.id]}
+            subProductIds={[subOrder.id]}
           />
         </div>
       ))}
@@ -197,7 +197,7 @@ const ActionCell = ({ row }: { row: any }) => {
 
   // const subProductId = row.original.ProductDetail.sub_products[0].id;
 
-  const getSupplierTicket = async (subProductId: string) => {
+  const getSupplierTicket = async (subOrderId: string) => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -209,7 +209,7 @@ const ActionCell = ({ row }: { row: any }) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            sub_product_id: subProductId.toString(),
+            sub_order_id: subOrderId.toString(),
           }),
         }
       );
@@ -314,8 +314,8 @@ const ActionCell = ({ row }: { row: any }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      {row.original.ProductDetail.sub_products.map((subProduct: any) => (
-        <DropdownMenu key={subProduct.id}>
+      {row.original.OrderDetail.sub_orders.map((subOrder: any) => (
+        <DropdownMenu key={subOrder.id}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -330,7 +330,7 @@ const ActionCell = ({ row }: { row: any }) => {
               {loading ? "Loading..." : "Supplier Invoice"}
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => getSupplierTicket(subProduct.id)}
+              onClick={() => getSupplierTicket(subOrder.id)}
               disabled={loading}
             >
               {loading ? "Loading..." : "Supplier Ticket"}
@@ -356,9 +356,9 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     header: "Pickup Address",
   },
   {
-    accessorKey: "sub_products",
-    header: "Sub Products",
-    cell: SubProductsCell, // Use the extracted component
+    accessorKey: "sub_orders",
+    header: "Sub Orders",
+    cell: SubOrdersCell, // Use the extracted component
   },
   {
     accessorKey: "status",

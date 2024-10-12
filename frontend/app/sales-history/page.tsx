@@ -7,7 +7,8 @@ const DashboardPage = async () => {
   const token = cookieStore.get("authToken");
   const data = await getAllDetails(token?.value);
 
-  const orders = data?.products_details || [];
+  const orders = data?.orders_details || [];
+  console.log(orders);
 
   return (
     <div className="flex-col">

@@ -43,7 +43,7 @@ export type PlaceOrderColumn = {
   dealer_phone: string;
   supplier_invoice_id: string;
   dealer_invoice_id: string;
-  sub_product_id: string;
+  sub_order_id: string;
   status: string;
 };
 
@@ -87,7 +87,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
           driver_phone_number: driverPhoneNumber,
           driver_address: driverAddress,
           driver_email: driverEmail,
-          sub_product_id: row.original.sub_product_id,
+          sub_order_id: row.original.sub_order_id,
           dealer_invoice_id: row.original.dealer_invoice_id,
         }),
       });
@@ -130,7 +130,7 @@ const InvoiceButton = ({ row }: { row: any }) => {
         driverPhoneNumber={driverPhoneNumber}
         driverAddress={driverAddress}
         driverEmail={driverEmail}
-        subProductId={row.original.sub_product_id}
+        subProductId={row.original.sub_order_id}
         supplierInvoiceId={row.original.supplier_invoice_id}
         dealerInvoiceId={row.original.dealer_invoice_id}
       />
@@ -161,7 +161,7 @@ const ActionButton = ({ row }: { row: any }) => {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-              sub_product_id: order.sub_product_id,
+              sub_order_id: order.sub_order_id,
               miles_traveled: miles,
             }),
           }
@@ -192,7 +192,7 @@ const ActionButton = ({ row }: { row: any }) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            sub_product_id: order.sub_product_id,
+            sub_order_id: order.sub_order_id,
             bol: bolNumber,
           }),
         });
@@ -319,7 +319,7 @@ const ActionButton = ({ row }: { row: any }) => {
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
   {
-    accessorKey: "sub_product_id",
+    accessorKey: "sub_order_id",
     header: ({ column }) => {
       return (
         <Button

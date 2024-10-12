@@ -20,8 +20,8 @@ import Cookies from "js-cookie"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast";
 
-type SubProduct = {
-  sub_product_name: string
+type SubOrder = {
+  sub_order_name: string
   quantity: number
   actual_quantity: number
   product_type: string
@@ -37,15 +37,15 @@ type SubProduct = {
   actual_price: number
 }
 
-type Product = {
-  product_id: number
+type Order = {
+  order_id: number
   supplier_username: string
-  sub_products: SubProduct[]
+  sub_orders: SubOrder[]
 }
 
-export default function FormalSalesDashboard({ initialData }: { initialData: Product[] }) {
-  const [products] = useState<Product[]>(initialData)
-  const [selectedSubProduct, setSelectedSubProduct] = useState<SubProduct | null>(null)
+export default function FormalSalesDashboard({ initialData }: { initialData: Order[] }) {
+  const [orders] = useState<Order[]>(initialData)
+  const [selectedSubOrder, setSelectedSubOrder] = useState<SubOrder | null>(null)
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -61,46 +61,46 @@ export default function FormalSalesDashboard({ initialData }: { initialData: Pro
     router.push("/");
   };
 
-  const totalRevenue = products.reduce(
-    (acc, product) =>
+  const totalRevenue = orders.reduce(
+    (acc, order) =>
       acc +
-      product.sub_products.reduce(
-        (subAcc, subProduct) =>
+      order.sub_orders.reduce(
+        (subAcc, subOrder) =>
           subAcc +
-          (subProduct.actual_price -
-            subProduct.price_charged_by_supplier -
-            subProduct.delivery_cost -
-            subProduct.sales_commission),
+          (subOrder.actual_price -
+            subOrder.price_charged_by_supplier -
+            subOrder.delivery_cost -
+            subOrder.sales_commission),
         0
       ),
     0
   )
 
-  const totalSupplierExpense = products.reduce(
-    (acc, product) =>
+  const totalSupplierExpense = orders.reduce(
+    (acc, order) =>
       acc +
-      product.sub_products.reduce(
-        (subAcc, subProduct) => subAcc + subProduct.price_charged_by_supplier,
+      order.sub_orders.reduce(
+        (subAcc, subOrder) => subAcc + subOrder.price_charged_by_supplier,
         0
       ),
     0
   )
 
-  const totalTruckExpense = products.reduce(
-    (acc, product) =>
+  const totalTruckExpense = orders.reduce(
+    (acc, order) =>
       acc +
-      product.sub_products.reduce(
-        (subAcc, subProduct) => subAcc + subProduct.delivery_cost,
+      order.sub_orders.reduce(
+        (subAcc, subOrder) => subAcc + subOrder.delivery_cost,
         0
       ),
     0
   )
 
-  const totalCommission = products.reduce(
-    (acc, product) =>
+  const totalCommission = orders.reduce(
+    (acc, order) =>
       acc +
-      product.sub_products.reduce(
-        (subAcc, subProduct) => subAcc + subProduct.sales_commission,
+      order.sub_orders.reduce(
+        (subAcc, subOrder) => subAcc + subOrder.sales_commission,
         0
       ),
     0
@@ -111,7 +111,7 @@ export default function FormalSalesDashboard({ initialData }: { initialData: Pro
       <div className="flex items-center justify-between mb-4">
         <Heading
           title="Admin Dashboard"
-          description={`Total Sales: (${products.length})`}
+          description={`Total Sales: (${orders.length})`}
         />
         <div className="flex items-center gap-x-2">
           <Link href="/admin-dashboard">
@@ -166,16 +166,16 @@ export default function FormalSalesDashboard({ initialData }: { initialData: Pro
 
       <Card className="bg-white shadow-lg">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">Product Overview</CardTitle>
-          <CardDescription>Detailed view of all products and sub-products</CardDescription>
+          <CardTitle className="text-xl font-semibold">Order Overview</CardTitle>
+          <CardDescription>Detailed view of all orders and sub-orders</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product ID</TableHead>
+                <TableHead>Order ID</TableHead>
                 <TableHead>Supplier</TableHead>
-                <TableHead>Sub-Product</TableHead>
+                <TableHead>Sub-Order</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>Actual Quantity</TableHead>
@@ -185,29 +185,29 @@ export default function FormalSalesDashboard({ initialData }: { initialData: Pro
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.flatMap((product) =>
-                product.sub_products.map((subProduct, index) => (
-                  <TableRow key={`${product.product_id}-${index}`}>
-                    <TableCell>{product.product_id}</TableCell>
-                    <TableCell>{product.supplier_username}</TableCell>
-                    <TableCell>{subProduct.sub_product_name}</TableCell>
-                    <TableCell>{subProduct.product_type}</TableCell>
-                    <TableCell>{subProduct.quantity}</TableCell>
-                    <TableCell>{subProduct.actual_quantity}</TableCell>
+              {orders.flatMap((order) =>
+                order.sub_orders.map((subOrder, index) => (
+                  <TableRow key={`${order.order_id}-${index}`}>
+                    <TableCell>{order.order_id}</TableCell>
+                    <TableCell>{order.supplier_username}</TableCell>
+                    <TableCell>{subOrder.sub_order_name}</TableCell>
+                    <TableCell>{subOrder.product_type}</TableCell>
+                    <TableCell>{subOrder.quantity}</TableCell>
+                    <TableCell>{subOrder.actual_quantity}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
-                        {new Date(subProduct.delivery_date).toLocaleDateString()}
+                        {new Date(subOrder.delivery_date).toLocaleDateString()}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">{subProduct.truck_driver}</Badge>
+                      <Badge variant="outline">{subOrder.truck_driver}</Badge>
                     </TableCell>
                     <TableCell>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setSelectedSubProduct(subProduct)}
+                        onClick={() => setSelectedSubOrder(subOrder)}
                       >
                         View Details
                       </Button>
@@ -220,11 +220,11 @@ export default function FormalSalesDashboard({ initialData }: { initialData: Pro
         </CardContent>
       </Card>
 
-      {selectedSubProduct && (
+      {selectedSubOrder && (
         <SubProductModal
-          subProduct={selectedSubProduct}
-          isOpen={!!selectedSubProduct}
-          onClose={() => setSelectedSubProduct(null)}
+          subProduct={selectedSubOrder}
+          isOpen={!!selectedSubOrder}
+          onClose={() => setSelectedSubOrder(null)}
         />
       )}
     </div>

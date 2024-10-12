@@ -11,6 +11,7 @@ export async function getAllOrders(token: any) {
     });
 
     if (response.status === 200) {
+        
         return await response.json();
     }
 

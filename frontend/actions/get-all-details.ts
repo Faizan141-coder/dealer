@@ -11,7 +11,11 @@ export async function getAllDetails(token: any) {
     });
 
     if (response.status === 200) {
-        return await response.json();
+        try {
+            return await response.json();
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+        }
     }
 
     return null;
