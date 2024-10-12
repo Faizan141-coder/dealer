@@ -1,6 +1,7 @@
 import { getAllDetails } from "@/actions/get-all-details";
 import { cookies } from "next/headers";
 import SalesDashboard from "./components/columns";
+import { redirect } from "next/navigation";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
@@ -9,6 +10,10 @@ const DashboardPage = async () => {
 
   const orders = data?.orders_details || [];
   console.log(orders);
+
+  if (!token) {
+    redirect("/");
+  }
 
   return (
     <div className="flex-col">

@@ -1,17 +1,22 @@
 import { PlaceOrderClient } from "./components/client";
 import { cookies } from "next/headers";
-import { getAllOrdersAsDealer } from "@/actions/get-all-dealers";
 import { getUserInfo } from "@/actions/get-user-info";
+import { getAllOrdersAsAdmin } from "@/actions/get-all-admins";
+import { redirect } from "next/navigation";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
   const token = cookieStore.get("authToken");
   console.log("Token: ", token?.value);
-  const data = await getAllOrdersAsDealer(token?.value);
+  const data = await getAllOrdersAsAdmin(token?.value);
   const username = await getUserInfo(token?.value);
 
   const orders = data?.orders || [];
   const Username = username?.username || "";
+
+  if (!token) {
+    redirect("/");
+  }
 
   return (
     <div className="flex-col">

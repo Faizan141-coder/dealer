@@ -1,6 +1,7 @@
 import Component from "./components/columns";
 import { cookies } from "next/headers";
 import { getAllTruckSales } from "@/actions/get-all-truck-sales";
+import { redirect } from "next/navigation";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
@@ -8,6 +9,10 @@ const DashboardPage = async () => {
   const data = await getAllTruckSales(token?.value);
 
   const orders = data?.invoices || [];
+
+  if (!token) {
+    redirect("/");
+  }
 
   return (
     <div className="flex-col">

@@ -2,7 +2,7 @@ import { getAllInvoicesFromSupplier } from "@/actions/get-all-invoices-from-supp
 import { PlaceOrderClient } from "./components/client";
 import { cookies } from "next/headers";
 import { getUserInfo } from "@/actions/get-user-info";
-
+import { redirect } from "next/navigation";
 const DashboardPage = async () => {
   const cookieStore = cookies();
   const token = cookieStore.get("authToken");
@@ -14,6 +14,10 @@ const DashboardPage = async () => {
   const Username = usernmae?.username || "";
 
   console.log("Orders:", orders);
+
+  if (!token) {
+    redirect("/");
+  }
 
   return (
     <div className="flex-col">

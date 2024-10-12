@@ -2,6 +2,7 @@ import { PlaceOrderClient } from "./components/client";
 import { cookies } from "next/headers";
 import { getAllSalesOrders } from "@/actions/get-all-sales-orders";
 import { getUserInfo } from "@/actions/get-user-info";
+import { redirect } from "next/navigation";
 
 const PlaceOrderPage = async () => {
   const cookieStore = cookies();
@@ -14,6 +15,10 @@ const PlaceOrderPage = async () => {
   const Username = username?.username || "";
 
   console.log("Orders: ", orders);
+
+  if (!token) {
+    redirect("/");
+  }
 
   return (
     <div className="flex-col">

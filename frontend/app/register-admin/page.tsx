@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
-export default function DealerRegistrationForm() {
+export default function AdminRegistrationForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ export default function DealerRegistrationForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState("dealer");
+  const [role, setRole] = useState("admin");
 
   const router = useRouter();
   const { toast } = useToast();
@@ -98,9 +98,9 @@ export default function DealerRegistrationForm() {
     <div className="flex flex-col items-center justify-center h-full">
       <Card className="w-full max-w-2xl">
         <CardHeader className="items-center">
-          <CardTitle className="text-xl">Register as Dealer</CardTitle>
+          <CardTitle className="text-xl">Register as Admin</CardTitle>
           <CardDescription>
-            Enter your information to create dealer account
+            Enter your information to create admin account
           </CardDescription>
         </CardHeader>
         <CardContent>

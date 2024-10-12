@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { getAllInvoices } from "@/actions/get-all-invoices";
 import { getAllTruckDeliveries } from "@/actions/get-all-truck-deliveries";
 import { getUserInfo } from "@/actions/get-user-info";
+import { redirect } from "next/navigation";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
@@ -13,6 +14,10 @@ const DashboardPage = async () => {
 
   const orders = data?.deliveries || [];
   const Username = username?.username || "";
+
+  if (!token) {
+    redirect("/");
+  }
 
   return (
     <div className="flex-col">

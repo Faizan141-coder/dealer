@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { getPendingDeliveries } from "@/actions/get-pending-deliveries";
 import { PlaceOrderClient } from "./components/client";
+import { redirect } from "next/navigation";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
@@ -9,6 +10,10 @@ const DashboardPage = async () => {
   const data = await getPendingDeliveries(token?.value);
 
   const orders = data || [];
+
+  if (!token) {
+    redirect("/");
+  }
 
   return (
     <div className="flex-col">
