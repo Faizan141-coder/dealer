@@ -70,7 +70,7 @@ export const PlaceOrderModal: React.FC<PlaceOrderModalProps> = ({
 
   // Check if all required fields are filled
   const isFormValid = () => {
-    return true;
+    return dealerUsername !== ''; // Return true only if a client is selected
   };
 
   const handleConfirm = () => {
@@ -105,8 +105,8 @@ export const PlaceOrderModal: React.FC<PlaceOrderModalProps> = ({
         </div>
 
         <Button
-          disabled={loading || !isFormValid()} // Disable if form is invalid
-          className="bg-green-500 text-white"
+          disabled={loading || !isFormValid()} // Disable if form is invalid or loading
+          className="bg-green-500 text-white hover:bg-green-400"
           onClick={handleConfirm}
         >
           Place Order

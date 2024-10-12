@@ -29,40 +29,40 @@ export type PlaceOrderColumn = {
 };
 
 export const columns: ColumnDef<PlaceOrderColumn>[] = [
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/10 transition duration-200"
-      >
-        Status
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      return (
-        <Badge
-          variant="outline"
-          className={cn(
-            "font-semibold",
-            status.toLowerCase().includes("pending") &&
-              "border-yellow-500 text-yellow-700",
-            status.toLowerCase().includes("cancelled") &&
-              "border-red-500 text-red-700",
-            status.toLowerCase().includes("confirmed") &&
-              "border-blue-500 text-blue-700",
-            status.toLowerCase().includes("delivered") &&
-              "border-green-500 text-green-700"
-          )}
-        >
-          {status}
-        </Badge>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "status",
+  //   header: ({ column }) => (
+  //     <Button
+  //       variant="ghost"
+  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       className="hover:bg-primary/10 transition duration-200"
+  //     >
+  //       Status
+  //       <ArrowUpDown className="ml-2 h-4 w-4" />
+  //     </Button>
+  //   ),
+  //   cell: ({ row }) => {
+  //     const status = row.getValue("status") as string;
+  //     return (
+  //       <Badge
+  //         variant="outline"
+  //         className={cn(
+  //           "font-semibold",
+  //           status.toLowerCase().includes("pending") &&
+  //             "border-yellow-500 text-yellow-700",
+  //           status.toLowerCase().includes("cancelled") &&
+  //             "border-red-500 text-red-700",
+  //           status.toLowerCase().includes("confirmed") &&
+  //             "border-blue-500 text-blue-700",
+  //           status.toLowerCase().includes("delivered") &&
+  //             "border-green-500 text-green-700"
+  //         )}
+  //       >
+  //         {status}
+  //       </Badge>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "created_at",
     header: "Created At",
@@ -131,20 +131,21 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       const subOrders = row.getValue("sub_orders") as SubOrder[];
       return (
         <div className="space-y-1">
-          {subOrders.map((subOrder, index) => (
-            <Badge
-              key={index}
-              variant="secondary"
-              className={cn(
-                "text-xs flex w-fit",
-                subOrder.product_type === "type_1"
-                  ? "bg-blue-100 text-blue-800"
-                  : "bg-pink-100 text-pink-800"
-              )}
-            >
-              {subOrder.product_type === "type_1" ? "Type 1" : "Type 2"}
-            </Badge>
-          ))}
+          {subOrders.map((subOrder, index) => {
+            const isBulk = subOrder.product_name === "bulk cement";
+            return (
+              <Badge
+                key={index}
+                variant="secondary"
+                className={cn(
+                  "text-xs flex w-fit",
+                  isBulk ? "bg-blue-100 text-blue-800" : "bg-pink-100 text-pink-800"
+                )}
+              >
+                {subOrder.product_type}
+              </Badge>
+            );
+          })}
         </div>
       );
     },
@@ -240,17 +241,17 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
                 className={cn(
                   "text-xs font-medium flex w-fit",
                   subStatus.toLowerCase().includes("pending") &&
-                    "border-yellow-500 text-yellow-700",
+                    "border-yellow-500 text-yellow-700 hover:bg-yellow-300 hover:text-yellow-900",
                   subStatus.toLowerCase().includes("cancelled") &&
-                    "border-red-500 text-red-700",
+                    "border-red-500 text-red-700 hover:bg-red-300 hover:text-red-900",
                   subStatus.toLowerCase().includes("confirmed") &&
-                    "border-blue-500 text-blue-700",
+                    "border-blue-500 text-blue-700 hover:bg-blue-300 hover:text-blue-900",
                   subStatus.toLowerCase().includes("delivered") &&
-                    "border-green-500 text-green-700",
+                    "border-green-500 text-green-700 hover:bg-green-300 hover:text-green-900",
                   subStatus.toLowerCase().includes("assigned") &&
-                    "border-purple-500 text-purple-700",
+                    "border-purple-500 text-purple-700 hover:bg-purple-300 hover:text-purple-900",
                   subStatus.toLowerCase().includes("picked") &&
-                    "border-orange-500 text-orange-700"
+                    "border-orange-500 text-orange-700 hover:bg-orange-300 hover:text-orange-900"
                 )}
               >
                 {subStatus}

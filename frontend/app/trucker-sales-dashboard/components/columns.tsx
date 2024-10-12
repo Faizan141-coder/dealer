@@ -13,11 +13,11 @@ import Cookies from 'js-cookie'
 import { useToast } from "@/components/ui/use-toast";
 
 type SaleData = {
-  sub_product__product_name: string
-  sub_product__quantity: number
-  sub_product__delivery_date: string
-  sub_product__price_charged_by_truck: number
-  sub_product__miles_traveled: number
+  sub_order__product_name: string
+  sub_order__quantity: number
+  sub_order__delivery_date: string
+  sub_order__price_charged_by_truck: number
+  sub_order__miles_traveled: number
   driver__driver_full_name: string
   driver__driver_phone_number: string
   driver__truck_plate_number: string
@@ -46,9 +46,9 @@ export default function Component({ data }: ComponentProps) {
     setSalesData(data)
   }, [data])
 
-  const totalSales = salesData.reduce((acc, sale) => acc + sale.sub_product__price_charged_by_truck, 0)
-  const totalMiles = salesData.reduce((acc, sale) => acc + sale.sub_product__miles_traveled, 0)
-  const totalQuantity = salesData.reduce((acc, sale) => acc + sale.sub_product__quantity, 0)
+  const totalSales = salesData.reduce((acc, sale) => acc + sale.sub_order__price_charged_by_truck, 0)
+  const totalMiles = salesData.reduce((acc, sale) => acc + sale.sub_order__miles_traveled, 0)
+  const totalQuantity = salesData.reduce((acc, sale) => acc + sale.sub_order__quantity, 0)
 
   return (
     <div className="space-y-6">
@@ -124,11 +124,11 @@ export default function Component({ data }: ComponentProps) {
             <TableBody>
               {salesData.map((sale, index) => (
                 <TableRow key={index}>
-                  <TableCell>{sale.sub_product__product_name}</TableCell>
-                  <TableCell>{sale.sub_product__quantity}</TableCell>
-                  <TableCell>{new Date(sale.sub_product__delivery_date).toLocaleDateString()}</TableCell>
-                  <TableCell>${sale.sub_product__price_charged_by_truck.toFixed(2)}</TableCell>
-                  <TableCell>{sale.sub_product__miles_traveled}</TableCell>
+                  <TableCell>{sale.sub_order__product_name}</TableCell>
+                  <TableCell>{sale.sub_order__quantity}</TableCell>
+                  <TableCell>{new Date(sale.sub_order__delivery_date).toLocaleDateString()}</TableCell>
+                  <TableCell>${sale.sub_order__price_charged_by_truck.toFixed(2)}</TableCell>
+                  <TableCell>{sale.sub_order__miles_traveled}</TableCell>
                   <TableCell>
                     <div>{sale.driver__driver_full_name}</div>
                     <div className="text-sm text-muted-foreground">{sale.driver__driver_phone_number}</div>

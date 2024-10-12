@@ -19,7 +19,7 @@ import {
 
 export type PlaceOrderColumn = {
   id: string;
-  status: string;
+  // status: string;
   user_details: {
     username: string;
     phone: string;
@@ -47,7 +47,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
 
   const router = useRouter();
 
-  const status = row.getValue("status") as string;
+  // const status = row.getValue("status") as string;
   const subOrders = row.original.sub_orders;
 
   const handleOpenModal = (subOrderId: string) => {
@@ -110,7 +110,7 @@ const InvoiceCell = ({ row }: { row: any }) => {
             disabled={subOrder.sub_status !== "Pending with Admin"}
             className="my-5"
           >
-            Invoice {subOrder.id}
+            Forward Order
           </LoadingButton>
           <TruckInvoiceModal
             isOpen={addModalOpen}
@@ -181,7 +181,7 @@ const ActionCell = ({ row }: { row: any }) => {
       {order.sub_orders.map((subOrder: any, index: number) => (
         <DropdownMenu key={subOrder.id}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 my-2">
+            <Button variant="ghost" className="h-8 w-8 p-0 my-5">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
@@ -244,9 +244,6 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
                 <strong>Quantity:</strong> {subOrder.quantity}
               </p>
               <p>
-                <strong>Status:</strong> {subOrder.sub_status}
-              </p>
-              <p>
                 <strong>Delivery Date: </strong> {subOrder.delivery_date}
               </p>
             </div>
@@ -268,7 +265,7 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
     header: "Sales Representative",
   },
   {
-    accessorKey: "status",
+    accessorKey: "sub_orders.sub_status",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -280,24 +277,34 @@ export const columns: ColumnDef<PlaceOrderColumn>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const subOrders = row.original.sub_orders;   
 
       return (
-        <Badge
-          className={cn(
-            status.toLowerCase().includes("pending")
-              ? "bg-yellow-500 text-white"
-              : status.toLowerCase().includes("cancelled")
-              ? "bg-red-500 text-white"
-              : status.toLowerCase().includes("confirmed")
-              ? "bg-blue-500 text-white"
-              : status.toLowerCase().includes("delivered")
-              ? "bg-green-500 text-white"
-              : "bg-gray-500 text-white"
-          )}
-        >
-          {status}
-        </Badge>
+        <div>
+          {subOrders.map((subOrder, index) => (
+            <div key={subOrder.id} className="flex flex-row my-14">
+              <Badge
+                className={cn(
+                  "mr-2",
+                  subOrder.sub_status.toLowerCase().includes("pending") &&
+                    "bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-300 hover:text-yellow-900",
+                  subOrder.sub_status.toLowerCase().includes("cancelled") &&
+                    "bg-red-100 text-red-800 border-red-300 hover:bg-red-300 hover:text-red-900",
+                  subOrder.sub_status.toLowerCase().includes("confirmed") &&
+                    "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-300 hover:text-blue-900",
+                  subOrder.sub_status.toLowerCase().includes("delivered") &&
+                    "bg-green-100 text-green-800 border-green-300 hover:bg-green-300 hover:text-green-900",
+                  subOrder.sub_status.toLowerCase().includes("assigned") &&
+                    "bg-purple-100 text-purple-800 border-purple-300 hover:bg-purple-300 hover:text-purple-900",
+                  subOrder.sub_status.toLowerCase().includes("picked") &&
+                    "bg-orange-100 text-orange-800 border-orange-300 hover:bg-orange-300 hover:text-orange-900"
+                )}
+              >
+                {subOrder.sub_status}
+              </Badge>
+            </div>
+          ))}
+        </div>
       );
     },
   },

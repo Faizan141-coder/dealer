@@ -117,7 +117,8 @@ export const AddModal: React.FC<AddModalProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="Cement">Cement</SelectItem>
+              <SelectItem value="bulk cement">Bulk Cement</SelectItem>
+              <SelectItem value="bagged cement">Bagged Cement</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -125,12 +126,26 @@ export const AddModal: React.FC<AddModalProps> = ({
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select product type" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="type_1">Type 1</SelectItem>
-              <SelectItem value="type_2">Type 2</SelectItem>
-            </SelectGroup>
-          </SelectContent>
+          {productName === "bulk cement" && (
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="gray portland type 1/2">
+                  Gray Portland Type 1/2
+                </SelectItem>
+                <SelectItem value="white portland type 1">
+                  White Portland Type 1
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          )}
+          {productName === "bagged cement" && (
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="white cement">White Cement</SelectItem>
+                <SelectItem value="grey cement">Grey Cement</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          )}
         </Select>
         <Input
           value={quantity}
@@ -141,6 +156,18 @@ export const AddModal: React.FC<AddModalProps> = ({
         <div>
           <div className=" flex space-x-5">
             <Input
+              value={streetAddress}
+              onChange={(e) => setStreetAddress(e.target.value)}
+              placeholder="Street Address"
+            />
+            <Input
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
+              placeholder="Zip Code"
+            />
+          </div>
+          <div className="mt-5 flex space-x-5">
+            <Input
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="City"
@@ -149,18 +176,6 @@ export const AddModal: React.FC<AddModalProps> = ({
               value={state}
               onChange={(e) => setState(e.target.value)}
               placeholder="State"
-            />
-          </div>
-          <div className="mt-5 flex space-x-5">
-            <Input
-              value={zipCode}
-              onChange={(e) => setZipCode(e.target.value)}
-              placeholder="Zip Code"
-            />
-            <Input
-              value={streetAddress}
-              onChange={(e) => setStreetAddress(e.target.value)}
-              placeholder="Street Address"
             />
           </div>
         </div>

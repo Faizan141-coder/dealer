@@ -14,7 +14,7 @@ import { PlaceOrderModal } from "@/components/modals/place-order-modal";
 import { RegisterClientModal } from "@/components/modals/register-client-modal";
 import { useToast } from "@/components/ui/use-toast";
 
-interface SubProduct {
+interface SubOrder {
   product_name: string;
   product_type: string;
   quantity: number;
@@ -31,9 +31,9 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
   data,
   username,
 }) => {
-  const [subProducts, setSubProducts] = useState<SubProduct[]>([]);
-  const [selectedSubProduct, setSelectedSubProduct] =
-    useState<SubProduct | null>(null);
+  const [subOrders, setSubOrders] = useState<SubOrder[]>([]);
+  const [selectedSubOrder, setSelectedSubOrder] =
+    useState<SubOrder | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [placeOrderModalOpen, setPlaceOrderModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -58,14 +58,14 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
         },
         body: JSON.stringify({
           client_username: dealerUsername,
-          sub_products: subProducts.map((subProduct) => ({
-            ...subProduct,
-            delivery_date: subProduct.delivery_date, // Format date
+          sub_orders: subOrders.map((subOrder) => ({
+            ...subOrder,
+            delivery_date: subOrder.delivery_date, // Format date
           })),
         }),
       });
       console.log("Order placed successfully");
-      setSubProducts([]); // Clear sub-orders after placing the order
+      setSubOrders([]); // Clear sub-orders after placing the order
       router.refresh();
     } catch (error: any) {
       console.error("Error placing order:", error);
@@ -75,19 +75,19 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
     }
   };
 
-  const handleAddSubOrder = (subOrder: SubProduct) => {
-    if (selectedSubProduct) {
-      setSubProducts(
-        subProducts.map((sp) => (sp === selectedSubProduct ? subOrder : sp))
+  const handleAddSubOrder = (subOrder: SubOrder) => {
+    if (selectedSubOrder) {
+      setSubOrders(
+        subOrders.map((so) => (so === selectedSubOrder ? subOrder : so))
       );
     } else {
-      setSubProducts([...subProducts, subOrder]);
+      setSubOrders([...subOrders, subOrder]);
     }
-    setSelectedSubProduct(null); // Reset selection after editing or adding
+    setSelectedSubOrder(null); // Reset selection after editing or adding
   };
 
-  const handleEditSubOrder = (subOrder: SubProduct) => {
-    setSelectedSubProduct(subOrder);
+  const handleEditSubOrder = (subOrder: SubOrder) => {
+    setSelectedSubOrder(subOrder);
     setAddModalOpen(true);
   };
 
@@ -164,7 +164,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
           </Button>
           <Button
             onClick={() => {
-              setSelectedSubProduct(null);
+              setSelectedSubOrder(null);
               setAddModalOpen(true);
             }}
             className="bg-blue-600 text-white text-sm px-5 py-3 rounded-md hover:bg-blue-500"
@@ -177,7 +177,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
             onClick={() => {
               setPlaceOrderModalOpen(true);
             }}
-            disabled={subProducts.length === 0 || loading}
+            disabled={subOrders.length === 0 || loading}
             className="bg-green-600 text-white text-sm px-5 py-3 rounded-md hover:bg-green-500 disabled:opacity-50"
           >
             {loading ? "Placing Order..." : "Place Order"}
@@ -189,23 +189,23 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
       </div>
       <Separator />
 
-      {subProducts.length > 0 && (
+      {subOrders.length > 0 && (
         <div className="mt-6 space-y-4">
           <h2 className="text-lg font-semibold">Sub-Orders</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {subProducts.map((subProduct, index) => (
+            {subOrders.map((subOrder, index) => (
               <div key={index} className="p-4 bg-white shadow-md rounded-md">
                 <div className="flex justify-between items-center">
                   <div>
                     <h3 className="text-md font-semibold">
-                      {subProduct.product_name}
+                      {subOrder.product_name}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      Delivery Date: {subProduct.delivery_date.toString()}
+                      Delivery Date: {subOrder.delivery_date.toString()}
                     </p>
                   </div>
                   <Button
-                    onClick={() => handleEditSubOrder(subProduct)}
+                    onClick={() => handleEditSubOrder(subOrder)}
                     className="bg-yellow-500 text-white text-sm px-4 py-2 rounded-md hover:bg-yellow-400"
                   >
                     Edit
@@ -227,7 +227,7 @@ export const PlaceOrderClient: React.FC<PlaceOrderClientProps> = ({
         onClose={() => setAddModalOpen(false)}
         onConfirm={handleAddSubOrder}
         loading={loading}
-        initialSubOrder={selectedSubProduct}
+        initialSubOrder={selectedSubOrder}
       />
       <PlaceOrderModal
         isOpen={placeOrderModalOpen}

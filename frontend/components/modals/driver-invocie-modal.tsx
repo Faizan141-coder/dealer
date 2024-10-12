@@ -15,13 +15,13 @@ interface DriverInvoiceModalProps {
   driverFullName: string;
   truckPlateNumber: string;
   driverPhoneNumber: string;
-  driverAddress: string;
+  // driverAddress: string;
   driverEmail: string;
   setSupplierUsername?: React.Dispatch<React.SetStateAction<string>>;
   setDriverFullName: React.Dispatch<React.SetStateAction<string>>;
   setTruckPlateNumber: React.Dispatch<React.SetStateAction<string>>;
   setDriverPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
-  setDriverAddress: React.Dispatch<React.SetStateAction<string>>;
+  // setDriverAddress: React.Dispatch<React.SetStateAction<string>>;
   setDriverEmail: React.Dispatch<React.SetStateAction<string>>;
   subProductId: string;
   supplierInvoiceId: string;
@@ -37,13 +37,13 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
   driverFullName,
   truckPlateNumber,
   driverPhoneNumber,
-  driverAddress,
+  // driverAddress,
   driverEmail,
   setSupplierUsername,
   setDriverFullName,
   setTruckPlateNumber,
   setDriverPhoneNumber,
-  setDriverAddress,
+  // setDriverAddress,
   setDriverEmail,
   subProductId,
   supplierInvoiceId,
@@ -58,12 +58,6 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
   if (!isMounted) {
     return null;
   }
-
-  console.log("Full Name: ", driverFullName);
-  console.log("Truck Plate Number: ", truckPlateNumber);
-  console.log("Driver Phone Number: ", driverPhoneNumber);
-  console.log("Driver Address: ", driverAddress);
-  console.log("Driver Email: ", driverEmail);
 
   return (
     <>
@@ -98,12 +92,6 @@ export const DriverInvoiceModal: React.FC<DriverInvoiceModalProps> = ({
                   />
                 </div>
                 <div className="mt-5 flex space-x-5">
-                  <Input
-                    placeholder="Driver Address"
-                    type="text"
-                    value={driverAddress}
-                    onChange={(e) => setDriverAddress(e.target.value)}
-                  />
                   <Input
                     placeholder="Driver Email"
                     type="text"

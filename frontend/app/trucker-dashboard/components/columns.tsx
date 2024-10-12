@@ -123,12 +123,12 @@ const InvoiceButton = ({ row }: { row: any }) => {
         setDriverFullName={setDriverFullName}
         setTruckPlateNumber={setTruckPlateNumber}
         setDriverPhoneNumber={setDriverPhoneNumber}
-        setDriverAddress={setDriverAddress}
+        // setDriverAddress={setDriverAddress}
         setDriverEmail={setDriverEmail}
         driverFullName={driverFullName}
         truckPlateNumber={truckPlateNumber}
         driverPhoneNumber={driverPhoneNumber}
-        driverAddress={driverAddress}
+        // driverAddress={driverAddress}
         driverEmail={driverEmail}
         subProductId={row.original.sub_order_id}
         supplierInvoiceId={row.original.supplier_invoice_id}
